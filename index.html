@@ -3,1548 +3,644 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Taxi Tera — Find Your Ride in Ethiopia</title>
+<title>Taxi Tera \u2014 Find Your Ride in Ethiopia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
+<!-- GOOGLE ADSENSE \u2014 replace ca-pub-XXXXXXXXXXXXXXXX with your Publisher ID -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+
 <style>
-  :root {
-    --teal:        #0F766E;
-    --teal-light:  #14B8A6;
-    --teal-pale:   #CCFBF1;
-    --green:       #16A34A;
-    --green-light: #22C55E;
-    --sky:         #0EA5E9;
-    --amber:       #F59E0B;
-    --red:         #EF4444;
-    --white:       #FFFFFF;
-    --bg:          #F0FDF9;
-    --surface:     #FFFFFF;
-    --border:      #D1FAF5;
-    --text:        #0F172A;
-    --text-2:      #334155;
-    --text-3:      #64748B;
-    --shadow:      0 4px 24px rgba(15,118,110,0.13);
-    --shadow-lg:   0 8px 40px rgba(15,118,110,0.18);
-    --r:           16px;
-    --r-sm:        10px;
-    --r-xl:        24px;
-  }
+:root {
+  --teal:    #0D9488;
+  --teal-d:  #0F766E;
+  --teal-l:  #14B8A6;
+  --tp:      #CCFBF1;
+  --sky:     #0EA5E9;
+  --amber:   #F59E0B;
+  --bg:      #F0FDF9;
+  --sf:      #FFFFFF;
+  --bd:      #D1FAF5;
+  --tx:      #0F172A;
+  --tx2:     #334155;
+  --tx3:     #64748B;
+  --sh:      0 4px 20px rgba(13,148,136,.14);
+  --shl:     0 8px 36px rgba(13,148,136,.20);
+  --r:16px; --rs:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overflow:hidden;-webkit-font-smoothing:antialiased}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* SPLASH */
+#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(145deg,#0F766E 0%,#0D9488 45%,#0EA5E9 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;transition:opacity .6s,transform .6s}
+#splash.hide{opacity:0;transform:scale(1.05);pointer-events:none}
+.sp-logo{width:88px;height:88px;border-radius:26px;background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(10px);animation:pop .7s cubic-bezier(.34,1.56,.64,1) .2s both}
+.sp-logo svg{width:52px;height:52px}
+.sp-title{font-size:36px;font-weight:800;color:#fff;letter-spacing:-.5px;animation:fadeUp .5s ease .4s both}
+.sp-sub{font-size:14px;color:rgba(255,255,255,.75);animation:fadeUp .5s ease .55s both}
+.sp-dots{display:flex;gap:6px;margin-top:20px;animation:fadeUp .5s ease .7s both}
+.sp-dots span{width:7px;height:7px;background:rgba(255,255,255,.5);border-radius:50%;animation:pulse 1.2s infinite}
+.sp-dots span:nth-child(2){animation-delay:.2s}
+.sp-dots span:nth-child(3){animation-delay:.4s}
 
-  html, body {
-    height: 100%;
-    font-family: 'Outfit', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow: hidden;
-    -webkit-font-smoothing: antialiased;
-  }
+/* APP */
+#app{position:fixed;inset:0}
+#map{position:absolute;inset:0;z-index:1}
+.leaflet-container{background:#d4ede8}
+.leaflet-control-zoom{display:none!important}
+.leaflet-control-attribution{font-size:9px!important;opacity:.4}
 
-  /* ─── SPLASH ─────────────────────────────────── */
-  #splash {
-    position: fixed; inset: 0; z-index: 9999;
-    background: linear-gradient(145deg, #0F766E 0%, #0D9488 40%, #0EA5E9 100%);
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 16px;
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-  #splash.hide { opacity: 0; transform: scale(1.05); pointer-events: none; }
+/* MARKERS */
+.tm{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.tm-dot{width:38px;height:38px;border-radius:50% 50% 50% 4px;display:flex;align-items:center;justify-content:center;font-size:17px;border:2.5px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.22);transform:rotate(-45deg);transition:transform .2s}
+.tm-dot span{transform:rotate(45deg);display:block}
+.tm-dot.minibus{background:var(--teal)}
+.tm-dot.bajaj{background:var(--amber)}
+.tm-dot.ride{background:var(--sky)}
+.tm:hover .tm-dot{transform:rotate(-45deg) scale(1.15)}
+.u-dot{width:18px;height:18px;background:var(--sky);border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 6px rgba(14,165,233,.25);animation:uPulse 2s infinite}
 
-  .splash-logo {
-    width: 90px; height: 90px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 28px;
-    display: flex; align-items: center; justify-content: center;
-    backdrop-filter: blur(10px);
-    border: 1.5px solid rgba(255,255,255,0.3);
-    animation: logoPop 0.7s cubic-bezier(.34,1.56,.64,1) 0.2s both;
-  }
-  .splash-logo svg { width: 52px; height: 52px; }
+/* LANG TOGGLE */
+#langToggle{position:absolute;top:14px;right:14px;z-index:420;display:flex;align-items:center;background:var(--sf);border:1.5px solid var(--bd);border-radius:20px;padding:4px;box-shadow:var(--sh);gap:2px}
+.lang-btn{padding:5px 11px;border-radius:16px;border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--tx3);background:transparent}
+.lang-btn.active{background:var(--teal);color:#fff}
 
-  .splash-title {
-    font-size: 36px; font-weight: 800; color: #fff;
-    letter-spacing: -0.5px;
-    animation: fadeUp 0.5s ease 0.4s both;
-  }
-  .splash-subtitle {
-    font-size: 15px; color: rgba(255,255,255,0.75);
-    animation: fadeUp 0.5s ease 0.55s both;
-  }
-  .splash-dots {
-    display: flex; gap: 6px; margin-top: 24px;
-    animation: fadeUp 0.5s ease 0.7s both;
-  }
-  .splash-dots span {
-    width: 7px; height: 7px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 50%;
-    animation: pulse 1.2s infinite;
-  }
-  .splash-dots span:nth-child(2) { animation-delay: 0.2s; }
-  .splash-dots span:nth-child(3) { animation-delay: 0.4s; }
+/* TOP BAR */
+#topbar{position:absolute;top:0;left:0;right:0;z-index:410;padding:14px 14px 0;pointer-events:none}
+.sw{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:14px;padding:11px 13px;box-shadow:var(--shl);border:1.5px solid var(--bd);pointer-events:all;transition:border-color .2s,box-shadow .2s;margin-right:84px}
+.sw:focus-within{border-color:var(--teal-l);box-shadow:0 4px 24px rgba(13,148,136,.25)}
+.sw svg{width:19px;height:19px;color:var(--teal);flex-shrink:0}
+.sw input{flex:1;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;color:var(--tx);background:transparent}
+.sw input::placeholder{color:var(--tx3);font-weight:400}
+.menu-btn,.clr-btn{width:30px;height:30px;border-radius:8px;border:none;background:var(--tp);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--teal);transition:all .15s;flex-shrink:0}
+.menu-btn:active,.clr-btn:active{transform:scale(.9)}
+.clr-btn{display:none}
+.clr-btn.show{display:flex}
+.menu-btn svg,.clr-btn svg{width:15px;height:15px}
 
-  /* ─── MAIN APP ────────────────────────────────── */
-  #app { position: fixed; inset: 0; display: flex; flex-direction: column; }
+/* CHIPS */
+.chips{display:flex;gap:7px;padding:9px 0 0;overflow-x:auto;scrollbar-width:none;pointer-events:all;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bd);flex-shrink:0;background:var(--sf);color:var(--tx2);box-shadow:0 2px 8px rgba(0,0,0,.07);transition:all .18s}
+.chip.active{background:var(--teal);color:#fff;border-color:var(--teal)}
+.chip:active{transform:scale(.95)}
 
-  /* ─── MAP ─────────────────────────────────────── */
-  #map {
-    flex: 1;
-    position: relative;
-    z-index: 1;
-  }
-  .leaflet-container { background: #e8f5f3; }
-  .leaflet-control-zoom { display: none !important; }
-  .leaflet-control-attribution { font-size: 9px !important; opacity: 0.5; }
+/* FAB */
+#fab{position:absolute;right:16px;bottom:220px;z-index:410;width:50px;height:50px;border-radius:14px;background:var(--sf);border:1.5px solid var(--bd);box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--teal);transition:all .2s}
+#fab:active{transform:scale(.93);background:var(--tp)}
+#fab svg{width:22px;height:22px}
+#fab.spinning{animation:spin 1s linear infinite}
 
-  /* Custom marker */
-  .taxi-marker {
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; transition: transform 0.2s;
-  }
-  .taxi-marker:hover { transform: scale(1.15); }
-  .tm-dot {
-    width: 36px; height: 36px;
-    border-radius: 50% 50% 50% 4px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-    border: 2.5px solid white;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.2);
-    transform: rotate(-45deg);
-  }
-  .tm-dot span { transform: rotate(45deg); display: block; }
-  .tm-dot.bajaj   { background: var(--amber); }
-  .tm-dot.minibus { background: var(--teal); }
-  .tm-dot.ride    { background: var(--sky); }
+/* BOTTOM PANEL */
+#panel{position:absolute;bottom:0;left:0;right:0;z-index:300;background:var(--sf);border-radius:22px 22px 0 0;box-shadow:0 -4px 28px rgba(13,148,136,.13);transition:transform .35s cubic-bezier(.32,.72,0,1);max-height:72vh;display:flex;flex-direction:column}
+#panel.collapsed{transform:translateY(calc(100% - 88px))}
+.ph-row{display:flex;align-items:center;justify-content:center;padding:10px 0 0;cursor:pointer;flex-shrink:0}
+.ph{width:34px;height:4px;background:#CBD5E1;border-radius:2px}
+.p-head{padding:10px 18px 0;flex-shrink:0}
+.p-tr{display:flex;align-items:center;justify-content:space-between}
+.p-title{font-size:17px;font-weight:700}
+.p-count{font-size:12px;font-weight:600;padding:3px 9px;background:var(--tp);color:var(--teal);border-radius:20px}
 
-  .user-dot {
-    width: 20px; height: 20px;
-    background: var(--sky);
-    border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 0 0 6px rgba(14,165,233,0.2);
-    animation: userPulse 2s infinite;
-  }
+/* PANEL AD \u2014 thin banner, clearly separated from content */
+.panel-ad{margin:10px 16px 2px;border-radius:10px;border:1px dashed #CBD5E1;overflow:hidden;min-height:50px;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.panel-ad ins{display:block;width:100%}
 
-  /* ─── TOP BAR ─────────────────────────────────── */
-  #topbar {
-    position: absolute; top: 0; left: 0; right: 0;
-    z-index: 400;
-    padding: 12px 14px 0;
-    pointer-events: none;
-  }
+.slist{overflow-y:auto;padding:10px 16px 24px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch}
+.slist::-webkit-scrollbar{display:none}
 
-  .search-bar {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface);
-    border-radius: 14px;
-    padding: 11px 14px;
-    box-shadow: var(--shadow-lg);
-    pointer-events: all;
-    border: 1.5px solid var(--border);
-    transition: border-color 0.2s, box-shadow 0.2s;
-  }
-  .search-bar:focus-within {
-    border-color: var(--teal-light);
-    box-shadow: 0 4px 24px rgba(15,118,110,0.22);
-  }
-  .search-bar svg { width: 20px; height: 20px; color: var(--teal); flex-shrink: 0; }
-  .search-bar input {
-    flex: 1; border: none; outline: none;
-    font-family: 'Outfit', sans-serif;
-    font-size: 15px; font-weight: 500;
-    color: var(--text); background: transparent;
-  }
-  .search-bar input::placeholder { color: var(--text-3); font-weight: 400; }
-  .menu-btn, .clear-btn {
-    width: 30px; height: 30px;
-    border-radius: 8px;
-    border: none; background: var(--teal-pale);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; pointer-events: all;
-    color: var(--teal);
-    transition: background 0.2s, transform 0.1s;
-    flex-shrink: 0;
-  }
-  .menu-btn:active, .clear-btn:active { transform: scale(0.9); }
-  .clear-btn { display: none; }
-  .clear-btn.show { display: flex; }
-  .menu-btn svg, .clear-btn svg { width: 16px; height: 16px; }
+/* STATION CARD */
+.s-card{display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg);border-radius:var(--r);border:1.5px solid var(--bd);cursor:pointer;transition:all .18s;animation:fadeUp .3s ease both}
+.s-card:active{transform:scale(.98);background:var(--tp)}
+.s-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.s-ico.minibus{background:var(--tp)}
+.s-ico.bajaj{background:#FEF3C7}
+.s-ico.ride{background:#E0F2FE}
+.s-info{flex:1;min-width:0}
+.s-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-meta{font-size:12px;color:var(--tx3);margin-top:2px;display:flex;align-items:center;gap:5px}
+.s-meta svg{width:12px;height:12px}
+.s-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;flex-shrink:0}
+.s-badge.minibus{background:var(--tp);color:var(--teal-d)}
+.s-badge.bajaj{background:#FEF3C7;color:#92400E}
+.s-badge.ride{background:#E0F2FE;color:#0369A1}
+.go-btn{width:36px;height:36px;border-radius:10px;background:var(--teal);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:all .15s;flex-shrink:0}
+.go-btn:active{transform:scale(.9)}
+.go-btn svg{width:14px;height:14px}
 
-  /* Filter chips */
-  .filter-row {
-    display: flex; gap: 8px;
-    padding: 10px 0 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-    pointer-events: all;
-    -webkit-overflow-scrolling: touch;
-  }
-  .filter-row::-webkit-scrollbar { display: none; }
+/* SEARCH RESULTS */
+#srBox{position:absolute;top:0;left:0;right:0;z-index:405;background:var(--sf);border-radius:0 0 20px 20px;box-shadow:var(--shl);max-height:60vh;overflow-y:auto;transform:translateY(-100%);transition:transform .3s ease;padding-top:78px}
+#srBox.open{transform:translateY(0)}
+.sr-item{display:flex;align-items:center;gap:11px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s}
+.sr-item:active{background:var(--tp)}
+.sr-item:last-child{border-bottom:none}
+.sr-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.sr-ico.minibus{background:var(--tp)}
+.sr-ico.bajaj{background:#FEF3C7}
+.sr-ico.ride{background:#E0F2FE}
+.sr-name{font-size:14px;font-weight:600}
+.sr-sub{font-size:12px;color:var(--tx3);margin-top:1px}
 
-  .chip {
-    display: flex; align-items: center; gap: 5px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 13px; font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
-    border: 1.5px solid transparent;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    background: var(--surface);
-    color: var(--text-2);
-    border-color: var(--border);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-  }
-  .chip.active {
-    background: var(--teal);
-    color: white;
-    border-color: var(--teal);
-  }
-  .chip:active { transform: scale(0.95); }
-  .chip-icon { font-size: 14px; }
+/* DETAIL PAGE */
+#detail{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);overflow-y:auto}
+#detail.open{transform:translateY(0)}
+.d-hdr{background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal-l) 100%);padding:52px 20px 26px;position:relative;color:#fff}
+.d-back,.fav-btn{position:absolute;top:16px;width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.2);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;backdrop-filter:blur(6px)}
+.d-back{left:16px}
+.fav-btn{right:16px}
+.fav-btn svg{width:18px;height:18px}
+.fav-btn.faved{color:#FCD34D}
+.d-ico{width:62px;height:62px;background:rgba(255,255,255,.2);border-radius:17px;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:12px;border:1px solid rgba(255,255,255,.3)}
+.d-name{font-size:22px;font-weight:800}
+.d-addr{font-size:13px;opacity:.8;margin-top:3px}
+.d-badge{display:inline-block;background:rgba(255,255,255,.2);border-radius:20px;padding:3px 12px;font-size:12px;font-weight:600;margin-top:9px;border:1px solid rgba(255,255,255,.3)}
+.d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd)}
+.d-stat{background:var(--sf);padding:16px 10px;text-align:center}
+.d-sv{font-size:19px;font-weight:800;color:var(--teal)}
+.d-sl{font-size:11px;color:var(--tx3);margin-top:2px}
+.d-sec{padding:18px 18px 0}
+.d-sec-title{font-size:12px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.svc-pills{display:flex;flex-wrap:wrap;gap:7px}
+.svc-pill{padding:6px 12px;background:var(--bg);border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:500;color:var(--tx2)}
+.hr-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd);font-size:14px}
+.hr-row:last-child{border-bottom:none}
+.hr-day{font-weight:600;min-width:88px}
+.hr-open{color:#16A34A;font-weight:600}
 
-  /* ─── LOCATE ME FAB ───────────────────────────── */
-  #locateFab {
-    position: absolute;
-    right: 16px;
-    z-index: 400;
-    width: 50px; height: 50px;
-    border-radius: 14px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    box-shadow: var(--shadow);
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    color: var(--teal);
-    transition: all 0.2s;
-    bottom: 220px;
-  }
-  #locateFab:active { transform: scale(0.93); background: var(--teal-pale); }
-  #locateFab svg { width: 22px; height: 22px; }
-  #locateFab.locating { animation: spin 1s linear infinite; }
+/* DETAIL AD \u2014 natural content break, like a card */
+.detail-ad{margin:16px 18px 0;border-radius:12px;border:1px dashed #CBD5E1;overflow:hidden;min-height:60px;background:#f8fafc;display:flex;align-items:center;justify-content:center}
+.detail-ad ins{display:block;width:100%}
 
-  /* ─── BOTTOM PANEL ────────────────────────────── */
-  #bottomPanel {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    z-index: 300;
-    background: var(--surface);
-    border-radius: 24px 24px 0 0;
-    box-shadow: 0 -4px 30px rgba(15,118,110,0.12);
-    transition: transform 0.35s cubic-bezier(.32,.72,0,1);
-    max-height: 70vh;
-    display: flex; flex-direction: column;
-  }
-  #bottomPanel.collapsed { transform: translateY(calc(100% - 90px)); }
+.nav-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 36px);margin:16px 18px 0;padding:17px;background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal-l) 100%);border:none;border-radius:16px;color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 16px rgba(13,148,136,.35);transition:transform .15s,box-shadow .15s}
+.nav-btn:active{transform:scale(.97);box-shadow:none}
+.nav-btn svg{width:19px;height:19px}
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 36px);margin:10px 18px 32px;padding:14px;background:var(--sf);border:1.5px solid var(--bd);border-radius:14px;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s}
+.share-btn:active{background:var(--tp)}
+.share-btn svg{width:15px;height:15px;color:var(--teal)}
 
-  .panel-handle-row {
-    display: flex; align-items: center; justify-content: center;
-    padding: 10px 0 0;
-    cursor: pointer; flex-shrink: 0;
-  }
-  .panel-handle {
-    width: 36px; height: 4px;
-    background: #CBD5E1;
-    border-radius: 2px;
-  }
+/* NAV BAR */
+#navBar{position:absolute;bottom:0;left:0;right:0;z-index:350;background:var(--teal-d);border-radius:20px 20px 0 0;padding:16px 18px 28px;box-shadow:0 -4px 22px rgba(13,148,136,.35);color:#fff;transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
+#navBar.active{transform:translateY(0)}
+.nb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.nb-info{flex:1;min-width:0}
+.nb-dest{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nb-meta{font-size:13px;opacity:.85;margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.nb-dot{opacity:.5}
+.nb-stop{display:flex;align-items:center;gap:5px;padding:10px 15px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);border-radius:12px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;flex-shrink:0;backdrop-filter:blur(6px);transition:background .2s}
+.nb-stop:active{background:rgba(255,255,255,.3)}
+.nb-stop svg{width:14px;height:14px}
+.nb-loading{display:none;align-items:center;gap:8px;margin-top:10px;font-size:13px;opacity:.8}
+.nb-loading.show{display:flex}
+.nb-spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 
-  .panel-header {
-    padding: 12px 18px 0;
-    flex-shrink: 0;
-  }
-  .panel-title-row {
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .panel-title {
-    font-size: 17px; font-weight: 700; color: var(--text);
-  }
-  .station-count {
-    font-size: 12px; font-weight: 600;
-    padding: 3px 9px;
-    background: var(--teal-pale);
-    color: var(--teal);
-    border-radius: 20px;
-  }
+/* ABOUT */
+#about{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateX(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);overflow-y:auto}
+#about.open{transform:translateX(0)}
+.ab-hdr{background:linear-gradient(135deg,var(--teal-d) 0%,var(--sky) 100%);padding:54px 24px 34px;text-align:center;color:#fff;position:relative}
+.ab-back{position:absolute;top:16px;left:16px;width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.2);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+.ab-logo{width:78px;height:78px;background:rgba(255,255,255,.2);border-radius:22px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.3)}
+.ab-title{font-size:30px;font-weight:800}
+.ab-ver{font-size:13px;opacity:.7;margin-top:4px}
+.ab-body{padding:18px 18px 40px}
+.ab-card{background:var(--sf);border-radius:var(--r);border:1.5px solid var(--bd);padding:16px;margin-bottom:12px}
+.ab-ct{font-size:12px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+.ab-card p{font-size:14px;color:var(--tx2);line-height:1.65}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.st{background:var(--bg);border-radius:var(--rs);padding:13px;text-align:center;border:1px solid var(--bd)}
+.st-n{font-size:21px;font-weight:800;color:var(--teal)}
+.st-l{font-size:11px;color:var(--tx3);margin-top:2px}
+.f-list{list-style:none}
+.f-list li{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd)}
+.f-list li:last-child{border-bottom:none}
+.f-list li::before{content:'\u2713';color:var(--teal);font-weight:800;flex-shrink:0}
 
-  .station-list {
-    overflow-y: auto;
-    padding: 12px 16px 24px;
-    display: flex; flex-direction: column; gap: 10px;
-    -webkit-overflow-scrolling: touch;
-  }
-  .station-list::-webkit-scrollbar { display: none; }
+/* MENU */
+#mOverlay{position:absolute;inset:0;z-index:450;background:rgba(15,23,42,.4);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
+#mOverlay.show{opacity:1;pointer-events:all}
+#mDrawer{position:absolute;top:0;left:0;bottom:0;width:282px;z-index:460;background:var(--sf);transform:translateX(-100%);transition:transform .35s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;box-shadow:4px 0 28px rgba(0,0,0,.13)}
+#mDrawer.open{transform:translateX(0)}
+.md-hdr{background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal-l) 100%);padding:50px 20px 22px;color:#fff}
+.md-lr{display:flex;align-items:center;gap:11px}
+.md-li{width:40px;height:40px;background:rgba(255,255,255,.2);border-radius:11px;display:flex;align-items:center;justify-content:center}
+.md-li svg{width:25px;height:25px}
+.md-title{font-size:22px;font-weight:800}
+.md-tag{font-size:12px;opacity:.75;margin-top:5px}
+.md-menu{padding:12px 10px;flex:1;overflow-y:auto}
+.md-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;cursor:pointer;color:var(--tx2);font-size:15px;font-weight:500;transition:background .15s}
+.md-item:active,.md-item.active{background:var(--tp);color:var(--teal)}
+.md-item svg{width:20px;height:20px;color:var(--teal);flex-shrink:0}
+.md-div{height:1px;background:var(--bd);margin:6px 0}
+.md-foot{padding:14px;font-size:12px;color:var(--tx3);text-align:center}
 
-  /* Station Card */
-  .station-card {
-    display: flex; align-items: center; gap: 12px;
-    padding: 13px;
-    background: var(--bg);
-    border-radius: var(--r);
-    border: 1.5px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    animation: fadeUp 0.3s ease both;
-  }
-  .station-card:active { transform: scale(0.98); background: var(--teal-pale); }
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;gap:7px}
+.empty svg{width:44px;height:44px;color:var(--tx3);opacity:.45}
+.empty p{font-size:14px;color:var(--tx3)}
 
-  .station-icon {
-    width: 46px; height: 46px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 20px; flex-shrink: 0;
-  }
-  .station-icon.bajaj   { background: #FEF3C7; }
-  .station-icon.minibus { background: var(--teal-pale); }
-  .station-icon.ride    { background: #E0F2FE; }
+/* TOAST */
+#toast{position:absolute;bottom:210px;left:50%;z-index:700;transform:translateX(-50%) translateY(16px);background:var(--tx);color:#fff;padding:10px 17px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-  .station-info { flex: 1; min-width: 0; }
-  .station-name {
-    font-size: 15px; font-weight: 600; color: var(--text);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .station-meta {
-    font-size: 12px; color: var(--text-3); margin-top: 2px;
-    display: flex; align-items: center; gap: 6px;
-  }
-  .station-meta span { display: flex; align-items: center; gap: 3px; }
-  .station-meta svg { width: 12px; height: 12px; }
-
-  .station-badge {
-    font-size: 11px; font-weight: 700;
-    padding: 3px 8px; border-radius: 8px;
-    flex-shrink: 0;
-  }
-  .station-badge.bajaj   { background: #FEF3C7; color: #92400E; }
-  .station-badge.minibus { background: var(--teal-pale); color: var(--teal); }
-  .station-badge.ride    { background: #E0F2FE; color: #0369A1; }
-
-  .go-btn {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    background: var(--teal);
-    border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    color: white;
-    transition: background 0.2s, transform 0.1s;
-    flex-shrink: 0;
-  }
-  .go-btn:active { transform: scale(0.9); background: #0F766E; }
-  .go-btn svg { width: 15px; height: 15px; }
-
-  /* ─── STATION DETAIL ──────────────────────────── */
-  #stationDetail {
-    position: absolute; inset: 0; z-index: 500;
-    background: var(--bg);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(.32,.72,0,1);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #stationDetail.open { transform: translateY(0); }
-
-  .detail-header {
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-    padding: 52px 20px 28px;
-    position: relative;
-    color: white;
-  }
-  .detail-back {
-    position: absolute; top: 16px; left: 16px;
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 12px; border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: white;
-    backdrop-filter: blur(8px);
-  }
-  .detail-back svg { width: 18px; height: 18px; }
-
-  .detail-icon-wrap {
-    width: 64px; height: 64px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 28px;
-    margin-bottom: 14px;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-  .detail-name { font-size: 24px; font-weight: 800; }
-  .detail-address { font-size: 13px; opacity: 0.8; margin-top: 3px; }
-  .detail-type-badge {
-    display: inline-block;
-    background: rgba(255,255,255,0.2);
-    border-radius: 20px; padding: 3px 12px;
-    font-size: 12px; font-weight: 600;
-    margin-top: 10px;
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-
-  .detail-stats {
-    display: grid; grid-template-columns: 1fr 1fr 1fr;
-    gap: 1px; background: var(--border);
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 4px;
-  }
-  .detail-stat {
-    background: var(--surface);
-    padding: 16px 12px;
-    text-align: center;
-  }
-  .detail-stat-val { font-size: 20px; font-weight: 800; color: var(--teal); }
-  .detail-stat-label { font-size: 11px; color: var(--text-3); margin-top: 2px; font-weight: 500; }
-
-  .detail-section {
-    padding: 18px 18px 0;
-  }
-  .detail-section-title {
-    font-size: 13px; font-weight: 700; color: var(--text-3);
-    text-transform: uppercase; letter-spacing: 0.8px;
-    margin-bottom: 12px;
-  }
-
-  .service-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-  .service-pill {
-    padding: 6px 13px;
-    background: var(--bg);
-    border: 1.5px solid var(--border);
-    border-radius: 20px;
-    font-size: 13px; font-weight: 500; color: var(--text-2);
-    display: flex; align-items: center; gap: 5px;
-  }
-
-  .hours-row {
-    display: flex; align-items: center; gap: 10px;
-    padding: 11px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 14px;
-  }
-  .hours-row:last-child { border-bottom: none; }
-  .hours-day { font-weight: 600; min-width: 90px; }
-  .hours-time { color: var(--text-3); }
-  .hours-open { color: var(--green); font-weight: 600; }
-
-  .nav-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: calc(100% - 36px); margin: 20px 18px;
-    padding: 17px;
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-    border: none; border-radius: 16px;
-    color: white; font-family: 'Outfit', sans-serif;
-    font-size: 16px; font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(15,118,110,0.35);
-    transition: transform 0.15s, box-shadow 0.15s;
-  }
-  .nav-btn:active { transform: scale(0.97); box-shadow: none; }
-  .nav-btn svg { width: 20px; height: 20px; }
-
-  .share-btn {
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    width: calc(100% - 36px); margin: 0 18px 32px;
-    padding: 14px;
-    background: var(--surface);
-    border: 1.5px solid var(--border);
-    border-radius: 14px;
-    color: var(--text-2); font-family: 'Outfit', sans-serif;
-    font-size: 14px; font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
-  .share-btn:active { background: var(--teal-pale); }
-  .share-btn svg { width: 16px; height: 16px; color: var(--teal); }
-
-  /* ─── ABOUT PAGE ──────────────────────────────── */
-  #aboutPage {
-    position: absolute; inset: 0; z-index: 500;
-    background: var(--bg);
-    transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(.32,.72,0,1);
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #aboutPage.open { transform: translateX(0); }
-
-  .about-header {
-    background: linear-gradient(135deg, var(--teal) 0%, var(--sky) 100%);
-    padding: 56px 24px 36px;
-    text-align: center; color: white;
-    position: relative;
-  }
-  .about-back {
-    position: absolute; top: 16px; left: 16px;
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 12px; border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: white;
-  }
-  .about-back svg { width: 18px; height: 18px; }
-  .about-logo-wrap {
-    width: 80px; height: 80px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 22px; margin: 0 auto 16px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid rgba(255,255,255,0.3);
-  }
-  .about-logo-wrap svg { width: 48px; height: 48px; }
-  .about-title { font-size: 30px; font-weight: 800; }
-  .about-version { font-size: 13px; opacity: 0.7; margin-top: 4px; }
-
-  .about-content { padding: 20px 20px 40px; }
-  .about-card {
-    background: var(--surface);
-    border-radius: var(--r);
-    border: 1.5px solid var(--border);
-    padding: 18px;
-    margin-bottom: 14px;
-  }
-  .about-card-title {
-    font-size: 13px; font-weight: 700; color: var(--teal);
-    text-transform: uppercase; letter-spacing: 0.8px;
-    margin-bottom: 10px;
-  }
-  .about-card p {
-    font-size: 14px; color: var(--text-2); line-height: 1.6;
-  }
-  .feature-list { list-style: none; }
-  .feature-list li {
-    display: flex; align-items: flex-start; gap: 10px;
-    padding: 8px 0;
-    font-size: 14px; color: var(--text-2);
-    border-bottom: 1px solid var(--border);
-  }
-  .feature-list li:last-child { border-bottom: none; }
-  .feature-list li::before {
-    content: '✓';
-    color: var(--teal); font-weight: 800;
-    flex-shrink: 0; margin-top: 1px;
-  }
-
-  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .stat-tile {
-    background: var(--bg);
-    border-radius: var(--r-sm);
-    padding: 14px; text-align: center;
-    border: 1px solid var(--border);
-  }
-  .stat-tile-num { font-size: 22px; font-weight: 800; color: var(--teal); }
-  .stat-tile-lbl { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-
-  .built-by {
-    text-align: center;
-    font-size: 13px; color: var(--text-3);
-    padding: 10px 0;
-  }
-  .built-by strong { color: var(--teal); }
-
-  /* ─── MENU DRAWER ─────────────────────────────── */
-  #menuOverlay {
-    position: absolute; inset: 0; z-index: 450;
-    background: rgba(15,23,42,0.4);
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(4px);
-  }
-  #menuOverlay.show { opacity: 1; pointer-events: all; }
-
-  #menuDrawer {
-    position: absolute; top: 0; left: 0; bottom: 0;
-    width: 280px; z-index: 460;
-    background: var(--surface);
-    transform: translateX(-100%);
-    transition: transform 0.35s cubic-bezier(.32,.72,0,1);
-    display: flex; flex-direction: column;
-    box-shadow: 4px 0 30px rgba(0,0,0,0.12);
-  }
-  #menuDrawer.open { transform: translateX(0); }
-
-  .drawer-header {
-    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-    padding: 52px 20px 24px;
-    color: white;
-  }
-  .drawer-logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
-  .drawer-logo-icon {
-    width: 42px; height: 42px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .drawer-logo-icon svg { width: 26px; height: 26px; }
-  .drawer-title { font-size: 22px; font-weight: 800; }
-  .drawer-tagline { font-size: 12px; opacity: 0.75; margin-top: 6px; }
-
-  .drawer-menu { padding: 14px 12px; flex: 1; overflow-y: auto; }
-  .drawer-item {
-    display: flex; align-items: center; gap: 13px;
-    padding: 13px 12px;
-    border-radius: 12px;
-    cursor: pointer; color: var(--text-2);
-    font-size: 15px; font-weight: 500;
-    transition: background 0.18s;
-  }
-  .drawer-item:active, .drawer-item.active { background: var(--teal-pale); color: var(--teal); }
-  .drawer-item svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--teal); }
-
-  .drawer-divider {
-    height: 1px; background: var(--border);
-    margin: 8px 0;
-  }
-  .drawer-footer {
-    padding: 16px;
-    font-size: 12px; color: var(--text-3); text-align: center;
-  }
-
-  /* ─── TOAST ───────────────────────────────────── */
-  #toast {
-    position: absolute; bottom: 210px; left: 50%;
-    transform: translateX(-50%) translateY(20px);
-    background: var(--text);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 24px;
-    font-size: 13px; font-weight: 500;
-    z-index: 600;
-    opacity: 0;
-    transition: opacity 0.25s, transform 0.25s;
-    white-space: nowrap;
-    pointer-events: none;
-  }
-  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* ─── SEARCH RESULTS ──────────────────────────── */
-  #searchResults {
-    position: absolute; top: 0; left: 0; right: 0; z-index: 410;
-    background: var(--surface);
-    border-radius: 0 0 20px 20px;
-    box-shadow: var(--shadow-lg);
-    max-height: 60vh; overflow-y: auto;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
-    padding-top: 80px;
-  }
-  #searchResults.open { transform: translateY(0); }
-
-  .search-result-item {
-    display: flex; align-items: center; gap: 12px;
-    padding: 13px 18px;
-    cursor: pointer;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-  .search-result-item:active { background: var(--teal-pale); }
-  .search-result-item:last-child { border-bottom: none; }
-  .sri-icon {
-    width: 36px; height: 36px; border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px; flex-shrink: 0;
-  }
-  .sri-info { flex: 1; }
-  .sri-name { font-size: 14px; font-weight: 600; color: var(--text); }
-  .sri-sub { font-size: 12px; color: var(--text-3); margin-top: 1px; }
-
-  /* ─── ANIMATIONS ──────────────────────────────── */
-  @keyframes logoPop {
-    from { transform: scale(0.5); opacity: 0; }
-    to   { transform: scale(1);   opacity: 1; }
-  }
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 0.5; transform: scale(1); }
-    50%       { opacity: 1;   transform: scale(1.3); }
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  @keyframes userPulse {
-    0%, 100% { box-shadow: 0 0 0 6px rgba(14,165,233,0.2); }
-    50%       { box-shadow: 0 0 0 12px rgba(14,165,233,0.1); }
-  }
-
-  /* ─── FAV BUTTON ──────────────────────────────── */
-  .fav-btn {
-    position: absolute; top: 16px; right: 16px;
-    width: 38px; height: 38px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 12px; border: none;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer; color: white;
-    backdrop-filter: blur(8px);
-    transition: background 0.2s;
-  }
-  .fav-btn.faved { color: #FCD34D; }
-  .fav-btn svg { width: 18px; height: 18px; }
-
-  /* ─── IN-APP NAV BAR ─────────────────────────── */
-  #navBar {
-    position: absolute; bottom: 0; left: 0; right: 0;
-    z-index: 350;
-    background: var(--teal);
-    border-radius: 20px 20px 0 0;
-    padding: 16px 18px 28px;
-    box-shadow: 0 -4px 24px rgba(15,118,110,0.35);
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(.32,.72,0,1);
-    color: white;
-  }
-  #navBar.active { transform: translateY(0); }
-
-  .navbar-inner {
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  }
-  .navbar-info { flex: 1; min-width: 0; }
-  .navbar-dest {
-    font-size: 16px; font-weight: 700;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .navbar-meta {
-    font-size: 13px; opacity: 0.85; margin-top: 3px;
-    display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
-  }
-  .navbar-dot { opacity: 0.5; }
-  .navbar-stop {
-    display: flex; align-items: center; gap: 6px;
-    padding: 10px 16px;
-    background: rgba(255,255,255,0.18);
-    border: 1.5px solid rgba(255,255,255,0.3);
-    border-radius: 12px;
-    color: white; font-family: 'Outfit', sans-serif;
-    font-size: 14px; font-weight: 600;
-    cursor: pointer; flex-shrink: 0;
-    backdrop-filter: blur(6px);
-    transition: background 0.2s;
-  }
-  .navbar-stop:active { background: rgba(255,255,255,0.3); }
-  .navbar-stop svg { width: 14px; height: 14px; }
-
-  .navbar-loading {
-    display: none;
-    align-items: center; gap: 8px;
-    margin-top: 10px;
-    font-size: 13px; opacity: 0.8;
-  }
-  .navbar-loading.show { display: flex; }
-  .navbar-spinner {
-    width: 14px; height: 14px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    flex-shrink: 0;
-  }
-
-  .empty-state {
-    display: flex; flex-direction: column; align-items: center;
-    justify-content: center; padding: 32px;
-    text-align: center; gap: 8px;
-  }
-  .empty-state svg { width: 48px; height: 48px; color: var(--text-3); opacity: 0.5; }
-  .empty-state p { font-size: 14px; color: var(--text-3); }
+/* KEYFRAMES */
+@keyframes pop{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.3)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes uPulse{0%,100%{box-shadow:0 0 0 6px rgba(14,165,233,.22)}50%{box-shadow:0 0 0 12px rgba(14,165,233,.1)}}
 </style>
 </head>
 <body>
 
-<!-- ─── SPLASH ─────────────────────────────────── -->
+<!-- SPLASH -->
 <div id="splash">
-  <div class="splash-logo">
-    <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity="0.9"/>
-      <rect x="12" y="14" width="28" height="12" rx="4" fill="white"/>
-      <circle cx="16" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-      <circle cx="36" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-      <rect x="22" y="17" width="8" height="6" rx="1.5" fill="rgba(14,165,233,0.7)"/>
-      <path d="M38 22 L44 22 L42 16 L38 18z" fill="white" fill-opacity="0.6"/>
-    </svg>
+  <div class="sp-logo">
+    <svg viewBox="0 0 52 52" fill="none"><rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity=".9"/><rect x="12" y="14" width="28" height="12" rx="4" fill="white"/><circle cx="16" cy="40" r="5" fill="white" fill-opacity=".7"/><circle cx="36" cy="40" r="5" fill="white" fill-opacity=".7"/><rect x="22" y="17" width="8" height="6" rx="1.5" fill="rgba(14,165,233,.7)"/></svg>
   </div>
-  <div class="splash-title"> ታክሲ ተራ</div>
-  <div class="splash-subtitle">ጉዞዬ በእጄ</div>
-  <div class="splash-dots"><span></span><span></span><span></span></div>
+  <div class="sp-title">Taxi Tera</div>
+  <div class="sp-sub" id="spSub">Find rides across Ethiopia \u2014 fast</div>
+  <div class="sp-dots"><span></span><span></span><span></span></div>
 </div>
 
-<!-- ─── APP ───────────────────────────────────── -->
+<!-- APP -->
 <div id="app">
-
-  <!-- MAP -->
   <div id="map"></div>
 
-  <!-- SEARCH RESULTS OVERLAY -->
-  <div id="searchResults"></div>
+  <!-- Language Toggle -->
+  <div id="langToggle">
+    <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" id="btnAM" onclick="setLang('am')">\u12a0\u121b</button>
+  </div>
 
-  <!-- TOP BAR -->
+  <!-- Search Results -->
+  <div id="srBox"></div>
+
+  <!-- Top Bar -->
   <div id="topbar">
-    <div class="search-bar">
+    <div class="sw">
       <button class="menu-btn" onclick="openMenu()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-      </svg>
-      <input type="text" id="searchInput" placeholder="Search taxi stations…" autocomplete="off"
-        oninput="handleSearch(this.value)" onfocus="onSearchFocus()" onblur="onSearchBlur()">
-      <button class="clear-btn" id="clearBtn" onclick="clearSearch()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="sInput" autocomplete="off" oninput="handleSearch(this.value)" onblur="onBlur()">
+      <button class="clr-btn" id="clrBtn" onclick="clearSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
     </div>
-    <div class="filter-row" id="filterRow">
-      <div class="chip active" data-filter="all" onclick="setFilter('all')"><span class="chip-icon">🗺️</span> All</div>
-      <div class="chip" data-filter="minibus" onclick="setFilter('minibus')"><span class="chip-icon">🚌</span> Minibus</div>
-      <div class="chip" data-filter="bajaj" onclick="setFilter('bajaj')"><span class="chip-icon">🛺</span> Bajaj</div>
-      <div class="chip" data-filter="ride" onclick="setFilter('ride')"><span class="chip-icon">🚗</span> Ride-hailing</div>
-      <div class="chip" data-filter="favorites" onclick="setFilter('favorites')"><span class="chip-icon">⭐</span> Saved</div>
+    <div class="chips">
+      <div class="chip active" data-f="all"       onclick="setFilter('all')">      <span>\ud83d\uddfa\ufe0f</span><span class="cl" data-k="all">All</span></div>
+      <div class="chip"        data-f="minibus"   onclick="setFilter('minibus')">  <span>\ud83d\ude8c</span><span class="cl" data-k="minibus">Minibus</span></div>
+      <div class="chip"        data-f="bajaj"     onclick="setFilter('bajaj')">    <span>\ud83d\udefa</span><span class="cl" data-k="bajaj">Bajaj</span></div>
+      <div class="chip"        data-f="ride"      onclick="setFilter('ride')">     <span>\ud83d\ude97</span><span class="cl" data-k="ride">Ride-hailing</span></div>
+      <div class="chip"        data-f="favorites" onclick="setFilter('favorites')"><span>\u2b50</span><span class="cl" data-k="saved">Saved</span></div>
     </div>
   </div>
 
-  <!-- LOCATE FAB -->
-  <button id="locateFab" onclick="locateMe()">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
-      <circle cx="12" cy="12" r="7" stroke-dasharray="3 2"/>
-    </svg>
+  <!-- Locate FAB -->
+  <button id="fab" onclick="locateMe()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7" stroke-dasharray="3 2"/></svg>
   </button>
 
-  <!-- BOTTOM PANEL -->
-  <div id="bottomPanel" class="collapsed">
-    <div class="panel-handle-row" onclick="togglePanel()">
-      <div class="panel-handle"></div>
-    </div>
-    <div class="panel-header">
-      <div class="panel-title-row">
-        <div class="panel-title" id="panelTitle">Nearby Stations</div>
-        <div class="station-count" id="stationCount">0 found</div>
+  <!-- Bottom Panel -->
+  <div id="panel" class="collapsed">
+    <div class="ph-row" onclick="togglePanel()"><div class="ph"></div></div>
+    <div class="p-head">
+      <div class="p-tr">
+        <div class="p-title" id="pTitle">Nearby Stations</div>
+        <div class="p-count" id="pCount">0 found</div>
       </div>
     </div>
-    <div class="station-list" id="stationList"></div>
+    <!-- AD: slim banner above list \u2014 unobtrusive -->
+    <div class="panel-ad">
+      <ins class="adsbygoogle"
+           style="display:block;width:100%;height:50px"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="1234567890"
+           data-ad-format="horizontal"
+           data-full-width-responsive="false"></ins>
+    </div>
+    <div class="slist" id="sList"></div>
   </div>
 
-  <!-- STATION DETAIL -->
-  <div id="stationDetail">
-    <div class="detail-header" id="detailHeader">
-      <button class="detail-back" onclick="closeDetail()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+  <!-- Station Detail -->
+  <div id="detail">
+    <div class="d-hdr">
+      <button class="d-back" onclick="closeDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <button class="fav-btn" id="detailFavBtn" onclick="toggleFav()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
+      <button class="fav-btn" id="favBtn" onclick="toggleFav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
-      <div class="detail-icon-wrap" id="detailIcon"></div>
-      <div class="detail-name" id="detailName"></div>
-      <div class="detail-address" id="detailAddress"></div>
-      <div class="detail-type-badge" id="detailBadge"></div>
+      <div class="d-ico" id="dIco"></div>
+      <div class="d-name" id="dName"></div>
+      <div class="d-addr" id="dAddr"></div>
+      <div class="d-badge" id="dBadge"></div>
     </div>
-    <div class="detail-stats">
-      <div class="detail-stat">
-        <div class="detail-stat-val" id="detailDist">—</div>
-        <div class="detail-stat-label">Distance</div>
-      </div>
-      <div class="detail-stat">
-        <div class="detail-stat-val" id="detailWalk">—</div>
-        <div class="detail-stat-label">Walk time</div>
-      </div>
-      <div class="detail-stat">
-        <div class="detail-stat-val" id="detailRating">—</div>
-        <div class="detail-stat-label">Rating</div>
-      </div>
+    <div class="d-stats">
+      <div class="d-stat"><div class="d-sv" id="dDist">\u2014</div><div class="d-sl" id="lDist">Distance</div></div>
+      <div class="d-stat"><div class="d-sv" id="dWalk">\u2014</div><div class="d-sl" id="lWalk">Walk time</div></div>
+      <div class="d-stat"><div class="d-sv" id="dRating">\u2014</div><div class="d-sl" id="lRating">Rating</div></div>
     </div>
-
-    <div class="detail-section">
-      <div class="detail-section-title">Services Available</div>
-      <div class="service-pills" id="detailServices"></div>
+    <div class="d-sec">
+      <div class="d-sec-title" id="lSvcs">Services Available</div>
+      <div class="svc-pills" id="dSvcs"></div>
     </div>
-
-    <div class="detail-section" style="margin-top:18px">
-      <div class="detail-section-title">Operating Hours</div>
-      <div id="detailHours"></div>
+    <div class="d-sec" style="margin-top:16px">
+      <div class="d-sec-title" id="lHours">Operating Hours</div>
+      <div id="dHours"></div>
     </div>
-
-    <button class="nav-btn" id="navBtn" onclick="startNavigation()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-      </svg>
-      Navigate on Map
+    <!-- AD: fluid in-article ad \u2014 natural content break -->
+    <div class="detail-ad">
+      <ins class="adsbygoogle"
+           style="display:block;width:100%"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="0987654321"
+           data-ad-format="fluid"
+           data-ad-layout="in-article"></ins>
+    </div>
+    <button class="nav-btn" onclick="startNavigation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span id="lNav">Navigate on Map</span>
     </button>
     <button class="share-btn" onclick="shareStation()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-      </svg>
-      Share this station
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      <span id="lShare">Share station</span>
     </button>
   </div>
 
-  <!-- IN-APP NAVIGATION BAR -->
+  <!-- Nav Bar -->
   <div id="navBar">
-    <div class="navbar-inner">
-      <div class="navbar-info">
-        <div class="navbar-dest" id="navBarDest">—</div>
-        <div class="navbar-meta">
-          <span id="navBarDist">—</span>
-          <span class="navbar-dot">·</span>
-          <span id="navBarTime">—</span>
-          <span class="navbar-dot">·</span>
-          <span class="navbar-walking">🚶 Walking</span>
-        </div>
+    <div class="nb-row">
+      <div class="nb-info">
+        <div class="nb-dest" id="nbDest">\u2014</div>
+        <div class="nb-meta"><span id="nbDist">\u2014</span><span class="nb-dot">\u00b7</span><span id="nbTime">\u2014</span><span class="nb-dot">\u00b7</span><span id="lWalking">\ud83d\udeb6 Walking</span></div>
       </div>
-      <button class="navbar-stop" onclick="stopNavigation()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-        Stop
+      <button class="nb-stop" onclick="stopNavigation()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <span id="lStop">Stop</span>
       </button>
     </div>
-    <div id="navLoading" class="navbar-loading">
-      <div class="navbar-spinner"></div>
-      <span>Getting walking route…</span>
-    </div>
+    <div class="nb-loading" id="nbLoading"><div class="nb-spin"></div><span id="lGettingRoute">Getting walking route\u2026</span></div>
   </div>
 
-  <!-- ABOUT PAGE -->
-  <div id="aboutPage">
-    <div class="about-header">
-      <button class="about-back" onclick="closeAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+  <!-- About -->
+  <div id="about">
+    <div class="ab-hdr">
+      <button class="ab-back" onclick="closeAbout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div class="about-logo-wrap">
-        <svg viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity="0.9"/>
-          <rect x="12" y="14" width="28" height="12" rx="4" fill="white"/>
-          <circle cx="16" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-          <circle cx="36" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-          <rect x="22" y="17" width="8" height="6" rx="1.5" fill="rgba(14,165,233,0.7)"/>
-        </svg>
-      </div>
-      <div class="about-title">Taxi Tera</div>
-      <div class="about-version">Version 1.0.0 • Prototype</div>
+      <div class="ab-logo"><svg viewBox="0 0 52 52" fill="none"><rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity=".9"/><rect x="12" y="14" width="28" height="12" rx="4" fill="white"/><circle cx="16" cy="40" r="5" fill="white" fill-opacity=".7"/><circle cx="36" cy="40" r="5" fill="white" fill-opacity=".7"/></svg></div>
+      <div class="ab-title">Taxi Tera</div>
+      <div class="ab-ver">v1.0.0 \u00b7 Prototype</div>
     </div>
-    <div class="about-content">
-      <div class="about-card">
-        <div class="about-card-title">About</div>
-        <p>Taxi Tera helps people across Ethiopia easily find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with walking directions and real-time station info.</p>
-      </div>
-      <div class="about-card">
-        <div class="about-card-title">App Statistics</div>
-        <div class="stat-grid">
-          <div class="stat-tile"><div class="stat-tile-num">120+</div><div class="stat-tile-lbl">Stations mapped</div></div>
-          <div class="stat-tile"><div class="stat-tile-num">8</div><div class="stat-tile-lbl">Cities covered</div></div>
-          <div class="stat-tile"><div class="stat-tile-num">3</div><div class="stat-tile-lbl">Transport types</div></div>
-          <div class="stat-tile"><div class="stat-tile-num">Free</div><div class="stat-tile-lbl">Always</div></div>
-        </div>
-      </div>
-      <div class="about-card">
-        <div class="about-card-title">Features</div>
-        <ul class="feature-list">
-          <li>GPS-based nearby station detection</li>
-          <li>Filter by Minibus, Bajaj, Ride-hailing</li>
-          <li>One-tap Google Maps navigation</li>
-          <li>Save favorite stations</li>
-          <li>Walking distance & time estimates</li>
-          <li>Station operating hours</li>
-          <li>Works across Ethiopian cities</li>
-        </ul>
-      </div>
-      <div class="about-card">
-        <div class="about-card-title">Coming Soon</div>
-        <ul class="feature-list">
-          <li>Real-time crowd density info</li>
-          <li>Offline map caching</li>
-          <li>Amharic language support</li>
-          <li>Station user reviews</li>
-        </ul>
-      </div>
-      <div class="built-by">Built with ❤️ in Ethiopia &nbsp;•&nbsp; <strong>by Abenezer</strong></div>
+    <div class="ab-body">
+      <div class="ab-card"><div class="ab-ct" id="lAbout">About</div><p id="lAboutText">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with in-app walking navigation.</p></div>
+      <div class="ab-card"><div class="ab-ct" id="lStats">Stats</div><div class="sg"><div class="st"><div class="st-n">120+</div><div class="st-l" id="lStations">Stations</div></div><div class="st"><div class="st-n">8</div><div class="st-l" id="lCities">Cities</div></div><div class="st"><div class="st-n">3</div><div class="st-l" id="lTypes">Types</div></div><div class="st"><div class="st-n">Free</div><div class="st-l" id="lAlways">Always</div></div></div></div>
+      <div class="ab-card"><div class="ab-ct" id="lFeatures">Features</div><ul class="f-list"><li id="lF1">GPS nearby detection</li><li id="lF2">Filter by type</li><li id="lF3">In-app walking route</li><li id="lF4">Save favourites</li><li id="lF5">Operating hours</li></ul></div>
+      <div style="text-align:center;font-size:13px;color:var(--tx3);padding:8px 0">Built with \u2764\ufe0f in Ethiopia \u00b7 <strong style="color:var(--teal)">Tejo Studio</strong></div>
     </div>
   </div>
 
-  <!-- MENU OVERLAY & DRAWER -->
-  <div id="menuOverlay" onclick="closeMenu()"></div>
-  <div id="menuDrawer">
-    <div class="drawer-header">
-      <div class="drawer-logo-row">
-        <div class="drawer-logo-icon">
-          <svg viewBox="0 0 52 52" fill="none">
-            <rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity="0.9"/>
-            <rect x="12" y="14" width="28" height="12" rx="4" fill="white"/>
-            <circle cx="16" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-            <circle cx="36" cy="40" r="5" fill="white" fill-opacity="0.7"/>
-          </svg>
-        </div>
-        <div class="drawer-title">Taxi Tera</div>
-      </div>
-      <div class="drawer-tagline">Your ride guide in Ethiopia</div>
+  <!-- Menu -->
+  <div id="mOverlay" onclick="closeMenu()"></div>
+  <div id="mDrawer">
+    <div class="md-hdr">
+      <div class="md-lr"><div class="md-li"><svg viewBox="0 0 52 52" fill="none"><rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity=".9"/><rect x="12" y="14" width="28" height="12" rx="4" fill="white"/><circle cx="16" cy="40" r="5" fill="white" fill-opacity=".7"/><circle cx="36" cy="40" r="5" fill="white" fill-opacity=".7"/></svg></div><div class="md-title">Taxi Tera</div></div>
+      <div class="md-tag" id="lTagline">Your ride guide in Ethiopia</div>
     </div>
-    <div class="drawer-menu">
-      <div class="drawer-item active" onclick="closeMenu()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        Home Map
+    <div class="md-menu">
+      <div class="md-item active" onclick="closeMenu()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span id="lHome">Home Map</span>
       </div>
-      <div class="drawer-item" onclick="closeMenu(); setFilter('favorites')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
-        Saved Stations
+      <div class="md-item" onclick="closeMenu();setFilter('favorites')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span id="lSaved">Saved Stations</span>
       </div>
-      <div class="drawer-divider"></div>
-      <div class="drawer-item" onclick="closeMenu(); openAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
-        About Taxi Tera
+      <div class="md-div"></div>
+      <div class="md-item" onclick="closeMenu();openAbout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="lAboutMenu">About</span>
       </div>
-      <div class="drawer-item" onclick="closeMenu(); showToast('🚧 Coming soon!')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-        Give Feedback
-      </div>
-      <div class="drawer-item" onclick="closeMenu(); showToast('🚧 Coming soon!')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
-        </svg>
-        Language: English
+      <div class="md-div"></div>
+      <div class="md-item" onclick="closeMenu();setLang(lang==='en'?'am':'en')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="lLangSwitch">Switch to \u12a0\u121b\u122d\u129b</span>
       </div>
     </div>
-    <div class="drawer-footer">v1.0.0 Prototype • Tejo Studio</div>
+    <div class="md-foot">v1.0.0 \u00b7 Tejo Studio</div>
   </div>
 
-  <!-- TOAST -->
   <div id="toast"></div>
 </div>
 
 <script>
-// ─── DATA ─────────────────────────────────────────
-// Realistic taxi stations in Addis Ababa (lat/lng)
-const ALL_STATIONS = [
-  { id:1, name:"Megenagna Minibus Hub", type:"minibus", lat:9.0272, lng:38.7678, address:"Megenagna, Addis Ababa", routes:["Bole","Piassa","Merkato","Sarbet"], rating:4.6, hours:["5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 10:00 PM","6:00 AM – 9:00 PM","Closed"] },
-  { id:2, name:"Bole Atlas Station", type:"minibus", lat:8.9975, lng:38.7883, address:"Bole Road, Addis Ababa", routes:["Megenagna","Piassa","Stadium"], rating:4.4, hours:["5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 9:00 PM","6:00 AM – 8:00 PM","Closed"] },
-  { id:3, name:"Piassa Bajaj Stop", type:"bajaj", lat:9.0352, lng:38.7517, address:"Piassa, Addis Ababa", routes:["Local area", "Merkato vicinity"], rating:4.1, hours:["6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","7:00 AM – 6:00 PM","7:00 AM – 4:00 PM"] },
-  { id:4, name:"Mexico Square Stop", type:"minibus", lat:9.0177, lng:38.7497, address:"Mexico Square, Addis Ababa", routes:["Piassa","Sarbet","Megenagna","4 Kilo"], rating:4.7, hours:["5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 10:00 PM","5:30 AM – 9:00 PM","6:00 AM – 7:00 PM"] },
-  { id:5, name:"Sarbet Minibus Terminal", type:"minibus", lat:8.9979, lng:38.7577, address:"Sarbet, Addis Ababa", routes:["Mexico","CMC","Bole"], rating:4.3, hours:["5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:30 PM","6:00 AM – 7:00 PM","Closed"] },
-  { id:6, name:"CMC Ride-hailing Zone", type:"ride", lat:9.0519, lng:38.8043, address:"CMC Road, Addis Ababa", routes:["Uber","Ride","FERES"], rating:4.8, hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"] },
-  { id:7, name:"Gotera Bajaj Terminal", type:"bajaj", lat:8.9889, lng:38.7693, address:"Gotera, Addis Ababa", routes:["Gotera-Akaki","Gotera-Sarbet"], rating:3.9, hours:["6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 8:00 PM","7:00 AM – 6:00 PM","Closed"] },
-  { id:8, name:"Stadium Taxi Hub", type:"minibus", lat:9.0220, lng:38.7523, address:"Stadium, Addis Ababa", routes:["Piassa","Mexico","Bole","Arat Kilo"], rating:4.5, hours:["5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:30 PM","5:30 AM – 8:30 PM","6:00 AM – 6:00 PM"] },
-  { id:9, name:"Bole Ride Pickup", type:"ride", lat:9.0054, lng:38.7884, address:"Bole International Area", routes:["Ride","FERES","Pickup"], rating:4.9, hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"] },
-  { id:10, name:"4 Kilo Minibus Stop", type:"minibus", lat:9.0381, lng:38.7634, address:"4 Kilo, Addis Ababa", routes:["Piassa","Arat Kilo","6 Kilo","Mexico"], rating:4.2, hours:["5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 9:00 PM","6:00 AM – 8:00 PM","7:00 AM – 5:00 PM"] },
-  { id:11, name:"Merkato Bajaj Rank", type:"bajaj", lat:9.0337, lng:38.7365, address:"Merkato, Addis Ababa", routes:["Piassa","Gotera","Shabelle"], rating:4.0, hours:["6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","7:00 AM – 5:00 PM","8:00 AM – 2:00 PM"] },
-  { id:12, name:"Saris Minibus Station", type:"minibus", lat:8.9743, lng:38.7813, address:"Saris, Addis Ababa", routes:["Gotera","Kaliti","Akaki"], rating:4.1, hours:["5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:30 PM","6:00 AM – 7:00 PM","Closed"] },
-];
-
-const TYPE_META = {
-  minibus: { emoji:"🚌", label:" ታክሲ", color:"var(--teal)" },
-  bajaj:   { emoji:"🛺", label:" ባጃጅ",   color:"var(--amber)" },
-  ride:    { emoji:"🚗", label:"Ride-hailing", color:"var(--sky)" },
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 TRANSLATIONS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+const S = {
+  en:{
+    spSub:"Find rides across Ethiopia \u2014 fast",
+    ph:"Search taxi stations\u2026",
+    all:"All",minibus:"Minibus",bajaj:"Bajaj",ride:"Ride-hailing",saved:"Saved",
+    nearbyTitle:"Nearby Stations",found:"found",
+    distance:"Distance",walktime:"Walk time",rating:"Rating",
+    services:"Services Available",hours:"Operating Hours",
+    navigate:"Navigate on Map",share:"Share station",
+    walking:"\ud83d\udeb6 Walking",stop:"Stop",gettingRoute:"Getting walking route\u2026",
+    about:"About",stats:"Stats",features:"Features",
+    stations:"Stations",cities:"Cities",types:"Types",always:"Always",
+    aboutText:"Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with in-app walking navigation.",
+    f1:"GPS nearby detection",f2:"Filter by type",f3:"In-app walking route",f4:"Save favourites",f5:"Operating hours",
+    tagline:"Your ride guide in Ethiopia",home:"Home Map",langSwitch:"Switch to \u12a0\u121b\u122d\u129b",
+    locUpdated:"\ud83d\udccd Location updated",locArea:"\ud83d\udccd Showing your area",
+    navStopped:"\ud83d\uded1 Navigation stopped",approxRoute:"\u26a0\ufe0f Approximate route shown",
+    copied:"\ud83d\udccb Copied!",stSaved:"\u2b50 Station saved!",stRemoved:"\ud83d\udc94 Removed from saved",
+    today:"Today",noStations:"No stations found",noMatch:"No stations match your search",
+  },
+  am:{
+    spSub:"\u1260\u12a2\u1275\u12ee\u1335\u12eb \u1273\u12ad\u1232 \u1348\u120d\u1309 \u2014 \u1260\u134d\u1325\u1290\u1275",
+    ph:"\u12e8\u1273\u12ad\u1232 \u1323\u1262\u12eb \u1348\u120d\u130d\u2026",
+    all:"\u1201\u1209\u121d",minibus:"\u121a\u1292\u1263\u1235",bajaj:"\u1263\u1303\u1305",ride:"\u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d",saved:"\u12e8\u1270\u1240\u1218\u1321",
+    nearbyTitle:"\u1245\u122d\u1265 \u1323\u1262\u12eb\u12ce\u127d",found:"\u1270\u1308\u129d\u1277\u120d",
+    distance:"\u122d\u1240\u1275",walktime:"\u12e8\u12a5\u130d\u122d \u130a\u12dc",rating:"\u12f0\u1228\u1303",
+    services:"\u12e8\u121a\u1308\u1299 \u12a0\u1308\u120d\u130d\u120e\u1276\u127d",hours:"\u12e8\u1225\u122b \u1230\u12d3\u1275",
+    navigate:"\u1260\u12ab\u122d\u1273 \u120b\u12ed \u1208\u121b\u1204\u12f5",share:"\u1323\u1262\u12eb \u12a0\u130b\u122b",
+    walking:"\ud83d\udeb6 \u1260\u12a5\u130d\u122d",stop:"\u12a0\u1241\u121d",gettingRoute:"\u12e8\u12a5\u130d\u122d \u1218\u1235\u1218\u122d \u12a5\u12e8\u1348\u1208\u1308 \u1290\u12cd\u2026",
+    about:"\u1235\u1208",stats:"\u1235\u1273\u1272\u1235\u1272\u12ad\u1235",features:"\u1263\u1205\u122a\u12eb\u1275",
+    stations:"\u1323\u1262\u12eb\u12ce\u127d",cities:"\u12a8\u1270\u121e\u127d",types:"\u12d3\u12ed\u1290\u1276\u127d",always:"\u1201\u120c\u121d",
+    aboutText:"\u1273\u12ad\u1232 \u1270\u122b \u1260\u12a2\u1275\u12ee\u1335\u12eb \u1245\u122d\u1265 \u1273\u12ad\u1232 \u1323\u1262\u12eb\u12ce\u127d\u1295\u1363 \u1263\u1303\u1305 \u1246\u121a\u12eb\u12ce\u127d\u1295 \u12a5\u1293 \u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d \u1266\u1273\u12ce\u127d\u1295 \u1208\u121b\u130d\u1298\u1275 \u12ed\u1228\u12f3\u12ce\u1273\u120d\u1362",
+    f1:"GPS \u1245\u122d\u1265 \u1348\u1208\u130b",f2:"\u1260\u12d3\u12ed\u1290\u1275 \u121b\u1323\u122a\u12eb",f3:"\u12ab\u122d\u1273 \u120b\u12ed \u1204\u12f6",f4:"\u1270\u12c8\u12f3\u1306\u127d \u1246\u121d\u1270\u12cd",f5:"\u12e8\u1225\u122b \u1230\u12d3\u1275",
+    tagline:"\u12e8\u12a5\u122d\u1235\u12ce \u1273\u12ad\u1232 \u1218\u1218\u122a\u12eb",home:"\u12ab\u122d\u1273",langSwitch:"Switch to English",
+    locUpdated:"\ud83d\udccd \u12a0\u12ab\u1263\u1262 \u1270\u12d8\u121d\u1297\u120d",locArea:"\ud83d\udccd \u12a0\u12f2\u1235 \u12a0\u1260\u1263 \u121b\u12d5\u12a8\u120d",
+    navStopped:"\ud83d\uded1 \u121b\u1230\u123b \u1246\u121f\u120d",approxRoute:"\u26a0\ufe0f \u130d\u121d\u1273\u12ca \u1218\u1235\u1218\u122d",
+    copied:"\ud83d\udccb \u1270\u1240\u12f5\u1277\u120d!",stSaved:"\u2b50 \u1323\u1262\u12eb \u1270\u1240\u121d\u1327\u120d!",stRemoved:"\ud83d\udc94 \u12a8\u1270\u1240\u1218\u1321 \u1270\u12c8\u130d\u12f7\u120d",
+    today:"\u12db\u122c",noStations:"\u1323\u1262\u12eb \u12a0\u120d\u1270\u1308\u1298\u121d",noMatch:"\u12e8\u121a\u12db\u1218\u12f5 \u1323\u1262\u12eb \u12e8\u1208\u121d",
+  }
 };
 
-const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 STATION DATA \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+const STATIONS = [
+  {id:1, name:"Megenagna Minibus Hub",   nameAm:"\u1218\u1308\u1293\u129b \u121a\u1292\u1263\u1235 \u121b\u12d5\u12a8\u120d",   type:"minibus",lat:9.0272,lng:38.7678,address:"Megenagna, Addis Ababa",  addressAm:"\u1218\u1308\u1293\u129b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Bole","Piassa","Merkato","Sarbet"],     rating:4.6,hours:["5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 10:00 PM","6:00 AM \u2013 9:00 PM","Closed"]},
+  {id:2, name:"Bole Atlas Station",      nameAm:"\u1266\u120c \u12a0\u1275\u120b\u1235 \u1323\u1262\u12eb",        type:"minibus",lat:8.9975,lng:38.7883,address:"Bole Road, Addis Ababa",  addressAm:"\u1266\u120c \u1218\u1295\u1308\u12f5\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",routes:["Megenagna","Piassa","Stadium"],         rating:4.4,hours:["5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 8:00 PM","Closed"]},
+  {id:3, name:"Piassa Bajaj Stop",       nameAm:"\u1352\u12eb\u1233 \u1263\u1303\u1305 \u1246\u121a",         type:"bajaj",  lat:9.0352,lng:38.7517,address:"Piassa, Addis Ababa",     addressAm:"\u1352\u12eb\u1233\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Local area","Merkato vicinity"],        rating:4.1,hours:["6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 6:00 PM","7:00 AM \u2013 4:00 PM"]},
+  {id:4, name:"Mexico Square Stop",      nameAm:"\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed \u1246\u121a",      type:"minibus",lat:9.0177,lng:38.7497,address:"Mexico Square, AA",       addressAm:"\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed\u1363 \u12a0.\u12a0", routes:["Piassa","Sarbet","Megenagna","4 Kilo"], rating:4.7,hours:["5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 10:00 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 7:00 PM"]},
+  {id:5, name:"Sarbet Minibus Terminal", nameAm:"\u1230\u122d\u1264\u1275 \u121a\u1292\u1263\u1235 \u1270\u122d\u121a\u1293\u120d",   type:"minibus",lat:8.9979,lng:38.7577,address:"Sarbet, Addis Ababa",     addressAm:"\u1230\u122d\u1264\u1275\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Mexico","CMC","Bole"],                  rating:4.3,hours:["5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 7:00 PM","Closed"]},
+  {id:6, name:"CMC Ride-hailing Zone",   nameAm:"\u1232\u12a4\u121d\u1232 \u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d",     type:"ride",   lat:9.0519,lng:38.8043,address:"CMC Road, Addis Ababa",   addressAm:"\u1232\u12a4\u121d\u1232\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Ride","FERES","Uber"],                  rating:4.8,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
+  {id:7, name:"Gotera Bajaj Terminal",   nameAm:"\u130e\u1270\u122b \u1263\u1303\u1305 \u1270\u122d\u121a\u1293\u120d",     type:"bajaj",  lat:8.9889,lng:38.7693,address:"Gotera, Addis Ababa",     addressAm:"\u130e\u1270\u122b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Gotera-Akaki","Gotera-Sarbet"],         rating:3.9,hours:["6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 6:00 PM","Closed"]},
+  {id:8, name:"Stadium Taxi Hub",        nameAm:"\u1235\u1273\u12f2\u12ec\u121d \u1273\u12ad\u1232 \u1203\u1265",       type:"minibus",lat:9.0220,lng:38.7523,address:"Stadium, Addis Ababa",    addressAm:"\u1235\u1273\u12f2\u12ec\u121d\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",  routes:["Piassa","Mexico","Bole","Arat Kilo"],   rating:4.5,hours:["5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:30 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 6:00 PM"]},
+  {id:9, name:"Bole Ride Pickup",        nameAm:"\u1266\u120c \u122a\u12f5 \u1352\u12ab\u1355",           type:"ride",   lat:9.0054,lng:38.7884,address:"Bole Airport Area",        addressAm:"\u1266\u120c \u12a0\u12e8\u122d \u121b\u1228\u134a\u12eb \u1245\u122d\u1265",routes:["Ride","FERES","Pickup"],                rating:4.9,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
+  {id:10,name:"4 Kilo Minibus Stop",     nameAm:"4 \u12aa\u120e \u121a\u1292\u1263\u1235 \u1246\u121a",        type:"minibus",lat:9.0381,lng:38.7634,address:"4 Kilo, Addis Ababa",     addressAm:"4 \u12aa\u120e\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Piassa","Arat Kilo","6 Kilo","Mexico"], rating:4.2,hours:["5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 5:00 PM"]},
+  {id:11,name:"Merkato Bajaj Rank",      nameAm:"\u1218\u122d\u12ab\u1276 \u1263\u1303\u1305 \u12f0\u1228\u1303",        type:"bajaj",  lat:9.0337,lng:38.7365,address:"Merkato, Addis Ababa",    addressAm:"\u1218\u122d\u12ab\u1276\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Piassa","Gotera","Shabelle"],           rating:4.0,hours:["6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","7:00 AM \u2013 5:00 PM","8:00 AM \u2013 2:00 PM"]},
+  {id:12,name:"Saris Minibus Station",   nameAm:"\u1233\u122a\u1235 \u121a\u1292\u1263\u1235 \u1323\u1262\u12eb",        type:"minibus",lat:8.9743,lng:38.7813,address:"Saris, Addis Ababa",      addressAm:"\u1233\u122a\u1235\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Gotera","Kaliti","Akaki"],              rating:4.1,hours:["5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 7:00 PM","Closed"]},
+];
 
-// ─── STATE ────────────────────────────────────────
-let map, userMarker, stationMarkers = [];
-let userLat = 9.0222, userLng = 38.7469; // default: Addis center
-let locationKnown = false;
-let activeFilter = 'all';
-let favorites = JSON.parse(localStorage.getItem('ttFavs') || '[]');
-let currentStation = null;
-let panelOpen = false;
-let searchOpen = false;
+const TM = {
+  minibus:{emoji:"\ud83d\ude8c",label:"Minibus",   labelAm:"\u121a\u1292\u1263\u1235"},
+  bajaj:  {emoji:"\ud83d\udefa",label:"Bajaj",     labelAm:"\u1263\u1303\u1305"},
+  ride:   {emoji:"\ud83d\ude97",label:"Ride-hailing",labelAm:"\u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d"},
+};
+const DAYS    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DAYS_AM = ["\u1230\u129e","\u121b\u12ad\u1230\u129e","\u1228\u1261\u12d5","\u1210\u1219\u1235","\u12a0\u122d\u1265","\u1245\u12f3\u121c","\u12a5\u1201\u12f5"];
 
-// ─── INIT ─────────────────────────────────────────
-window.addEventListener('load', () => {
-  setTimeout(() => {
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 STATE \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+let map, uMarker;
+let uLat=9.0222, uLng=38.7469;
+let filter='all', curStation=null, panelOpen=false;
+let lang=localStorage.getItem('ttLang')||'en';
+let favs=JSON.parse(localStorage.getItem('ttFavs')||'[]');
+let routeLayers=[];
+
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 BOOT \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+window.addEventListener('load',()=>{
+  applyLang();
+  setTimeout(()=>{
     document.getElementById('splash').classList.add('hide');
-    setTimeout(() => {
-      document.getElementById('splash').style.display = 'none';
-      if (typeof L === 'undefined') {
-        document.getElementById('map').innerHTML =
-          '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;text-align:center;background:#f0fdf9;">' +
-          '<div style="font-size:48px">🗺️</div>' +
-          '<div style="font-size:17px;font-weight:700;color:#0f172a">Map couldn\'t load</div>' +
-          '<div style="font-size:13px;color:#64748b;max-width:240px">Check your internet connection and reload. Map library failed.</div>' +
-          '<button onclick="location.reload()" style="margin-top:8px;padding:12px 24px;background:#0f766e;color:white;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:Outfit,sans-serif">🔄 Reload</button>' +
+    setTimeout(()=>{
+      document.getElementById('splash').style.display='none';
+      if(typeof L==='undefined'){
+        document.getElementById('map').innerHTML=
+          '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;text-align:center">'+
+          '<div style="font-size:48px">\ud83d\uddfa\ufe0f</div>'+
+          '<div style="font-size:17px;font-weight:700">Map couldn\'t load</div>'+
+          '<div style="font-size:13px;color:#64748b;max-width:240px">Check your connection and reload.</div>'+
+          '<button onclick="location.reload()" style="padding:12px 24px;background:#0d9488;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">\ud83d\udd04 Reload</button>'+
           '</div>';
-        renderStationList();
-        panelOpen = false; togglePanel();
-        return;
+        renderList(); panelOpen=false; togglePanel(); return;
       }
-      initMap();
-      getLocation();
-    }, 600);
-  }, 2200);
+      initMap(); getLocation();
+    },600);
+  },2000);
+  // Init ads
+  try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+  try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
 });
 
-function initMap() {
-  map = L.map('map', { zoomControl: false, attributionControl: true })
-    .setView([userLat, userLng], 14);
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 LANGUAGE \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function setLang(l){
+  lang=l; localStorage.setItem('ttLang',l);
+  document.getElementById('btnEN').classList.toggle('active',l==='en');
+  document.getElementById('btnAM').classList.toggle('active',l==='am');
+  applyLang(); renderList();
+  showToast(l==='am'?'\ud83c\uddea\ud83c\uddf9 \u12a0\u121b\u122d\u129b \u1270\u1240\u1293\u1265\u122f\u120d':'\ud83c\uddec\ud83c\udde7 English set');
+}
+function applyLang(){
+  const L2=S[lang];
+  const set=(id,k)=>{const e=document.getElementById(id);if(e)e.textContent=L2[k];};
+  const inp=document.getElementById('sInput');if(inp)inp.placeholder=L2.ph;
+  document.getElementById('spSub').textContent=L2.spSub;
+  // Chip labels
+  document.querySelectorAll('.cl').forEach(el=>{
+    const k=el.getAttribute('data-k'); if(L2[k])el.textContent=L2[k];
+  });
+  set('pTitle','nearbyTitle');
+  set('lDist','distance');set('lWalk','walktime');set('lRating','rating');
+  set('lSvcs','services');set('lHours','hours');
+  set('lNav','navigate');set('lShare','share');
+  set('lWalking','walking');set('lStop','stop');set('lGettingRoute','gettingRoute');
+  set('lAbout','about');set('lStats','stats');set('lFeatures','features');
+  set('lStations','stations');set('lCities','cities');set('lTypes','types');set('lAlways','always');
+  set('lAboutText','aboutText');
+  set('lF1','f1');set('lF2','f2');set('lF3','f3');set('lF4','f4');set('lF5','f5');
+  set('lTagline','tagline');set('lHome','home');set('lSaved','saved');
+  set('lAboutMenu','about');set('lLangSwitch','langSwitch');
+}
+const t=k=>S[lang][k]||k;
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
-    maxZoom: 19
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 MAP \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function initMap(){
+  map=L.map('map',{zoomControl:false,attributionControl:true}).setView([uLat,uLng],14);
+  // CartoDB Voyager \u2014 modern, clean, colorful streets (no API key needed)
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+    attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd',maxZoom:19
   }).addTo(map);
-
-  // User marker placeholder
-  const userIcon = L.divIcon({
-    html: '<div class="user-dot"></div>',
-    className: '', iconSize: [20,20], iconAnchor: [10,10]
-  });
-  userMarker = L.marker([userLat, userLng], { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-
-  renderStationMarkers();
-  renderStationList();
-
-  // Open panel after short delay
-  setTimeout(() => { panelOpen = false; togglePanel(); }, 500);
+  const uIcon=L.divIcon({html:'<div class="u-dot"></div>',className:'',iconSize:[18,18],iconAnchor:[9,9]});
+  uMarker=L.marker([uLat,uLng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
+  renderMarkers(); renderList();
+  setTimeout(()=>{panelOpen=false;togglePanel();},600);
 }
 
-function getLocation() {
-  if (!navigator.geolocation) {
-    showToast('📍 GPS not available — using Addis center');
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude;
-    userLng = pos.coords.longitude;
-    locationKnown = true;
-    userMarker.setLatLng([userLat, userLng]);
-    map.flyTo([userLat, userLng], 15, { duration: 1.4 });
-    renderStationList();
-    showToast('📍 Location found!');
-  }, () => {
-    showToast('📍 Using Addis Ababa center');
-  });
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 GEOLOCATION \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function getLocation(){
+  navigator.geolocation?.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    uMarker?.setLatLng([uLat,uLng]);
+    map?.flyTo([uLat,uLng],15,{duration:1.4});
+    renderList();renderMarkers();showToast(t('locUpdated'));
+  },()=>showToast(t('locArea')));
+}
+function locateMe(){
+  const f=document.getElementById('fab');f.classList.add('spinning');
+  navigator.geolocation?.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    uMarker?.setLatLng([uLat,uLng]);map?.flyTo([uLat,uLng],15,{duration:1});
+    renderList();renderMarkers();f.classList.remove('spinning');showToast(t('locUpdated'));
+  },()=>{f.classList.remove('spinning');showToast(t('locArea'));});
 }
 
-// ─── DISTANCE ─────────────────────────────────────
-function haversine(lat1, lng1, lat2, lng2) {
-  const R = 6371e3;
-  const f1 = lat1*Math.PI/180, f2 = lat2*Math.PI/180;
-  const df = (lat2-lat1)*Math.PI/180, dl = (lng2-lng1)*Math.PI/180;
-  const a = Math.sin(df/2)**2 + Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-}
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 HELPERS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function hvs(a,b,c,d){const R=6371e3,f1=a*Math.PI/180,f2=c*Math.PI/180,df=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function fmtD(m){return m<1000?Math.round(m)+'m':((m/1000).toFixed(1))+'km';}
+function fmtW(m){const mn=Math.round(m/80);return mn<1?'<1 min':mn+' min';}
+function fmtT(s){const m=Math.round(s/60);if(m<1)return '<1 min';if(m<60)return m+' min';return Math.floor(m/60)+'h '+m%60+'m';}
 
-function fmtDist(m) {
-  return m < 1000 ? `${Math.round(m)}m` : `${(m/1000).toFixed(1)}km`;
-}
-
-function walkTime(m) {
-  const mins = Math.round(m / 80); // ~80m/min walking
-  return mins < 1 ? '<1 min' : `${mins} min`;
-}
-
-// ─── MARKERS ──────────────────────────────────────
-function renderStationMarkers() {
-  stationMarkers.forEach(m => map.removeLayer(m));
-  stationMarkers = [];
-
-  const filtered = getFiltered();
-  filtered.forEach(s => {
-    const icon = L.divIcon({
-      html: `<div class="taxi-marker"><div class="tm-dot ${s.type}"><span>${TYPE_META[s.type].emoji}</span></div></div>`,
-      className: '', iconSize: [36,36], iconAnchor: [18,36]
-    });
-    const marker = L.marker([s.lat, s.lng], { icon }).addTo(map);
-    marker.on('click', () => openDetail(s));
-    stationMarkers.push(marker);
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 MARKERS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function renderMarkers(){
+  map?.eachLayer(l=>{if(l._taxi)map.removeLayer(l);});
+  getFiltered().forEach(s=>{
+    const icon=L.divIcon({html:'<div class="tm"><div class="tm-dot '+s.type+'"><span>'+TM[s.type].emoji+'</span></div></div>',className:'',iconSize:[38,38],iconAnchor:[19,38]});
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(map);
+    m._taxi=true; m.on('click',()=>openDetail(s));
   });
 }
 
-// ─── FILTER ───────────────────────────────────────
-function getFiltered() {
-  let stations = [...ALL_STATIONS];
-  if (activeFilter === 'favorites') {
-    stations = stations.filter(s => favorites.includes(s.id));
-  } else if (activeFilter !== 'all') {
-    stations = stations.filter(s => s.type === activeFilter);
-  }
-  // Sort by distance
-  return stations.sort((a,b) => haversine(userLat,userLng,a.lat,a.lng) - haversine(userLat,userLng,b.lat,b.lng));
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 FILTER \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function getFiltered(){
+  let list=[...STATIONS];
+  if(filter==='favorites')list=list.filter(s=>favs.includes(s.id));
+  else if(filter!=='all')list=list.filter(s=>s.type===filter);
+  return list.sort((a,b)=>hvs(uLat,uLng,a.lat,a.lng)-hvs(uLat,uLng,b.lat,b.lng));
+}
+function setFilter(f){
+  filter=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  document.querySelector('.chip[data-f="'+f+'"]')?.classList.add('active');
+  renderMarkers();renderList();if(!panelOpen)togglePanel();
 }
 
-function setFilter(f) {
-  activeFilter = f;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.chip[data-filter="${f}"]`).classList.add('active');
-  renderStationMarkers();
-  renderStationList();
-  if (!panelOpen) togglePanel();
-}
-
-// ─── STATION LIST ──────────────────────────────────
-function renderStationList(stations) {
-  const list = stations || getFiltered();
-  const el = document.getElementById('stationList');
-  document.getElementById('stationCount').textContent = `${list.length} found`;
-  document.getElementById('panelTitle').textContent = activeFilter === 'favorites' ? 'Saved Stations' : 'Nearby Stations';
-
-  if (list.length === 0) {
-    el.innerHTML = `<div class="empty-state">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      <p>No stations found</p></div>`;
-    return;
-  }
-
-  el.innerHTML = list.map((s, i) => {
-    const dist = haversine(userLat, userLng, s.lat, s.lng);
-    const meta = TYPE_META[s.type];
-    return `<div class="station-card" style="animation-delay:${i*0.05}s" onclick="openDetail(window._stMap[${s.id}])">
-      <div class="station-icon ${s.type}">${meta.emoji}</div>
-      <div class="station-info">
-        <div class="station-name">${s.name}</div>
-        <div class="station-meta">
-          <span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            ${fmtDist(dist)}
-          </span>
-          <span>🚶 ${walkTime(dist)}</span>
-          <span>⭐ ${s.rating}</span>
-        </div>
-      </div>
-      <div class="station-badge ${s.type}">${meta.label}</div>
-      <button class="go-btn" onclick="event.stopPropagation(); goToStation(${s.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-        </svg>
-      </button>
-    </div>`;
-  }).join('');
-
-  // Make stations accessible
-  window._stMap = {};
-  ALL_STATIONS.forEach(s => window._stMap[s.id] = s);
-}
-
-// ─── PANEL ────────────────────────────────────────
-function togglePanel() {
-  panelOpen = !panelOpen;
-  document.getElementById('bottomPanel').classList.toggle('collapsed', !panelOpen);
-  const fab = document.getElementById('locateFab');
-  fab.style.bottom = panelOpen ? '230px' : '110px';
-}
-
-// ─── LOCATE ME ────────────────────────────────────
-function locateMe() {
-  const fab = document.getElementById('locateFab');
-  fab.classList.add('locating');
-  navigator.geolocation?.getCurrentPosition(pos => {
-    userLat = pos.coords.latitude;
-    userLng = pos.coords.longitude;
-    locationKnown = true;
-    userMarker.setLatLng([userLat, userLng]);
-    map.flyTo([userLat, userLng], 15, { duration: 1 });
-    renderStationList();
-    renderStationMarkers();
-    fab.classList.remove('locating');
-    showToast('📍 Location updated');
-  }, () => {
-    fab.classList.remove('locating');
-    map.flyTo([userLat, userLng], 15, { duration: 1 });
-    showToast('📍 Showing your area');
-  });
-}
-
-// ─── STATION DETAIL ───────────────────────────────
-function openDetail(s) {
-  currentStation = s;
-  const dist = haversine(userLat, userLng, s.lat, s.lng);
-  const meta = TYPE_META[s.type];
-
-  document.getElementById('detailIcon').textContent = meta.emoji;
-  document.getElementById('detailName').textContent = s.name;
-  document.getElementById('detailAddress').textContent = s.address;
-  document.getElementById('detailBadge').textContent = meta.label;
-  document.getElementById('detailDist').textContent = fmtDist(dist);
-  document.getElementById('detailWalk').textContent = walkTime(dist);
-  document.getElementById('detailRating').textContent = `${s.rating}★`;
-
-  // Services
-  document.getElementById('detailServices').innerHTML = s.routes.map(r =>
-    `<div class="service-pill">🔹 ${r}</div>`
-  ).join('');
-
-  // Hours
-  const today = new Date().getDay(); // 0=Sun
-  const dayIdx = today === 0 ? 6 : today - 1; // map to Mon=0
-  document.getElementById('detailHours').innerHTML = s.hours.map((h,i) => {
-    const isToday = i === dayIdx;
-    return `<div class="hours-row">
-      <span class="hours-day" ${isToday ? 'style="color:var(--teal)"' : ''}>${DAYS[i]}${isToday ? ' (Today)' : ''}</span>
-      <span class="${h==='Closed'?'':'hours-open'} hours-time">${h}</span>
-    </div>`;
-  }).join('');
-
-  // Fav button
-  updateFavBtn();
-
-  // Map flyTo
-  map.flyTo([s.lat, s.lng], 16, { duration: 0.8 });
-
-  document.getElementById('stationDetail').classList.add('open');
-}
-
-function closeDetail() {
-  document.getElementById('stationDetail').classList.remove('open');
-  currentStation = null;
-}
-
-function goToStation(id) {
-  const s = ALL_STATIONS.find(x => x.id === id);
-  if (s) {
-    map.flyTo([s.lat, s.lng], 16, { duration: 1 });
-    setTimeout(() => openDetail(s), 400);
-  }
-}
-
-// ─── IN-APP NAVIGATION ────────────────────────────
-let routeLayer = null;
-let isNavigating = false;
-
-async function startNavigation() {
-  if (!currentStation) return;
-  const s = currentStation;
-
-  // Close detail page, show map
-  closeDetail();
-
-  // Show nav bar in loading state
-  const navBar = document.getElementById('navBar');
-  const navLoading = document.getElementById('navLoading');
-  document.getElementById('navBarDest').textContent = s.name;
-  document.getElementById('navBarDist').textContent = '…';
-  document.getElementById('navBarTime').textContent = '…';
-  navLoading.classList.add('show');
-  navBar.classList.add('active');
-  isNavigating = true;
-
-  // Fit map to show both points roughly
-  map.fitBounds([[userLat, userLng],[s.lat, s.lng]], { padding:[60,60], maxZoom:16, duration:0.8 });
-
-  // Clear old route
-  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
-
-  try {
-    const url = `https://router.project-osrm.org/route/v1/walking/${userLng},${userLat};${s.lng},${s.lat}?overview=full&geometries=geojson`;
-    const res = await fetch(url);
-    const data = await res.json();
-
-    if (data.code !== 'Ok' || !data.routes.length) throw new Error('No route');
-
-    const route = data.routes[0];
-    const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
-    const distM = route.distance;
-    const durS  = route.duration;
-
-    // Draw animated route polyline
-    routeLayer = L.polyline(coords, {
-      color: '#0F766E',
-      weight: 6,
-      opacity: 0.85,
-      lineJoin: 'round',
-      lineCap: 'round',
-      dashArray: null,
-    }).addTo(map);
-
-    // Dashed progress layer on top
-    L.polyline(coords, {
-      color: '#5EEAD4',
-      weight: 3,
-      opacity: 0.7,
-      dashArray: '10 8',
-      lineJoin: 'round',
-    }).addTo(map);
-
-    // Update nav bar
-    document.getElementById('navBarDist').textContent = fmtDist(distM);
-    document.getElementById('navBarTime').textContent = fmtDur(durS);
-    navLoading.classList.remove('show');
-
-    // Fit to route
-    map.fitBounds(routeLayer.getBounds(), { padding:[60,80], maxZoom:16 });
-
-  } catch (e) {
-    // Fallback: straight line
-    routeLayer = L.polyline([[userLat, userLng],[s.lat, s.lng]], {
-      color: '#0F766E', weight: 5, opacity: 0.7, dashArray: '10 8'
-    }).addTo(map);
-    const distM = haversine(userLat, userLng, s.lat, s.lng);
-    document.getElementById('navBarDist').textContent = fmtDist(distM);
-    document.getElementById('navBarTime').textContent = walkTime(distM);
-    navLoading.classList.remove('show');
-    showToast('⚠️ Showing straight-line route');
-  }
-}
-
-function stopNavigation() {
-  isNavigating = false;
-  document.getElementById('navBar').classList.remove('active');
-  if (routeLayer) {
-    // Remove all route layers
-    map.eachLayer(l => {
-      if (l instanceof L.Polyline) map.removeLayer(l);
-    });
-    routeLayer = null;
-  }
-  // Restore markers
-  renderStationMarkers();
-  showToast('🛑 Navigation stopped');
-}
-
-function fmtDur(seconds) {
-  const m = Math.round(seconds / 60);
-  if (m < 1) return '< 1 min';
-  if (m < 60) return `${m} min`;
-  return `${Math.floor(m/60)}h ${m%60}m`;
-}
-
-
-function shareStation() {
-  if (!currentStation) return;
-  const text = `📍 ${currentStation.name} — ${currentStation.address}\nNavigate: https://maps.google.com/?q=${currentStation.lat},${currentStation.lng}`;
-  if (navigator.share) {
-    navigator.share({ title: currentStation.name, text });
-  } else {
-    navigator.clipboard?.writeText(text);
-    showToast('📋 Copied to clipboard!');
-  }
-}
-
-// ─── FAVORITES ────────────────────────────────────
-function toggleFav() {
-  if (!currentStation) return;
-  const idx = favorites.indexOf(currentStation.id);
-  if (idx >= 0) {
-    favorites.splice(idx, 1);
-    showToast('💔 Removed from saved');
-  } else {
-    favorites.push(currentStation.id);
-    showToast('⭐ Station saved!');
-  }
-  localStorage.setItem('ttFavs', JSON.stringify(favorites));
-  updateFavBtn();
-}
-
-function updateFavBtn() {
-  const btn = document.getElementById('detailFavBtn');
-  const isFav = favorites.includes(currentStation?.id);
-  btn.classList.toggle('faved', isFav);
-  btn.innerHTML = isFav
-    ? `<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`;
-}
-
-// ─── SEARCH ───────────────────────────────────────
-let searchTimeout;
-function handleSearch(val) {
-  const clearBtn = document.getElementById('clearBtn');
-  clearBtn.classList.toggle('show', val.length > 0);
-  clearTimeout(searchTimeout);
-  if (!val.trim()) { closeSearchResults(); return; }
-  searchTimeout = setTimeout(() => {
-    const q = val.toLowerCase();
-    const results = ALL_STATIONS.filter(s =>
-      s.name.toLowerCase().includes(q) ||
-      s.address.toLowerCase().includes(q) ||
-      s.type.includes(q) ||
-      s.routes.some(r => r.toLowerCase().includes(q))
-    );
-    showSearchResults(results);
-  }, 200);
-}
-
-function showSearchResults(results) {
-  const el = document.getElementById('searchResults');
-  if (results.length === 0) {
-    el.innerHTML = '<div class="empty-state" style="padding:32px"><p>No stations match your search</p></div>';
-  } else {
-    el.innerHTML = results.map(s => {
-      const dist = haversine(userLat, userLng, s.lat, s.lng);
-      return `<div class="search-result-item" onclick="selectSearchResult(${s.id})">
-        <div class="sri-icon ${s.type}">${TYPE_META[s.type].emoji}</div>
-        <div class="sri-info">
-          <div class="sri-name">${s.name}</div>
-          <div class="sri-sub">${fmtDist(dist)} away • ${s.address}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
-  el.classList.add('open');
-}
-
-function selectSearchResult(id) {
-  const s = ALL_STATIONS.find(x => x.id === id);
-  closeSearch();
-  if (s) { setTimeout(() => openDetail(s), 200); }
-}
-
-function onSearchFocus() { searchOpen = true; }
-function onSearchBlur() { setTimeout(() => { if (!document.getElementById('searchInput').value) closeSearchResults(); }, 150); }
-
-function closeSearchResults() {
-  document.getElementById('searchResults').classList.remove('open');
-}
-function clearSearch() {
-  document.getElementById('searchInput').value = '';
-  document.getElementById('clearBtn').classList.remove('show');
-  closeSearchResults();
-}
-function closeSearch() {
-  clearSearch();
-  document.getElementById('searchInput').blur();
-}
-
-// ─── MENU ─────────────────────────────────────────
-function openMenu() {
-  document.getElementById('menuDrawer').classList.add('open');
-  document.getElementById('menuOverlay').classList.add('show');
-}
-function closeMenu() {
-  document.getElementById('menuDrawer').classList.remove('open');
-  document.getElementById('menuOverlay').classList.remove('show');
-}
-
-// ─── ABOUT ────────────────────────────────────────
-function openAbout() {
-  document.getElementById('aboutPage').classList.add('open');
-}
-function closeAbout() {
-  document.getElementById('aboutPage').classList.remove('open');
-}
-
-// ─── TOAST ────────────────────────────────────────
-let toastTimer;
-function showToast(msg) {
-  const el = document.getElementById('toast');
-  el.textContent = msg;
-  el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
-}
-
-// ─── PANEL DRAG ───────────────────────────────────
-let startY = 0, isDragging = false;
-const panel = document.getElementById('bottomPanel');
-panel.addEventListener('touchstart', e => { startY = e.touches[0].clientY; isDragging = true; }, { passive: true });
-panel.addEventListener('touchend', e => {
-  if (!isDragging) return;
-  const delta = e.changedTouches[0].clientY - startY;
-  if (delta > 50 && panelOpen) togglePanel();
-  else if (delta < -50 && !panelOpen) togglePanel();
-  isDragging = false;
-}, { passive: true });
-</script>
-</body>
-</html>
+// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 LIST \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+function renderList(stations){
+  const list=stations||getFiltered();
+  const el=document.getElementById('sList');
+  document.getElementById('pCount').textContent=list.length+' '+t('found');
+  document.getElementById('pTitle').textContent=filter==='favorites'?t('saved'):t('nearbyTitle');
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>'+t('noStations')+'</p></div>';return;}
+  window._sm={};STATIONS.forEach(s=>window._sm[s.id]=s);
+  el.innerHTML=list.map((s,i)=>{
+    const d=hvs(uLat,uLng,s.lat,s.lng);
+    const nm=lang==='am'?s.nameAm:s.name;
+    const lbl=lang==='am'?TM[s.type].labelAm:TM[s.type].label;
+    return '<div class="s-card" style="animation-delay:'+i*.05+'s" onclick="openDetail(window._sm['+s.id+'])">'+
+      '<div class="s-ico '+s.type+'">'+TM[s.type].emoji+'</div>'+
+      '<div class="s-info"><div class="s-name">'+nm+'</div>'+
+      '<div class="s-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+
+      fmtD(d)+' &
