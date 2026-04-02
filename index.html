@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Taxi Tera \u2014 Find Your Ride in Ethiopia</title>
+<title>Taxi Tera — Find Your Ride in Ethiopia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 
-<!-- GOOGLE ADSENSE \u2014 replace ca-pub-XXXXXXXXXXXXXXXX with your Publisher ID -->
+<!-- GOOGLE ADSENSE — replace ca-pub-XXXXXXXXXXXXXXXX with your Publisher ID -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 
 <style>
@@ -103,7 +103,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .p-title{font-size:17px;font-weight:700}
 .p-count{font-size:12px;font-weight:600;padding:3px 9px;background:var(--tp);color:var(--teal);border-radius:20px}
 
-/* PANEL AD \u2014 thin banner, clearly separated from content */
+/* PANEL AD — thin banner, clearly separated from content */
 .panel-ad{margin:10px 16px 2px;border-radius:10px;border:1px dashed #CBD5E1;overflow:hidden;min-height:50px;background:#f8fafc;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .panel-ad ins{display:block;width:100%}
 
@@ -168,7 +168,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .hr-day{font-weight:600;min-width:88px}
 .hr-open{color:#16A34A;font-weight:600}
 
-/* DETAIL AD \u2014 natural content break, like a card */
+/* DETAIL AD — natural content break, like a card */
 .detail-ad{margin:16px 18px 0;border-radius:12px;border:1px dashed #CBD5E1;overflow:hidden;min-height:60px;background:#f8fafc;display:flex;align-items:center;justify-content:center}
 .detail-ad ins{display:block;width:100%}
 
@@ -213,7 +213,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .f-list{list-style:none}
 .f-list li{display:flex;align-items:flex-start;gap:8px;padding:7px 0;font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd)}
 .f-list li:last-child{border-bottom:none}
-.f-list li::before{content:'\u2713';color:var(--teal);font-weight:800;flex-shrink:0}
+.f-list li::before{content:'✓';color:var(--teal);font-weight:800;flex-shrink:0}
 
 /* MENU */
 #mOverlay{position:absolute;inset:0;z-index:450;background:rgba(15,23,42,.4);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
@@ -258,7 +258,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     <svg viewBox="0 0 52 52" fill="none"><rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity=".9"/><rect x="12" y="14" width="28" height="12" rx="4" fill="white"/><circle cx="16" cy="40" r="5" fill="white" fill-opacity=".7"/><circle cx="36" cy="40" r="5" fill="white" fill-opacity=".7"/><rect x="22" y="17" width="8" height="6" rx="1.5" fill="rgba(14,165,233,.7)"/></svg>
   </div>
   <div class="sp-title">Taxi Tera</div>
-  <div class="sp-sub" id="spSub">Find rides across Ethiopia \u2014 fast</div>
+  <div class="sp-sub" id="spSub">Find rides across Ethiopia — fast</div>
   <div class="sp-dots"><span></span><span></span><span></span></div>
 </div>
 
@@ -269,7 +269,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
   <!-- Language Toggle -->
   <div id="langToggle">
     <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" id="btnAM" onclick="setLang('am')">\u12a0\u121b</button>
+    <button class="lang-btn" id="btnAM" onclick="setLang('am')">አማ</button>
   </div>
 
   <!-- Search Results -->
@@ -288,11 +288,11 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       </button>
     </div>
     <div class="chips">
-      <div class="chip active" data-f="all"       onclick="setFilter('all')">      <span>\ud83d\uddfa\ufe0f</span><span class="cl" data-k="all">All</span></div>
-      <div class="chip"        data-f="minibus"   onclick="setFilter('minibus')">  <span>\ud83d\ude8c</span><span class="cl" data-k="minibus">Minibus</span></div>
-      <div class="chip"        data-f="bajaj"     onclick="setFilter('bajaj')">    <span>\ud83d\udefa</span><span class="cl" data-k="bajaj">Bajaj</span></div>
-      <div class="chip"        data-f="ride"      onclick="setFilter('ride')">     <span>\ud83d\ude97</span><span class="cl" data-k="ride">Ride-hailing</span></div>
-      <div class="chip"        data-f="favorites" onclick="setFilter('favorites')"><span>\u2b50</span><span class="cl" data-k="saved">Saved</span></div>
+      <div class="chip active" data-f="all"       onclick="setFilter('all')">      <span>🗺️</span><span class="cl" data-k="all">All</span></div>
+      <div class="chip"        data-f="minibus"   onclick="setFilter('minibus')">  <span>🚌</span><span class="cl" data-k="minibus">Minibus</span></div>
+      <div class="chip"        data-f="bajaj"     onclick="setFilter('bajaj')">    <span>🛺</span><span class="cl" data-k="bajaj">Bajaj</span></div>
+      <div class="chip"        data-f="ride"      onclick="setFilter('ride')">     <span>🚗</span><span class="cl" data-k="ride">Ride-hailing</span></div>
+      <div class="chip"        data-f="favorites" onclick="setFilter('favorites')"><span>⭐</span><span class="cl" data-k="saved">Saved</span></div>
     </div>
   </div>
 
@@ -310,7 +310,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
         <div class="p-count" id="pCount">0 found</div>
       </div>
     </div>
-    <!-- AD: slim banner above list \u2014 unobtrusive -->
+    <!-- AD: slim banner above list — unobtrusive -->
     <div class="panel-ad">
       <ins class="adsbygoogle"
            style="display:block;width:100%;height:50px"
@@ -337,9 +337,9 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="d-badge" id="dBadge"></div>
     </div>
     <div class="d-stats">
-      <div class="d-stat"><div class="d-sv" id="dDist">\u2014</div><div class="d-sl" id="lDist">Distance</div></div>
-      <div class="d-stat"><div class="d-sv" id="dWalk">\u2014</div><div class="d-sl" id="lWalk">Walk time</div></div>
-      <div class="d-stat"><div class="d-sv" id="dRating">\u2014</div><div class="d-sl" id="lRating">Rating</div></div>
+      <div class="d-stat"><div class="d-sv" id="dDist">—</div><div class="d-sl" id="lDist">Distance</div></div>
+      <div class="d-stat"><div class="d-sv" id="dWalk">—</div><div class="d-sl" id="lWalk">Walk time</div></div>
+      <div class="d-stat"><div class="d-sv" id="dRating">—</div><div class="d-sl" id="lRating">Rating</div></div>
     </div>
     <div class="d-sec">
       <div class="d-sec-title" id="lSvcs">Services Available</div>
@@ -349,7 +349,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="d-sec-title" id="lHours">Operating Hours</div>
       <div id="dHours"></div>
     </div>
-    <!-- AD: fluid in-article ad \u2014 natural content break -->
+    <!-- AD: fluid in-article ad — natural content break -->
     <div class="detail-ad">
       <ins class="adsbygoogle"
            style="display:block;width:100%"
@@ -372,15 +372,15 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
   <div id="navBar">
     <div class="nb-row">
       <div class="nb-info">
-        <div class="nb-dest" id="nbDest">\u2014</div>
-        <div class="nb-meta"><span id="nbDist">\u2014</span><span class="nb-dot">\u00b7</span><span id="nbTime">\u2014</span><span class="nb-dot">\u00b7</span><span id="lWalking">\ud83d\udeb6 Walking</span></div>
+        <div class="nb-dest" id="nbDest">—</div>
+        <div class="nb-meta"><span id="nbDist">—</span><span class="nb-dot">·</span><span id="nbTime">—</span><span class="nb-dot">·</span><span id="lWalking">🚶 Walking</span></div>
       </div>
       <button class="nb-stop" onclick="stopNavigation()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         <span id="lStop">Stop</span>
       </button>
     </div>
-    <div class="nb-loading" id="nbLoading"><div class="nb-spin"></div><span id="lGettingRoute">Getting walking route\u2026</span></div>
+    <div class="nb-loading" id="nbLoading"><div class="nb-spin"></div><span id="lGettingRoute">Getting walking route…</span></div>
   </div>
 
   <!-- About -->
@@ -391,13 +391,13 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       </button>
       <div class="ab-logo"><svg viewBox="0 0 52 52" fill="none"><rect x="8" y="20" width="36" height="20" rx="5" fill="white" fill-opacity=".9"/><rect x="12" y="14" width="28" height="12" rx="4" fill="white"/><circle cx="16" cy="40" r="5" fill="white" fill-opacity=".7"/><circle cx="36" cy="40" r="5" fill="white" fill-opacity=".7"/></svg></div>
       <div class="ab-title">Taxi Tera</div>
-      <div class="ab-ver">v1.0.0 \u00b7 Prototype</div>
+      <div class="ab-ver">v1.0.0 · Prototype</div>
     </div>
     <div class="ab-body">
-      <div class="ab-card"><div class="ab-ct" id="lAbout">About</div><p id="lAboutText">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with in-app walking navigation.</p></div>
+      <div class="ab-card"><div class="ab-ct" id="lAbout">About</div><p id="lAboutText">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.</p></div>
       <div class="ab-card"><div class="ab-ct" id="lStats">Stats</div><div class="sg"><div class="st"><div class="st-n">120+</div><div class="st-l" id="lStations">Stations</div></div><div class="st"><div class="st-n">8</div><div class="st-l" id="lCities">Cities</div></div><div class="st"><div class="st-n">3</div><div class="st-l" id="lTypes">Types</div></div><div class="st"><div class="st-n">Free</div><div class="st-l" id="lAlways">Always</div></div></div></div>
       <div class="ab-card"><div class="ab-ct" id="lFeatures">Features</div><ul class="f-list"><li id="lF1">GPS nearby detection</li><li id="lF2">Filter by type</li><li id="lF3">In-app walking route</li><li id="lF4">Save favourites</li><li id="lF5">Operating hours</li></ul></div>
-      <div style="text-align:center;font-size:13px;color:var(--tx3);padding:8px 0">Built with \u2764\ufe0f in Ethiopia \u00b7 <strong style="color:var(--teal)">Tejo Studio</strong></div>
+      <div style="text-align:center;font-size:13px;color:var(--tx3);padding:8px 0">Built with ❤️ in Ethiopia · <strong style="color:var(--teal)">Tejo Studio</strong></div>
     </div>
   </div>
 
@@ -425,83 +425,83 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="md-div"></div>
       <div class="md-item" onclick="closeMenu();setLang(lang==='en'?'am':'en')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-        <span id="lLangSwitch">Switch to \u12a0\u121b\u122d\u129b</span>
+        <span id="lLangSwitch">Switch to አማርኛ</span>
       </div>
     </div>
-    <div class="md-foot">v1.0.0 \u00b7 Tejo Studio</div>
+    <div class="md-foot">v1.0.0 · Tejo Studio</div>
   </div>
 
   <div id="toast"></div>
 </div>
 
 <script>
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 TRANSLATIONS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ TRANSLATIONS ══════════════
 const S = {
   en:{
-    spSub:"Find rides across Ethiopia \u2014 fast",
-    ph:"Search taxi stations\u2026",
+    spSub:"Find rides across Ethiopia — fast",
+    ph:"Search taxi stations…",
     all:"All",minibus:"Minibus",bajaj:"Bajaj",ride:"Ride-hailing",saved:"Saved",
     nearbyTitle:"Nearby Stations",found:"found",
     distance:"Distance",walktime:"Walk time",rating:"Rating",
     services:"Services Available",hours:"Operating Hours",
     navigate:"Navigate on Map",share:"Share station",
-    walking:"\ud83d\udeb6 Walking",stop:"Stop",gettingRoute:"Getting walking route\u2026",
+    walking:"🚶 Walking",stop:"Stop",gettingRoute:"Getting walking route…",
     about:"About",stats:"Stats",features:"Features",
     stations:"Stations",cities:"Cities",types:"Types",always:"Always",
-    aboutText:"Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with in-app walking navigation.",
+    aboutText:"Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.",
     f1:"GPS nearby detection",f2:"Filter by type",f3:"In-app walking route",f4:"Save favourites",f5:"Operating hours",
-    tagline:"Your ride guide in Ethiopia",home:"Home Map",langSwitch:"Switch to \u12a0\u121b\u122d\u129b",
-    locUpdated:"\ud83d\udccd Location updated",locArea:"\ud83d\udccd Showing your area",
-    navStopped:"\ud83d\uded1 Navigation stopped",approxRoute:"\u26a0\ufe0f Approximate route shown",
-    copied:"\ud83d\udccb Copied!",stSaved:"\u2b50 Station saved!",stRemoved:"\ud83d\udc94 Removed from saved",
+    tagline:"Your ride guide in Ethiopia",home:"Home Map",langSwitch:"Switch to አማርኛ",
+    locUpdated:"📍 Location updated",locArea:"📍 Showing your area",
+    navStopped:"🛑 Navigation stopped",approxRoute:"⚠️ Approximate route shown",
+    copied:"📋 Copied!",stSaved:"⭐ Station saved!",stRemoved:"💔 Removed from saved",
     today:"Today",noStations:"No stations found",noMatch:"No stations match your search",
   },
   am:{
-    spSub:"\u1260\u12a2\u1275\u12ee\u1335\u12eb \u1273\u12ad\u1232 \u1348\u120d\u1309 \u2014 \u1260\u134d\u1325\u1290\u1275",
-    ph:"\u12e8\u1273\u12ad\u1232 \u1323\u1262\u12eb \u1348\u120d\u130d\u2026",
-    all:"\u1201\u1209\u121d",minibus:"\u121a\u1292\u1263\u1235",bajaj:"\u1263\u1303\u1305",ride:"\u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d",saved:"\u12e8\u1270\u1240\u1218\u1321",
-    nearbyTitle:"\u1245\u122d\u1265 \u1323\u1262\u12eb\u12ce\u127d",found:"\u1270\u1308\u129d\u1277\u120d",
-    distance:"\u122d\u1240\u1275",walktime:"\u12e8\u12a5\u130d\u122d \u130a\u12dc",rating:"\u12f0\u1228\u1303",
-    services:"\u12e8\u121a\u1308\u1299 \u12a0\u1308\u120d\u130d\u120e\u1276\u127d",hours:"\u12e8\u1225\u122b \u1230\u12d3\u1275",
-    navigate:"\u1260\u12ab\u122d\u1273 \u120b\u12ed \u1208\u121b\u1204\u12f5",share:"\u1323\u1262\u12eb \u12a0\u130b\u122b",
-    walking:"\ud83d\udeb6 \u1260\u12a5\u130d\u122d",stop:"\u12a0\u1241\u121d",gettingRoute:"\u12e8\u12a5\u130d\u122d \u1218\u1235\u1218\u122d \u12a5\u12e8\u1348\u1208\u1308 \u1290\u12cd\u2026",
-    about:"\u1235\u1208",stats:"\u1235\u1273\u1272\u1235\u1272\u12ad\u1235",features:"\u1263\u1205\u122a\u12eb\u1275",
-    stations:"\u1323\u1262\u12eb\u12ce\u127d",cities:"\u12a8\u1270\u121e\u127d",types:"\u12d3\u12ed\u1290\u1276\u127d",always:"\u1201\u120c\u121d",
-    aboutText:"\u1273\u12ad\u1232 \u1270\u122b \u1260\u12a2\u1275\u12ee\u1335\u12eb \u1245\u122d\u1265 \u1273\u12ad\u1232 \u1323\u1262\u12eb\u12ce\u127d\u1295\u1363 \u1263\u1303\u1305 \u1246\u121a\u12eb\u12ce\u127d\u1295 \u12a5\u1293 \u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d \u1266\u1273\u12ce\u127d\u1295 \u1208\u121b\u130d\u1298\u1275 \u12ed\u1228\u12f3\u12ce\u1273\u120d\u1362",
-    f1:"GPS \u1245\u122d\u1265 \u1348\u1208\u130b",f2:"\u1260\u12d3\u12ed\u1290\u1275 \u121b\u1323\u122a\u12eb",f3:"\u12ab\u122d\u1273 \u120b\u12ed \u1204\u12f6",f4:"\u1270\u12c8\u12f3\u1306\u127d \u1246\u121d\u1270\u12cd",f5:"\u12e8\u1225\u122b \u1230\u12d3\u1275",
-    tagline:"\u12e8\u12a5\u122d\u1235\u12ce \u1273\u12ad\u1232 \u1218\u1218\u122a\u12eb",home:"\u12ab\u122d\u1273",langSwitch:"Switch to English",
-    locUpdated:"\ud83d\udccd \u12a0\u12ab\u1263\u1262 \u1270\u12d8\u121d\u1297\u120d",locArea:"\ud83d\udccd \u12a0\u12f2\u1235 \u12a0\u1260\u1263 \u121b\u12d5\u12a8\u120d",
-    navStopped:"\ud83d\uded1 \u121b\u1230\u123b \u1246\u121f\u120d",approxRoute:"\u26a0\ufe0f \u130d\u121d\u1273\u12ca \u1218\u1235\u1218\u122d",
-    copied:"\ud83d\udccb \u1270\u1240\u12f5\u1277\u120d!",stSaved:"\u2b50 \u1323\u1262\u12eb \u1270\u1240\u121d\u1327\u120d!",stRemoved:"\ud83d\udc94 \u12a8\u1270\u1240\u1218\u1321 \u1270\u12c8\u130d\u12f7\u120d",
-    today:"\u12db\u122c",noStations:"\u1323\u1262\u12eb \u12a0\u120d\u1270\u1308\u1298\u121d",noMatch:"\u12e8\u121a\u12db\u1218\u12f5 \u1323\u1262\u12eb \u12e8\u1208\u121d",
+    spSub:"በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት",
+    ph:"የታክሲ ጣቢያ ፈልግ…",
+    all:"ሁሉም",minibus:"ሚኒባስ",bajaj:"ባጃጅ",ride:"ሪድ-ሃይሊንግ",saved:"የተቀመጡ",
+    nearbyTitle:"ቅርብ ጣቢያዎች",found:"ተገኝቷል",
+    distance:"ርቀት",walktime:"የእግር ጊዜ",rating:"ደረጃ",
+    services:"የሚገኙ አገልግሎቶች",hours:"የሥራ ሰዓት",
+    navigate:"በካርታ ላይ ለማሄድ",share:"ጣቢያ አጋራ",
+    walking:"🚶 በእግር",stop:"አቁም",gettingRoute:"የእግር መስመር እየፈለገ ነው…",
+    about:"ስለ",stats:"ስታቲስቲክስ",features:"ባህሪያት",
+    stations:"ጣቢያዎች",cities:"ከተሞች",types:"ዓይነቶች",always:"ሁሌም",
+    aboutText:"ታክሲ ተራ በኢትዮጵያ ቅርብ ታክሲ ጣቢያዎችን፣ ባጃጅ ቆሚያዎችን እና ሪድ-ሃይሊንግ ቦታዎችን ለማግኘት ይረዳዎታል።",
+    f1:"GPS ቅርብ ፈለጋ",f2:"በዓይነት ማጣሪያ",f3:"ካርታ ላይ ሄዶ",f4:"ተወዳጆች ቆምተው",f5:"የሥራ ሰዓት",
+    tagline:"የእርስዎ ታክሲ መመሪያ",home:"ካርታ",langSwitch:"Switch to English",
+    locUpdated:"📍 አካባቢ ተዘምኗል",locArea:"📍 አዲስ አበባ ማዕከል",
+    navStopped:"🛑 ማሰሻ ቆሟል",approxRoute:"⚠️ ግምታዊ መስመር",
+    copied:"📋 ተቀድቷል!",stSaved:"⭐ ጣቢያ ተቀምጧል!",stRemoved:"💔 ከተቀመጡ ተወግዷል",
+    today:"ዛሬ",noStations:"ጣቢያ አልተገኘም",noMatch:"የሚዛመድ ጣቢያ የለም",
   }
 };
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 STATION DATA \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ STATION DATA ══════════════
 const STATIONS = [
-  {id:1, name:"Megenagna Minibus Hub",   nameAm:"\u1218\u1308\u1293\u129b \u121a\u1292\u1263\u1235 \u121b\u12d5\u12a8\u120d",   type:"minibus",lat:9.0272,lng:38.7678,address:"Megenagna, Addis Ababa",  addressAm:"\u1218\u1308\u1293\u129b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Bole","Piassa","Merkato","Sarbet"],     rating:4.6,hours:["5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 10:00 PM","6:00 AM \u2013 9:00 PM","Closed"]},
-  {id:2, name:"Bole Atlas Station",      nameAm:"\u1266\u120c \u12a0\u1275\u120b\u1235 \u1323\u1262\u12eb",        type:"minibus",lat:8.9975,lng:38.7883,address:"Bole Road, Addis Ababa",  addressAm:"\u1266\u120c \u1218\u1295\u1308\u12f5\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",routes:["Megenagna","Piassa","Stadium"],         rating:4.4,hours:["5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 8:00 PM","Closed"]},
-  {id:3, name:"Piassa Bajaj Stop",       nameAm:"\u1352\u12eb\u1233 \u1263\u1303\u1305 \u1246\u121a",         type:"bajaj",  lat:9.0352,lng:38.7517,address:"Piassa, Addis Ababa",     addressAm:"\u1352\u12eb\u1233\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Local area","Merkato vicinity"],        rating:4.1,hours:["6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 6:00 PM","7:00 AM \u2013 4:00 PM"]},
-  {id:4, name:"Mexico Square Stop",      nameAm:"\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed \u1246\u121a",      type:"minibus",lat:9.0177,lng:38.7497,address:"Mexico Square, AA",       addressAm:"\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed\u1363 \u12a0.\u12a0", routes:["Piassa","Sarbet","Megenagna","4 Kilo"], rating:4.7,hours:["5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 9:30 PM","5:00 AM \u2013 10:00 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 7:00 PM"]},
-  {id:5, name:"Sarbet Minibus Terminal", nameAm:"\u1230\u122d\u1264\u1275 \u121a\u1292\u1263\u1235 \u1270\u122d\u121a\u1293\u120d",   type:"minibus",lat:8.9979,lng:38.7577,address:"Sarbet, Addis Ababa",     addressAm:"\u1230\u122d\u1264\u1275\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Mexico","CMC","Bole"],                  rating:4.3,hours:["5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 7:00 PM","Closed"]},
-  {id:6, name:"CMC Ride-hailing Zone",   nameAm:"\u1232\u12a4\u121d\u1232 \u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d",     type:"ride",   lat:9.0519,lng:38.8043,address:"CMC Road, Addis Ababa",   addressAm:"\u1232\u12a4\u121d\u1232\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Ride","FERES","Uber"],                  rating:4.8,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
-  {id:7, name:"Gotera Bajaj Terminal",   nameAm:"\u130e\u1270\u122b \u1263\u1303\u1305 \u1270\u122d\u121a\u1293\u120d",     type:"bajaj",  lat:8.9889,lng:38.7693,address:"Gotera, Addis Ababa",     addressAm:"\u130e\u1270\u122b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Gotera-Akaki","Gotera-Sarbet"],         rating:3.9,hours:["6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 7:30 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 6:00 PM","Closed"]},
-  {id:8, name:"Stadium Taxi Hub",        nameAm:"\u1235\u1273\u12f2\u12ec\u121d \u1273\u12ad\u1232 \u1203\u1265",       type:"minibus",lat:9.0220,lng:38.7523,address:"Stadium, Addis Ababa",    addressAm:"\u1235\u1273\u12f2\u12ec\u121d\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",  routes:["Piassa","Mexico","Bole","Arat Kilo"],   rating:4.5,hours:["5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:00 PM","5:00 AM \u2013 9:30 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 6:00 PM"]},
-  {id:9, name:"Bole Ride Pickup",        nameAm:"\u1266\u120c \u122a\u12f5 \u1352\u12ab\u1355",           type:"ride",   lat:9.0054,lng:38.7884,address:"Bole Airport Area",        addressAm:"\u1266\u120c \u12a0\u12e8\u122d \u121b\u1228\u134a\u12eb \u1245\u122d\u1265",routes:["Ride","FERES","Pickup"],                rating:4.9,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
-  {id:10,name:"4 Kilo Minibus Stop",     nameAm:"4 \u12aa\u120e \u121a\u1292\u1263\u1235 \u1246\u121a",        type:"minibus",lat:9.0381,lng:38.7634,address:"4 Kilo, Addis Ababa",     addressAm:"4 \u12aa\u120e\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Piassa","Arat Kilo","6 Kilo","Mexico"], rating:4.2,hours:["5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 8:30 PM","5:30 AM \u2013 9:00 PM","6:00 AM \u2013 8:00 PM","7:00 AM \u2013 5:00 PM"]},
-  {id:11,name:"Merkato Bajaj Rank",      nameAm:"\u1218\u122d\u12ab\u1276 \u1263\u1303\u1305 \u12f0\u1228\u1303",        type:"bajaj",  lat:9.0337,lng:38.7365,address:"Merkato, Addis Ababa",    addressAm:"\u1218\u122d\u12ab\u1276\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",   routes:["Piassa","Gotera","Shabelle"],           rating:4.0,hours:["6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","6:00 AM \u2013 7:00 PM","7:00 AM \u2013 5:00 PM","8:00 AM \u2013 2:00 PM"]},
-  {id:12,name:"Saris Minibus Station",   nameAm:"\u1233\u122a\u1235 \u121a\u1292\u1263\u1235 \u1323\u1262\u12eb",        type:"minibus",lat:8.9743,lng:38.7813,address:"Saris, Addis Ababa",      addressAm:"\u1233\u122a\u1235\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263",    routes:["Gotera","Kaliti","Akaki"],              rating:4.1,hours:["5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:00 PM","5:30 AM \u2013 8:30 PM","6:00 AM \u2013 7:00 PM","Closed"]},
+  {id:1, name:"Megenagna Minibus Hub",   nameAm:"መገናኛ ሚኒባስ ማዕከል",   type:"minibus",lat:9.0272,lng:38.7678,address:"Megenagna, Addis Ababa",  addressAm:"መገናኛ፣ አዲስ አበባ",   routes:["Bole","Piassa","Merkato","Sarbet"],     rating:4.6,hours:["5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 10:00 PM","6:00 AM – 9:00 PM","Closed"]},
+  {id:2, name:"Bole Atlas Station",      nameAm:"ቦሌ አትላስ ጣቢያ",        type:"minibus",lat:8.9975,lng:38.7883,address:"Bole Road, Addis Ababa",  addressAm:"ቦሌ መንገድ፣ አዲስ አበባ",routes:["Megenagna","Piassa","Stadium"],         rating:4.4,hours:["5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 9:00 PM","6:00 AM – 8:00 PM","Closed"]},
+  {id:3, name:"Piassa Bajaj Stop",       nameAm:"ፒያሳ ባጃጅ ቆሚ",         type:"bajaj",  lat:9.0352,lng:38.7517,address:"Piassa, Addis Ababa",     addressAm:"ፒያሳ፣ አዲስ አበባ",    routes:["Local area","Merkato vicinity"],        rating:4.1,hours:["6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","6:00 AM – 8:00 PM","7:00 AM – 6:00 PM","7:00 AM – 4:00 PM"]},
+  {id:4, name:"Mexico Square Stop",      nameAm:"ሜክሲኮ አደባባይ ቆሚ",      type:"minibus",lat:9.0177,lng:38.7497,address:"Mexico Square, AA",       addressAm:"ሜክሲኮ አደባባይ፣ አ.አ", routes:["Piassa","Sarbet","Megenagna","4 Kilo"], rating:4.7,hours:["5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 9:30 PM","5:00 AM – 10:00 PM","5:30 AM – 9:00 PM","6:00 AM – 7:00 PM"]},
+  {id:5, name:"Sarbet Minibus Terminal", nameAm:"ሰርቤት ሚኒባስ ተርሚናል",   type:"minibus",lat:8.9979,lng:38.7577,address:"Sarbet, Addis Ababa",     addressAm:"ሰርቤት፣ አዲስ አበባ",   routes:["Mexico","CMC","Bole"],                  rating:4.3,hours:["5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:30 PM","6:00 AM – 7:00 PM","Closed"]},
+  {id:6, name:"CMC Ride-hailing Zone",   nameAm:"ሲኤምሲ ሪድ-ሃይሊንግ",     type:"ride",   lat:9.0519,lng:38.8043,address:"CMC Road, Addis Ababa",   addressAm:"ሲኤምሲ፣ አዲስ አበባ",   routes:["Ride","FERES","Uber"],                  rating:4.8,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
+  {id:7, name:"Gotera Bajaj Terminal",   nameAm:"ጎተራ ባጃጅ ተርሚናል",     type:"bajaj",  lat:8.9889,lng:38.7693,address:"Gotera, Addis Ababa",     addressAm:"ጎተራ፣ አዲስ አበባ",    routes:["Gotera-Akaki","Gotera-Sarbet"],         rating:3.9,hours:["6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 7:30 PM","6:00 AM – 8:00 PM","7:00 AM – 6:00 PM","Closed"]},
+  {id:8, name:"Stadium Taxi Hub",        nameAm:"ስታዲዬም ታክሲ ሃብ",       type:"minibus",lat:9.0220,lng:38.7523,address:"Stadium, Addis Ababa",    addressAm:"ስታዲዬም፣ አዲስ አበባ",  routes:["Piassa","Mexico","Bole","Arat Kilo"],   rating:4.5,hours:["5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:00 PM","5:00 AM – 9:30 PM","5:30 AM – 8:30 PM","6:00 AM – 6:00 PM"]},
+  {id:9, name:"Bole Ride Pickup",        nameAm:"ቦሌ ሪድ ፒካፕ",           type:"ride",   lat:9.0054,lng:38.7884,address:"Bole Airport Area",        addressAm:"ቦሌ አየር ማረፊያ ቅርብ",routes:["Ride","FERES","Pickup"],                rating:4.9,hours:["Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs","Open 24 hrs"]},
+  {id:10,name:"4 Kilo Minibus Stop",     nameAm:"4 ኪሎ ሚኒባስ ቆሚ",        type:"minibus",lat:9.0381,lng:38.7634,address:"4 Kilo, Addis Ababa",     addressAm:"4 ኪሎ፣ አዲስ አበባ",   routes:["Piassa","Arat Kilo","6 Kilo","Mexico"], rating:4.2,hours:["5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 8:30 PM","5:30 AM – 9:00 PM","6:00 AM – 8:00 PM","7:00 AM – 5:00 PM"]},
+  {id:11,name:"Merkato Bajaj Rank",      nameAm:"መርካቶ ባጃጅ ደረጃ",        type:"bajaj",  lat:9.0337,lng:38.7365,address:"Merkato, Addis Ababa",    addressAm:"መርካቶ፣ አዲስ አበባ",   routes:["Piassa","Gotera","Shabelle"],           rating:4.0,hours:["6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","6:00 AM – 7:00 PM","7:00 AM – 5:00 PM","8:00 AM – 2:00 PM"]},
+  {id:12,name:"Saris Minibus Station",   nameAm:"ሳሪስ ሚኒባስ ጣቢያ",        type:"minibus",lat:8.9743,lng:38.7813,address:"Saris, Addis Ababa",      addressAm:"ሳሪስ፣ አዲስ አበባ",    routes:["Gotera","Kaliti","Akaki"],              rating:4.1,hours:["5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:00 PM","5:30 AM – 8:30 PM","6:00 AM – 7:00 PM","Closed"]},
 ];
 
 const TM = {
-  minibus:{emoji:"\ud83d\ude8c",label:"Minibus",   labelAm:"\u121a\u1292\u1263\u1235"},
-  bajaj:  {emoji:"\ud83d\udefa",label:"Bajaj",     labelAm:"\u1263\u1303\u1305"},
-  ride:   {emoji:"\ud83d\ude97",label:"Ride-hailing",labelAm:"\u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d"},
+  minibus:{emoji:"🚌",label:"Minibus",   labelAm:"ሚኒባስ"},
+  bajaj:  {emoji:"🛺",label:"Bajaj",     labelAm:"ባጃጅ"},
+  ride:   {emoji:"🚗",label:"Ride-hailing",labelAm:"ሪድ-ሃይሊንግ"},
 };
 const DAYS    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
-const DAYS_AM = ["\u1230\u129e","\u121b\u12ad\u1230\u129e","\u1228\u1261\u12d5","\u1210\u1219\u1235","\u12a0\u122d\u1265","\u1245\u12f3\u121c","\u12a5\u1201\u12f5"];
+const DAYS_AM = ["ሰኞ","ማክሰኞ","ረቡዕ","ሐሙስ","አርብ","ቅዳሜ","እሁድ"];
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 STATE \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ STATE ══════════════
 let map, uMarker;
 let uLat=9.0222, uLng=38.7469;
 let filter='all', curStation=null, panelOpen=false;
@@ -509,7 +509,7 @@ let lang=localStorage.getItem('ttLang')||'en';
 let favs=JSON.parse(localStorage.getItem('ttFavs')||'[]');
 let routeLayers=[];
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 BOOT \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ BOOT ══════════════
 window.addEventListener('load',()=>{
   applyLang();
   setTimeout(()=>{
@@ -519,10 +519,10 @@ window.addEventListener('load',()=>{
       if(typeof L==='undefined'){
         document.getElementById('map').innerHTML=
           '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;padding:32px;text-align:center">'+
-          '<div style="font-size:48px">\ud83d\uddfa\ufe0f</div>'+
+          '<div style="font-size:48px">🗺️</div>'+
           '<div style="font-size:17px;font-weight:700">Map couldn\'t load</div>'+
           '<div style="font-size:13px;color:#64748b;max-width:240px">Check your connection and reload.</div>'+
-          '<button onclick="location.reload()" style="padding:12px 24px;background:#0d9488;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">\ud83d\udd04 Reload</button>'+
+          '<button onclick="location.reload()" style="padding:12px 24px;background:#0d9488;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">🔄 Reload</button>'+
           '</div>';
         renderList(); panelOpen=false; togglePanel(); return;
       }
@@ -534,13 +534,13 @@ window.addEventListener('load',()=>{
   try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
 });
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 LANGUAGE \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ LANGUAGE ══════════════
 function setLang(l){
   lang=l; localStorage.setItem('ttLang',l);
   document.getElementById('btnEN').classList.toggle('active',l==='en');
   document.getElementById('btnAM').classList.toggle('active',l==='am');
   applyLang(); renderList();
-  showToast(l==='am'?'\ud83c\uddea\ud83c\uddf9 \u12a0\u121b\u122d\u129b \u1270\u1240\u1293\u1265\u122f\u120d':'\ud83c\uddec\ud83c\udde7 English set');
+  showToast(l==='am'?'🇪🇹 አማርኛ ተቀናብሯል':'🇬🇧 English set');
 }
 function applyLang(){
   const L2=S[lang];
@@ -565,10 +565,10 @@ function applyLang(){
 }
 const t=k=>S[lang][k]||k;
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 MAP \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ MAP ══════════════
 function initMap(){
   map=L.map('map',{zoomControl:false,attributionControl:true}).setView([uLat,uLng],14);
-  // CartoDB Voyager \u2014 modern, clean, colorful streets (no API key needed)
+  // CartoDB Voyager — modern, clean, colorful streets (no API key needed)
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
     attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
     subdomains:'abcd',maxZoom:19
@@ -579,7 +579,7 @@ function initMap(){
   setTimeout(()=>{panelOpen=false;togglePanel();},600);
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 GEOLOCATION \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ GEOLOCATION ══════════════
 function getLocation(){
   navigator.geolocation?.getCurrentPosition(pos=>{
     uLat=pos.coords.latitude;uLng=pos.coords.longitude;
@@ -597,13 +597,13 @@ function locateMe(){
   },()=>{f.classList.remove('spinning');showToast(t('locArea'));});
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 HELPERS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ HELPERS ══════════════
 function hvs(a,b,c,d){const R=6371e3,f1=a*Math.PI/180,f2=c*Math.PI/180,df=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
 function fmtD(m){return m<1000?Math.round(m)+'m':((m/1000).toFixed(1))+'km';}
 function fmtW(m){const mn=Math.round(m/80);return mn<1?'<1 min':mn+' min';}
 function fmtT(s){const m=Math.round(s/60);if(m<1)return '<1 min';if(m<60)return m+' min';return Math.floor(m/60)+'h '+m%60+'m';}
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 MARKERS \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ MARKERS ══════════════
 function renderMarkers(){
   map?.eachLayer(l=>{if(l._taxi)map.removeLayer(l);});
   getFiltered().forEach(s=>{
@@ -613,7 +613,7 @@ function renderMarkers(){
   });
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 FILTER \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ FILTER ══════════════
 function getFiltered(){
   let list=[...STATIONS];
   if(filter==='favorites')list=list.filter(s=>favs.includes(s.id));
@@ -627,7 +627,7 @@ function setFilter(f){
   renderMarkers();renderList();if(!panelOpen)togglePanel();
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 LIST \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
+// ══════════════ LIST ══════════════
 function renderList(stations){
   const list=stations||getFiltered();
   const el=document.getElementById('sList');
@@ -643,4 +643,156 @@ function renderList(stations){
       '<div class="s-ico '+s.type+'">'+TM[s.type].emoji+'</div>'+
       '<div class="s-info"><div class="s-name">'+nm+'</div>'+
       '<div class="s-meta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>'+
-      fmtD(d)+' &
+      fmtD(d)+' &nbsp;🚶 '+fmtW(d)+' &nbsp;⭐ '+s.rating+'</div></div>'+
+      '<div class="s-badge '+s.type+'">'+lbl+'</div>'+
+      '<button class="go-btn" onclick="event.stopPropagation();goNav('+s.id+')">'+
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button></div>';
+  }).join('');
+}
+
+// ══════════════ PANEL ══════════════
+function togglePanel(){
+  panelOpen=!panelOpen;
+  document.getElementById('panel').classList.toggle('collapsed',!panelOpen);
+  document.getElementById('fab').style.bottom=panelOpen?'230px':'110px';
+}
+
+// ══════════════ DETAIL ══════════════
+function openDetail(s){
+  if(!s)return; curStation=s;
+  const d=hvs(uLat,uLng,s.lat,s.lng);
+  const m=TM[s.type];
+  document.getElementById('dIco').textContent=m.emoji;
+  document.getElementById('dName').textContent=lang==='am'?s.nameAm:s.name;
+  document.getElementById('dAddr').textContent=lang==='am'?s.addressAm:s.address;
+  document.getElementById('dBadge').textContent=lang==='am'?m.labelAm:m.label;
+  document.getElementById('dDist').textContent=fmtD(d);
+  document.getElementById('dWalk').textContent=fmtW(d);
+  document.getElementById('dRating').textContent=s.rating+'★';
+  document.getElementById('lDist').textContent=t('distance');
+  document.getElementById('lWalk').textContent=t('walktime');
+  document.getElementById('lRating').textContent=t('rating');
+  document.getElementById('lSvcs').textContent=t('services');
+  document.getElementById('lHours').textContent=t('hours');
+  document.getElementById('lNav').textContent=t('navigate');
+  document.getElementById('lShare').textContent=t('share');
+  document.getElementById('dSvcs').innerHTML=s.routes.map(r=>'<div class="svc-pill">🔹 '+r+'</div>').join('');
+  const today=new Date().getDay();const di=today===0?6:today-1;
+  const days=lang==='am'?DAYS_AM:DAYS;
+  document.getElementById('dHours').innerHTML=s.hours.map((h,i)=>{
+    const it=i===di;
+    const ht=h==='Closed'?(lang==='am'?'ተዘግቷል':'Closed'):h;
+    return '<div class="hr-row"><span class="hr-day"'+(it?' style="color:var(--teal)"':'')+'>'+days[i]+(it?' ('+t('today')+')':'')+
+      '</span><span class="'+(h==='Closed'?'':'hr-open')+'">'+ht+'</span></div>';
+  }).join('');
+  updateFavBtn();
+  map?.flyTo([s.lat,s.lng],16,{duration:.8});
+  document.getElementById('detail').classList.add('open');
+}
+function closeDetail(){document.getElementById('detail').classList.remove('open');curStation=null;}
+function goNav(id){const s=STATIONS.find(x=>x.id===id);if(s){map?.flyTo([s.lat,s.lng],16,{duration:1});setTimeout(()=>openDetail(s),400);}}
+
+// ══════════════ IN-APP NAVIGATION ══════════════
+async function startNavigation(){
+  if(!curStation)return;
+  const s=curStation; closeDetail();
+  document.getElementById('nbDest').textContent=lang==='am'?s.nameAm:s.name;
+  document.getElementById('nbDist').textContent='…';
+  document.getElementById('nbTime').textContent='…';
+  document.getElementById('lWalking').textContent=t('walking');
+  document.getElementById('lStop').textContent=t('stop');
+  document.getElementById('lGettingRoute').textContent=t('gettingRoute');
+  document.getElementById('nbLoading').classList.add('show');
+  document.getElementById('navBar').classList.add('active');
+  clearRouteLines();
+  map?.fitBounds([[uLat,uLng],[s.lat,s.lng]],{padding:[70,70],maxZoom:16});
+  try{
+    const url='https://router.project-osrm.org/route/v1/walking/'+uLng+','+uLat+';'+s.lng+','+s.lat+'?overview=full&geometries=geojson';
+    const res=await fetch(url);if(!res.ok)throw 0;
+    const data=await res.json();if(data.code!=='Ok'||!data.routes.length)throw 0;
+    const route=data.routes[0];
+    const coords=route.geometry.coordinates.map(c=>[c[1],c[0]]);
+    const l1=L.polyline(coords,{color:'#0D9488',weight:7,opacity:.9,lineJoin:'round',lineCap:'round'}).addTo(map);
+    const l2=L.polyline(coords,{color:'#5EEAD4',weight:3,opacity:.8,dashArray:'10 8'}).addTo(map);
+    routeLayers=[l1,l2];
+    document.getElementById('nbDist').textContent=fmtD(route.distance);
+    document.getElementById('nbTime').textContent=fmtT(route.duration);
+    document.getElementById('nbLoading').classList.remove('show');
+    map?.fitBounds(l1.getBounds(),{padding:[70,90],maxZoom:16});
+  }catch{
+    const l=L.polyline([[uLat,uLng],[s.lat,s.lng]],{color:'#0D9488',weight:5,opacity:.75,dashArray:'12 8'}).addTo(map);
+    routeLayers=[l];
+    const dm=hvs(uLat,uLng,s.lat,s.lng);
+    document.getElementById('nbDist').textContent=fmtD(dm);
+    document.getElementById('nbTime').textContent=fmtW(dm);
+    document.getElementById('nbLoading').classList.remove('show');
+    showToast(t('approxRoute'));
+  }
+}
+function stopNavigation(){document.getElementById('navBar').classList.remove('active');clearRouteLines();renderMarkers();showToast(t('navStopped'));}
+function clearRouteLines(){routeLayers.forEach(l=>map?.removeLayer(l));routeLayers=[];}
+
+// ══════════════ SHARE ══════════════
+function shareStation(){
+  if(!curStation)return;
+  const nm=lang==='am'?curStation.nameAm:curStation.name;
+  const txt='📍 '+nm+'\n'+(lang==='am'?curStation.addressAm:curStation.address);
+  if(navigator.share)navigator.share({title:nm,text:txt});
+  else{navigator.clipboard?.writeText(txt);showToast(t('copied'));}
+}
+
+// ══════════════ FAVORITES ══════════════
+function toggleFav(){
+  if(!curStation)return;
+  const i=favs.indexOf(curStation.id);
+  if(i>=0){favs.splice(i,1);showToast(t('stRemoved'));}
+  else{favs.push(curStation.id);showToast(t('stSaved'));}
+  localStorage.setItem('ttFavs',JSON.stringify(favs));updateFavBtn();
+}
+function updateFavBtn(){
+  const btn=document.getElementById('favBtn');
+  const f=favs.includes(curStation?.id);btn.classList.toggle('faved',f);
+  btn.innerHTML=f
+    ?'<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+}
+
+// ══════════════ SEARCH ══════════════
+let sTimer;
+function handleSearch(v){
+  document.getElementById('clrBtn').classList.toggle('show',v.length>0);
+  clearTimeout(sTimer);if(!v.trim()){closeSR();return;}
+  sTimer=setTimeout(()=>{
+    const q=v.toLowerCase();
+    const r=STATIONS.filter(s=>s.name.toLowerCase().includes(q)||s.nameAm.includes(q)||s.address.toLowerCase().includes(q)||s.type.includes(q)||s.routes.some(x=>x.toLowerCase().includes(q)));
+    showSR(r);
+  },200);
+}
+function showSR(r){
+  const el=document.getElementById('srBox');
+  if(!r.length){el.innerHTML='<div class="empty" style="padding:28px"><p>'+t('noMatch')+'</p></div>';}
+  else{el.innerHTML=r.map(s=>{const d=hvs(uLat,uLng,s.lat,s.lng);const nm=lang==='am'?s.nameAm:s.name;return '<div class="sr-item" onclick="selSR('+s.id+')"><div class="sr-ico '+s.type+'">'+TM[s.type].emoji+'</div><div><div class="sr-name">'+nm+'</div><div class="sr-sub">'+fmtD(d)+' · '+(lang==='am'?s.addressAm:s.address)+'</div></div></div>';}).join('');}
+  el.classList.add('open');
+}
+function selSR(id){const s=STATIONS.find(x=>x.id===id);clearSearch();if(s)setTimeout(()=>openDetail(s),200);}
+function onBlur(){setTimeout(()=>{if(!document.getElementById('sInput').value)closeSR();},160);}
+function closeSR(){document.getElementById('srBox').classList.remove('open');}
+function clearSearch(){document.getElementById('sInput').value='';document.getElementById('clrBtn').classList.remove('show');closeSR();document.getElementById('sInput').blur();}
+
+// ══════════════ MENU / ABOUT ══════════════
+function openMenu(){document.getElementById('mDrawer').classList.add('open');document.getElementById('mOverlay').classList.add('show');}
+function closeMenu(){document.getElementById('mDrawer').classList.remove('open');document.getElementById('mOverlay').classList.remove('show');}
+function openAbout(){document.getElementById('about').classList.add('open');}
+function closeAbout(){document.getElementById('about').classList.remove('open');}
+
+// ══════════════ TOAST ══════════════
+let tTimer;
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(tTimer);tTimer=setTimeout(()=>el.classList.remove('show'),2500);}
+
+// ══════════════ PANEL SWIPE ══════════════
+let sy=0;const pnl=document.getElementById('panel');
+pnl.addEventListener('touchstart',e=>{sy=e.touches[0].clientY;},{passive:true});
+pnl.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientY-sy;if(d>50&&panelOpen)togglePanel();else if(d<-50&&!panelOpen)togglePanel();},{passive:true});
+</script>
+</body>
+</html>
