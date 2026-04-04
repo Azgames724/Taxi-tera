@@ -3,106 +3,167 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0D9488">
+<meta name="theme-color" content="#0D1117">
 <title>Taxi Tera — Find Your Ride in Ethiopia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
+/* ══════════════════════════════════════════════════
+   DESIGN SYSTEM — Dark Navy + Electric Cyan
+   ══════════════════════════════════════════════════
+   Primary:   #00D4AA  electric teal-cyan
+   Accent:    #F5A623  warm amber  (bajaj)
+   Purple:    #7C6FFF  soft indigo (ride)
+   BG:        #0D1117  near-black navy
+   Surface:   #161D2E  card dark
+   Surface2:  #1E2840  elevated card
+   Border:    #263152  subtle border
+   Text:      #E2EDFF  bright near-white
+   Text2:     #8899BB  muted blue-grey
+   Text3:     #4A5880  dim
+   Green:     #10D97E  success
+   Red:       #FF5370  error/closed
+   ══════════════════════════════════════════════════ */
 :root{
-  --teal:#0D9488; --teal-d:#0F766E; --teal-l:#14B8A6; --tp:#CCFBF1;
-  --sky:#0EA5E9; --amber:#F59E0B; --green:#16A34A;
-  --bg:#F0FDF9; --sf:#FFFFFF; --bd:#D1FAF5;
-  --tx:#0F172A; --tx2:#334155; --tx3:#64748B;
-  --sh:0 4px 20px rgba(13,148,136,.13);
-  --shl:0 8px 36px rgba(13,148,136,.18);
+  --c:   #00D4AA;   /* primary cyan */
+  --cd:  #009E7E;   /* primary dark */
+  --cl:  #33DDBB;   /* primary light */
+  --cp:  rgba(0,212,170,.12); /* primary pale */
+  --cb:  rgba(0,212,170,.22); /* primary border */
+  --amb: #F5A623;   /* amber — bajaj */
+  --pur: #7C6FFF;   /* purple — ride */
+  --grn: #10D97E;   /* green */
+  --red: #FF5370;   /* red */
+  --bg:  #0D1117;   /* deep bg */
+  --sf:  #161D2E;   /* surface */
+  --sf2: #1E2840;   /* surface elevated */
+  --sf3: #263152;   /* surface high */
+  --bd:  #263152;   /* border */
+  --bd2: #1E2840;   /* subtle border */
+  --tx:  #E2EDFF;   /* text */
+  --tx2: #8899BB;   /* text muted */
+  --tx3: #4A5880;   /* text dim */
+  --sh:  0 4px 24px rgba(0,0,0,.5);
+  --shx: 0 8px 40px rgba(0,0,0,.65);
   --r:16px; --rs:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overflow:hidden;-webkit-font-smoothing:antialiased}
+html,body{
+  height:100%;font-family:'Outfit',sans-serif;
+  background:var(--bg);color:var(--tx);
+  overflow:hidden;-webkit-font-smoothing:antialiased;
+}
 
-/* ── SPLASH ─────────────────────────────── */
+/* ══ SPLASH ══════════════════════════════════ */
 #splash{
   position:fixed;inset:0;z-index:9999;
-  background:linear-gradient(160deg,#0F766E 0%,#0D9488 50%,#0EA5E9 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-  transition:opacity .65s ease,transform .65s ease;
+  background:radial-gradient(ellipse at 30% 60%,#0A2744 0%,#050D1A 60%),
+             linear-gradient(160deg,#061428 0%,#0D1F3C 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  transition:opacity .7s ease,transform .7s ease;
 }
-#splash.hide{opacity:0;transform:scale(1.06);pointer-events:none}
+/* Cyan glow behind logo */
+#splash::before{
+  content:'';position:absolute;
+  width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,212,170,.18) 0%,transparent 70%);
+  pointer-events:none;
+}
+#splash.hide{opacity:0;transform:scale(1.05);pointer-events:none}
 .sp-logo{
-  width:160px;height:160px;
+  width:160px;height:160px;position:relative;z-index:1;
   display:flex;align-items:center;justify-content:center;
-  animation:pop .75s cubic-bezier(.34,1.56,.64,1) .15s both;
+  animation:pop .8s cubic-bezier(.34,1.56,.64,1) .2s both;
 }
-.sp-logo img{width:160px;height:160px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,.25))}
-.sp-title{font-size:38px;font-weight:800;color:#fff;letter-spacing:-.5px;animation:fadeUp .5s ease .45s both}
-.sp-sub{font-size:14px;color:rgba(255,255,255,.8);animation:fadeUp .5s ease .6s both}
-.sp-dots{display:flex;gap:7px;margin-top:22px;animation:fadeUp .5s ease .75s both}
-.sp-dots span{width:7px;height:7px;background:rgba(255,255,255,.5);border-radius:50%;animation:pulse 1.3s ease-in-out infinite}
+.sp-logo img{
+  width:160px;height:160px;object-fit:contain;
+  filter:drop-shadow(0 0 28px rgba(0,212,170,.45)) drop-shadow(0 8px 20px rgba(0,0,0,.5));
+}
+.sp-title{
+  font-size:40px;font-weight:900;color:#E2EDFF;
+  letter-spacing:-1px;position:relative;z-index:1;
+  animation:fadeUp .5s ease .45s both;
+  text-shadow:0 0 40px rgba(0,212,170,.3);
+}
+.sp-sub{font-size:14px;color:var(--tx2);animation:fadeUp .5s ease .6s both;position:relative;z-index:1}
+.sp-dots{display:flex;gap:7px;margin-top:24px;animation:fadeUp .5s ease .75s both;position:relative;z-index:1}
+.sp-dots span{
+  width:7px;height:7px;border-radius:50%;animation:pulse 1.3s ease-in-out infinite;
+  background:var(--c);opacity:.4;
+}
 .sp-dots span:nth-child(2){animation-delay:.18s}
 .sp-dots span:nth-child(3){animation-delay:.36s}
 
-/* ── APP SHELL ──────────────────────────── */
-#app{position:fixed;inset:0}
+/* ══ APP SHELL ══════════════════════════════ */
+#app{position:fixed;inset:0;background:var(--bg)}
 
-/* ── MAP ────────────────────────────────── */
+/* ══ MAP ════════════════════════════════════ */
 #map{position:absolute;inset:0;z-index:1}
-.leaflet-container{background:#cde8e2}
+.leaflet-container{background:#050D1A}
 .leaflet-control-zoom{display:none!important}
-.leaflet-control-attribution{font-size:9px!important;opacity:.35;background:rgba(255,255,255,.7)!important;padding:2px 5px!important;border-radius:6px 0 0 0!important}
+.leaflet-control-attribution{
+  font-size:9px!important;opacity:.25;
+  background:rgba(0,0,0,.6)!important;color:var(--tx2)!important;
+  padding:2px 6px!important;border-radius:6px 0 0 0!important;
+}
 
-/* ── STATION MARKERS ────────────────────── */
+/* ══ MARKERS ════════════════════════════════ */
 .tm{display:flex;align-items:center;justify-content:center;cursor:pointer}
 .tmd{
-  width:40px;height:40px;border-radius:50% 50% 50% 5px;
+  width:42px;height:42px;border-radius:50% 50% 50% 5px;
   display:flex;align-items:center;justify-content:center;font-size:18px;
-  border:3px solid #fff;box-shadow:0 4px 16px rgba(0,0,0,.25);
-  transform:rotate(-45deg);transition:transform .2s,box-shadow .2s;
+  border:2.5px solid rgba(255,255,255,.15);
+  transform:rotate(-45deg);transition:transform .2s;
 }
 .tmd span{transform:rotate(45deg);display:block;line-height:1}
-.tmd.minibus{background:var(--teal)}
-.tmd.bajaj{background:var(--amber)}
-.tmd.ride{background:var(--sky)}
-.tm:active .tmd{transform:rotate(-45deg) scale(1.2);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.tmd.minibus{background:#00D4AA;box-shadow:0 4px 20px rgba(0,212,170,.55),0 0 0 4px rgba(0,212,170,.15)}
+.tmd.bajaj  {background:#F5A623;box-shadow:0 4px 20px rgba(245,166,35,.55),0 0 0 4px rgba(245,166,35,.15)}
+.tmd.ride   {background:#7C6FFF;box-shadow:0 4px 20px rgba(124,111,255,.55),0 0 0 4px rgba(124,111,255,.15)}
+.tm:active .tmd{transform:rotate(-45deg) scale(1.2)}
 
-/* User location dot */
+/* User dot */
 .u-dot{
-  width:16px;height:16px;background:var(--sky);border-radius:50%;
-  border:3px solid #fff;box-shadow:0 0 0 0 rgba(14,165,233,.4);
-  animation:uRing 2s ease-out infinite;
+  width:18px;height:18px;background:#38BDF8;border-radius:50%;
+  border:3px solid #fff;
+  animation:uRing 2.2s ease-out infinite;
 }
 @keyframes uRing{
-  0%{box-shadow:0 0 0 0 rgba(14,165,233,.5)}
-  70%{box-shadow:0 0 0 12px rgba(14,165,233,0)}
-  100%{box-shadow:0 0 0 0 rgba(14,165,233,0)}
+  0%{box-shadow:0 0 0 0 rgba(56,189,248,.7),0 3px 12px rgba(0,0,0,.5)}
+  70%{box-shadow:0 0 0 14px rgba(56,189,248,0),0 3px 12px rgba(0,0,0,.5)}
+  100%{box-shadow:0 0 0 0 rgba(56,189,248,0),0 3px 12px rgba(0,0,0,.5)}
 }
 
-/* ── LANGUAGE TOGGLE ────────────────────── */
+/* ══ LANGUAGE TOGGLE ════════════════════════ */
 #langBar{
   position:absolute;top:14px;right:14px;z-index:420;
   display:flex;align-items:center;
   background:var(--sf);border:1.5px solid var(--bd);
-  border-radius:22px;padding:4px;box-shadow:var(--sh);gap:2px;
+  border-radius:24px;padding:4px;gap:2px;
+  box-shadow:var(--shx);
 }
 .lb{
-  padding:6px 13px;border-radius:18px;border:none;
+  padding:6px 13px;border-radius:20px;border:none;
   font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;
-  cursor:pointer;transition:all .2s;color:var(--tx3);background:transparent;
+  cursor:pointer;transition:all .22s;color:var(--tx2);background:transparent;
 }
-.lb.on{background:var(--teal);color:#fff;box-shadow:0 2px 8px rgba(13,148,136,.3)}
+.lb.on{background:var(--c);color:#050D1A;box-shadow:0 2px 10px rgba(0,212,170,.4)}
 
-/* ── SEARCH BAR ─────────────────────────── */
+/* ══ TOP BAR ════════════════════════════════ */
 #topbar{position:absolute;top:0;left:0;right:0;z-index:410;padding:14px 14px 0;pointer-events:none}
 .sbar{
   display:flex;align-items:center;gap:8px;
-  background:var(--sf);border-radius:14px;padding:12px 14px;
-  box-shadow:var(--shl);border:1.5px solid var(--bd);
+  background:var(--sf);border-radius:16px;padding:12px 14px;
+  box-shadow:var(--shx);border:1.5px solid var(--bd);
   pointer-events:all;transition:border-color .2s,box-shadow .2s;
-  margin-right:86px;
+  margin-right:88px;
 }
-.sbar:focus-within{border-color:var(--teal-l);box-shadow:0 4px 28px rgba(13,148,136,.22)}
-.sbar svg{width:18px;height:18px;color:var(--teal);flex-shrink:0}
+.sbar:focus-within{
+  border-color:var(--c);
+  box-shadow:var(--shx),0 0 0 3px var(--cp);
+}
+.sbar-icon{width:18px;height:18px;color:var(--c);flex-shrink:0}
 .sbar input{
   flex:1;border:none;outline:none;
   font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;
@@ -111,10 +172,10 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .sbar input::placeholder{color:var(--tx3);font-weight:400}
 .ico-btn{
   width:32px;height:32px;border-radius:9px;border:none;
-  background:var(--tp);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--teal);transition:all .15s;flex-shrink:0;
+  background:var(--sf2);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--c);transition:all .15s;flex-shrink:0;
 }
-.ico-btn:active{transform:scale(.88);background:var(--bd)}
+.ico-btn:active{transform:scale(.86);background:var(--cp)}
 .ico-btn svg{width:15px;height:15px}
 #clrBtn{display:none}
 #clrBtn.show{display:flex}
@@ -122,37 +183,43 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 /* Filter chips */
 .chips{
   display:flex;gap:7px;padding:9px 0 0;
-  overflow-x:auto;scrollbar-width:none;
-  pointer-events:all;-webkit-overflow-scrolling:touch;
+  overflow-x:auto;scrollbar-width:none;pointer-events:all;
+  -webkit-overflow-scrolling:touch;
 }
 .chips::-webkit-scrollbar{display:none}
 .chip{
-  display:flex;align-items:center;gap:5px;padding:7px 13px;
-  border-radius:22px;font-size:13px;font-weight:600;white-space:nowrap;
+  display:flex;align-items:center;gap:6px;padding:7px 14px;
+  border-radius:24px;font-size:12.5px;font-weight:600;white-space:nowrap;
   cursor:pointer;border:1.5px solid var(--bd);flex-shrink:0;
   background:var(--sf);color:var(--tx2);
-  box-shadow:0 2px 8px rgba(0,0,0,.06);transition:all .18s;
+  box-shadow:0 4px 18px rgba(0,0,0,.4);transition:all .2s;
 }
-.chip.on{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:0 3px 10px rgba(13,148,136,.3)}
-.chip:active{transform:scale(.94)}
+.chip.on{
+  background:var(--c);color:#050D1A;
+  border-color:var(--c);
+  box-shadow:0 4px 18px rgba(0,212,170,.35);
+}
+.chip:active{transform:scale(.93)}
 
-/* ── LOCATE FAB ─────────────────────────── */
+/* ══ FAB ════════════════════════════════════ */
 #fab{
   position:absolute;right:16px;bottom:220px;z-index:410;
-  width:52px;height:52px;border-radius:15px;
+  width:52px;height:52px;border-radius:16px;
   background:var(--sf);border:1.5px solid var(--bd);
-  box-shadow:var(--sh);display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:var(--teal);transition:all .2s;
+  box-shadow:var(--shx);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--c);transition:all .2s;
 }
-#fab:active{transform:scale(.91);background:var(--tp)}
+#fab:active{transform:scale(.9);background:var(--cp);border-color:var(--c)}
 #fab svg{width:22px;height:22px}
 #fab.spinning{animation:spin 1s linear infinite}
 
-/* ── BOTTOM PANEL ───────────────────────── */
+/* ══ BOTTOM PANEL ═══════════════════════════ */
 #panel{
   position:absolute;bottom:0;left:0;right:0;z-index:300;
   background:var(--sf);border-radius:24px 24px 0 0;
-  box-shadow:0 -6px 30px rgba(13,148,136,.12);
+  border-top:1.5px solid var(--bd);
+  box-shadow:0 -8px 50px rgba(0,0,0,.7);
   transition:transform .38s cubic-bezier(.32,.72,0,1);
   max-height:74vh;display:flex;flex-direction:column;
 }
@@ -161,130 +228,137 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
   display:flex;align-items:center;justify-content:center;
   padding:12px 0 0;cursor:pointer;flex-shrink:0;
 }
-.ph{width:36px;height:4px;background:#CBD5E1;border-radius:2px}
+.ph{width:36px;height:4px;background:var(--bd);border-radius:2px}
 .p-head{padding:10px 18px 0;flex-shrink:0}
 .p-tr{display:flex;align-items:center;justify-content:space-between}
 .p-title{font-size:17px;font-weight:700;color:var(--tx)}
 .p-count{
-  font-size:12px;font-weight:700;padding:3px 10px;
-  background:var(--tp);color:var(--teal);border-radius:20px;
+  font-size:12px;font-weight:700;padding:3px 11px;
+  background:var(--cp);color:var(--c);border-radius:20px;
+  border:1px solid var(--cb);
 }
 .slist{
-  overflow-y:auto;padding:10px 16px 28px;
+  overflow-y:auto;padding:10px 16px 16px;
   display:flex;flex-direction:column;gap:9px;
   -webkit-overflow-scrolling:touch;flex:1;
 }
 .slist::-webkit-scrollbar{display:none}
 
-/* ── STATION CARD ───────────────────────── */
+/* ══ STATION CARD ═══════════════════════════ */
 .s-card{
-  display:flex;align-items:center;gap:12px;padding:13px;
-  background:var(--bg);border-radius:var(--r);
+  display:flex;align-items:center;gap:12px;padding:14px;
+  background:var(--sf2);border-radius:var(--r);
   border:1.5px solid var(--bd);cursor:pointer;
-  transition:all .18s;animation:fadeUp .3s ease both;
+  transition:all .2s;animation:fadeUp .3s ease both;
 }
-.s-card:active{transform:scale(.97);background:var(--tp);border-color:var(--teal-l)}
+.s-card:active{
+  transform:scale(.97);
+  background:var(--sf3);border-color:var(--c);
+  box-shadow:0 0 0 1px var(--cb);
+}
 .s-ico{
-  width:48px;height:48px;border-radius:13px;
+  width:48px;height:48px;border-radius:14px;
   display:flex;align-items:center;justify-content:center;
   font-size:22px;flex-shrink:0;
 }
-.s-ico.minibus{background:var(--tp)}
-.s-ico.bajaj{background:#FEF3C7}
-.s-ico.ride{background:#E0F2FE}
+.s-ico.minibus{background:rgba(0,212,170,.12);border:1px solid rgba(0,212,170,.2)}
+.s-ico.bajaj  {background:rgba(245,166,35,.12);border:1px solid rgba(245,166,35,.2)}
+.s-ico.ride   {background:rgba(124,111,255,.12);border:1px solid rgba(124,111,255,.2)}
 .s-info{flex:1;min-width:0}
-.s-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--tx)}
-.s-meta{font-size:12px;color:var(--tx3);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.s-name{font-size:15px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s-meta{font-size:12px;color:var(--tx2);margin-top:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .s-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;flex-shrink:0}
-.s-badge.minibus{background:var(--tp);color:var(--teal-d)}
-.s-badge.bajaj{background:#FEF3C7;color:#92400E}
-.s-badge.ride{background:#E0F2FE;color:#0369A1}
+.s-badge.minibus{background:rgba(0,212,170,.15);color:var(--c);border:1px solid rgba(0,212,170,.25)}
+.s-badge.bajaj  {background:rgba(245,166,35,.15);color:var(--amb);border:1px solid rgba(245,166,35,.25)}
+.s-badge.ride   {background:rgba(124,111,255,.15);color:var(--pur);border:1px solid rgba(124,111,255,.25)}
 .go-btn{
-  width:38px;height:38px;border-radius:11px;
-  background:var(--teal);border:none;
+  width:40px;height:40px;border-radius:12px;background:var(--c);border:none;
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#fff;transition:all .15s;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(13,148,136,.3);
+  cursor:pointer;color:#050D1A;transition:all .15s;flex-shrink:0;
+  box-shadow:0 3px 12px rgba(0,212,170,.4);
 }
-.go-btn:active{transform:scale(.88);background:var(--teal-d)}
+.go-btn:active{transform:scale(.87);background:var(--cl)}
 .go-btn svg{width:15px;height:15px}
 
-/* ── SEARCH RESULTS DROPDOWN ────────────── */
+/* ══ SEARCH RESULTS ═════════════════════════ */
 #srBox{
   position:absolute;top:0;left:0;right:0;z-index:408;
   background:var(--sf);border-radius:0 0 22px 22px;
-  box-shadow:var(--shl);max-height:62vh;overflow-y:auto;
+  border:1.5px solid var(--bd);border-top:none;
+  box-shadow:var(--shx);max-height:62vh;overflow-y:auto;
   transform:translateY(-100%);transition:transform .32s cubic-bezier(.32,.72,0,1);
   padding-top:82px;
 }
 #srBox.open{transform:translateY(0)}
 .sr-item{
-  display:flex;align-items:center;gap:12px;
-  padding:13px 18px;cursor:pointer;
-  border-bottom:1px solid var(--bd);transition:background .15s;
+  display:flex;align-items:center;gap:12px;padding:13px 18px;
+  cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s;
 }
 .sr-item:last-child{border-bottom:none}
-.sr-item:active{background:var(--tp)}
+.sr-item:active{background:var(--sf2)}
 .sr-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.sr-ico.minibus{background:var(--tp)}
-.sr-ico.bajaj{background:#FEF3C7}
-.sr-ico.ride{background:#E0F2FE}
+.sr-ico.minibus{background:rgba(0,212,170,.12)}
+.sr-ico.bajaj  {background:rgba(245,166,35,.12)}
+.sr-ico.ride   {background:rgba(124,111,255,.12)}
 .sr-name{font-size:14px;font-weight:600;color:var(--tx)}
-.sr-sub{font-size:12px;color:var(--tx3);margin-top:2px}
+.sr-sub{font-size:12px;color:var(--tx2);margin-top:2px}
 
-/* ── STATION DETAIL ─────────────────────── */
+/* ══ STATION DETAIL ═════════════════════════ */
 #detail{
-  position:absolute;inset:0;z-index:500;
-  background:var(--bg);
+  position:absolute;inset:0;z-index:500;background:var(--bg);
   transform:translateY(100%);
   transition:transform .42s cubic-bezier(.32,.72,0,1);
   overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
 #detail.open{transform:translateY(0)}
+
 .d-hdr{
-  background:linear-gradient(140deg,var(--teal-d) 0%,var(--teal-l) 100%);
-  padding:56px 20px 28px;position:relative;color:#fff;
+  background:linear-gradient(145deg,#0A1F35 0%,#0D2A44 60%,#102840 100%);
+  padding:56px 20px 28px;position:relative;color:var(--tx);
+  border-bottom:1px solid var(--bd);
+}
+/* Cyan glow accent line */
+.d-hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c),transparent);
 }
 .d-back,.d-fav{
-  position:absolute;top:16px;
-  width:40px;height:40px;border-radius:13px;
-  background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.25);
+  position:absolute;top:16px;width:40px;height:40px;border-radius:13px;
+  background:rgba(255,255,255,.06);border:1.5px solid var(--bd);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#fff;backdrop-filter:blur(8px);
-  transition:background .15s;
+  cursor:pointer;color:var(--tx2);backdrop-filter:blur(8px);transition:all .15s;
 }
-.d-back:active,.d-fav:active{background:rgba(255,255,255,.35)}
+.d-back:active,.d-fav:active{background:var(--cp);color:var(--c);border-color:var(--c)}
 .d-back{left:16px}
 .d-back svg{width:20px;height:20px}
 .d-fav{right:16px}
 .d-fav svg{width:19px;height:19px}
-.d-fav.on{color:#FCD34D}
+.d-fav.on{color:#F59E0B;border-color:rgba(245,158,11,.3);background:rgba(245,158,11,.1)}
+
 .d-ico{
-  width:64px;height:64px;
-  background:rgba(255,255,255,.18);border-radius:18px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:30px;margin-bottom:13px;
-  border:1px solid rgba(255,255,255,.3);
+  width:66px;height:66px;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+  margin-bottom:14px;border:1.5px solid var(--bd);background:var(--sf);
 }
-.d-name{font-size:23px;font-weight:800;line-height:1.2}
-.d-addr{font-size:13px;opacity:.82;margin-top:4px}
+.d-name{font-size:23px;font-weight:800;line-height:1.2;color:var(--tx)}
+.d-addr{font-size:13px;color:var(--tx2);margin-top:4px}
 .d-type{
-  display:inline-flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.2);border-radius:20px;
-  padding:4px 13px;font-size:12px;font-weight:600;
-  margin-top:10px;border:1px solid rgba(255,255,255,.3);
+  display:inline-flex;align-items:center;
+  background:var(--cp);border:1px solid var(--cb);
+  border-radius:20px;padding:4px 13px;font-size:12px;
+  font-weight:700;margin-top:10px;color:var(--c);
 }
 
-.d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd)}
-.d-stat{background:var(--sf);padding:17px 10px;text-align:center}
-.d-sv{font-size:20px;font-weight:800;color:var(--teal)}
-.d-sl{font-size:11px;color:var(--tx3);margin-top:3px;font-weight:500}
+.d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd);border-bottom:1px solid var(--bd)}
+.d-stat{background:var(--sf);padding:18px 10px;text-align:center}
+.d-sv{font-size:20px;font-weight:800;color:var(--c)}
+.d-sl{font-size:11px;color:var(--tx2);margin-top:3px;font-weight:500}
 
 .d-sec{padding:20px 18px 0}
-.d-sec-h{font-size:12px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:11px}
+.d-sec-h{font-size:11px;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
 .svc-pills{display:flex;flex-wrap:wrap;gap:8px}
 .svc-pill{
-  padding:6px 13px;background:var(--bg);
+  padding:6px 13px;background:var(--sf2);
   border:1.5px solid var(--bd);border-radius:20px;
   font-size:13px;font-weight:500;color:var(--tx2);
 }
@@ -294,66 +368,67 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 }
 .hr-row:last-child{border-bottom:none}
 .hr-day{font-weight:600;min-width:90px;color:var(--tx)}
-.hr-open{color:var(--green);font-weight:600}
-.hr-closed{color:#EF4444;font-weight:500}
+.hr-open{color:var(--grn);font-weight:600}
+.hr-closed{color:var(--red);font-weight:500}
 
 .nav-btn{
   display:flex;align-items:center;justify-content:center;gap:9px;
-  width:calc(100% - 36px);margin:20px 18px 0;padding:18px;
-  background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal-l) 100%);
-  border:none;border-radius:17px;color:#fff;
-  font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;
-  cursor:pointer;box-shadow:0 5px 18px rgba(13,148,136,.38);
+  width:calc(100% - 36px);margin:22px 18px 0;padding:18px;
+  background:var(--c);border:none;border-radius:17px;
+  color:#050D1A;font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:0 6px 24px rgba(0,212,170,.45);
   transition:transform .15s,box-shadow .15s;
 }
-.nav-btn:active{transform:scale(.96);box-shadow:0 2px 8px rgba(13,148,136,.2)}
-.nav-btn svg{width:20px;height:20px;flex-shrink:0}
+.nav-btn:active{transform:scale(.96);box-shadow:0 2px 10px rgba(0,212,170,.3)}
+.nav-btn svg{width:20px;height:20px}
 
 .share-btn{
   display:flex;align-items:center;justify-content:center;gap:8px;
   width:calc(100% - 36px);margin:10px 18px 36px;padding:15px;
-  background:var(--sf);border:1.5px solid var(--bd);
+  background:var(--sf2);border:1.5px solid var(--bd);
   border-radius:14px;color:var(--tx2);
   font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
-  cursor:pointer;transition:background .18s;
+  cursor:pointer;transition:all .18s;
 }
-.share-btn:active{background:var(--tp)}
-.share-btn svg{width:16px;height:16px;color:var(--teal)}
+.share-btn:active{background:var(--sf3);border-color:var(--c);color:var(--c)}
+.share-btn svg{width:16px;height:16px;color:var(--c)}
 
-/* ── IN-APP NAV BAR ─────────────────────── */
+/* ══ NAV BAR ════════════════════════════════ */
 #navBar{
   position:absolute;bottom:0;left:0;right:0;z-index:350;
-  background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal) 100%);
-  border-radius:22px 22px 0 0;padding:18px 18px 32px;
-  box-shadow:0 -5px 24px rgba(13,148,136,.38);color:#fff;
+  background:var(--sf);border-radius:24px 24px 0 0;
+  border-top:2px solid var(--c);
+  padding:18px 18px 32px;
+  box-shadow:0 -6px 30px rgba(0,212,170,.2),0 -2px 0 var(--c);
+  color:var(--tx);
   transform:translateY(100%);
   transition:transform .42s cubic-bezier(.32,.72,0,1);
 }
 #navBar.on{transform:translateY(0)}
 .nb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .nb-info{flex:1;min-width:0}
-.nb-dest{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nb-meta{font-size:13px;opacity:.88;margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.nb-dot{opacity:.45}
+.nb-dest{font-size:16px;font-weight:700;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nb-meta{font-size:13px;color:var(--tx2);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.nb-dot{color:var(--bd)}
 .nb-stop{
   display:flex;align-items:center;gap:6px;padding:11px 16px;
-  background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);
-  border-radius:13px;color:#fff;
+  background:rgba(255,83,112,.12);border:1.5px solid rgba(255,83,112,.3);
+  border-radius:13px;color:var(--red);
   font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;
-  cursor:pointer;flex-shrink:0;backdrop-filter:blur(8px);
-  transition:background .18s;
+  cursor:pointer;flex-shrink:0;transition:all .18s;
 }
-.nb-stop:active{background:rgba(255,255,255,.32)}
+.nb-stop:active{background:rgba(255,83,112,.22)}
 .nb-stop svg{width:14px;height:14px}
-.nb-load{display:none;align-items:center;gap:9px;margin-top:11px;font-size:13px;opacity:.85}
+.nb-load{display:none;align-items:center;gap:9px;margin-top:12px;font-size:13px;color:var(--tx2)}
 .nb-load.on{display:flex}
 .nb-spin{
   width:14px;height:14px;
-  border:2px solid rgba(255,255,255,.28);border-top-color:#fff;
+  border:2px solid var(--bd);border-top-color:var(--c);
   border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0;
 }
 
-/* ── ABOUT PAGE ─────────────────────────── */
+/* ══ ABOUT PAGE ═════════════════════════════ */
 #about{
   position:absolute;inset:0;z-index:500;background:var(--bg);
   transform:translateX(100%);
@@ -362,140 +437,173 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 }
 #about.open{transform:translateX(0)}
 .ab-hdr{
-  background:linear-gradient(140deg,var(--teal-d) 0%,var(--sky) 100%);
-  padding:58px 24px 36px;text-align:center;color:#fff;position:relative;
+  background:linear-gradient(145deg,#0A1F35 0%,#091828 100%);
+  padding:60px 24px 38px;text-align:center;color:var(--tx);
+  position:relative;border-bottom:1px solid var(--bd);
+}
+.ab-hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--c),transparent);
 }
 .ab-back{
   position:absolute;top:16px;left:16px;
   width:40px;height:40px;border-radius:13px;
-  background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.06);border:1.5px solid var(--bd);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;color:#fff;
+  cursor:pointer;color:var(--tx2);transition:all .15s;
 }
+.ab-back:active{background:var(--cp);color:var(--c);border-color:var(--c)}
 .ab-back svg{width:20px;height:20px}
 .ab-logo{
-  width:110px;height:110px;background:rgba(255,255,255,.15);
-  border-radius:28px;margin:0 auto 16px;
+  width:130px;height:130px;
+  background:rgba(0,212,170,.07);
+  border-radius:34px;margin:0 auto 18px;
   display:flex;align-items:center;justify-content:center;
-  border:1.5px solid rgba(255,255,255,.25);
+  border:2px solid rgba(0,212,170,.2);
+  box-shadow:0 0 40px rgba(0,212,170,.15),0 8px 32px rgba(0,0,0,.4);
 }
-.ab-logo img{width:86px;height:86px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.2))}
-.ab-title{font-size:30px;font-weight:800}
-.ab-ver{font-size:13px;opacity:.72;margin-top:4px}
+.ab-logo img{
+  width:104px;height:104px;object-fit:contain;
+  filter:drop-shadow(0 0 16px rgba(0,212,170,.3)) drop-shadow(0 4px 12px rgba(0,0,0,.4));
+}
+.ab-title{font-size:30px;font-weight:900;color:var(--tx);letter-spacing:-.5px}
+.ab-ver{font-size:13px;color:var(--tx3);margin-top:4px}
 .ab-body{padding:20px 18px 44px}
-.ab-card{background:var(--sf);border-radius:var(--r);border:1.5px solid var(--bd);padding:16px;margin-bottom:12px}
-.ab-ct{font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.9px;margin-bottom:10px}
+.ab-card{
+  background:var(--sf);border-radius:var(--r);
+  border:1.5px solid var(--bd);padding:16px;margin-bottom:12px;
+}
+.ab-ct{font-size:11px;font-weight:700;color:var(--c);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
 .ab-card p{font-size:14px;color:var(--tx2);line-height:1.7}
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.st{background:var(--bg);border-radius:var(--rs);padding:14px;text-align:center;border:1px solid var(--bd)}
-.st-n{font-size:22px;font-weight:800;color:var(--teal)}
-.st-l{font-size:11px;color:var(--tx3);margin-top:2px;font-weight:500}
+.st{background:var(--sf2);border-radius:var(--rs);padding:14px;text-align:center;border:1px solid var(--bd)}
+.st-n{font-size:22px;font-weight:800;color:var(--c)}
+.st-l{font-size:11px;color:var(--tx2);margin-top:2px;font-weight:500}
 .f-list{list-style:none}
-.f-list li{display:flex;align-items:flex-start;gap:9px;padding:8px 0;font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd)}
+.f-list li{
+  display:flex;align-items:flex-start;gap:9px;padding:8px 0;
+  font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd);
+}
 .f-list li:last-child{border-bottom:none}
-.f-list li::before{content:'✓';color:var(--teal);font-weight:800;flex-shrink:0;margin-top:1px}
+.f-list li::before{content:'✓';color:var(--c);font-weight:800;flex-shrink:0;margin-top:1px}
 .built{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0}
-.built strong{color:var(--teal)}
+.built strong{color:var(--c)}
 
-/* ── SIDE MENU ──────────────────────────── */
+/* ══ SIDE MENU ══════════════════════════════ */
 #mOverlay{
   position:absolute;inset:0;z-index:450;
-  background:rgba(15,23,42,.45);
-  opacity:0;pointer-events:none;
-  transition:opacity .3s;backdrop-filter:blur(4px);
+  background:rgba(0,0,0,.72);opacity:0;pointer-events:none;
+  transition:opacity .3s;backdrop-filter:blur(6px);
 }
 #mOverlay.on{opacity:1;pointer-events:all}
 #mDrawer{
   position:absolute;top:0;left:0;bottom:0;width:285px;z-index:460;
-  background:var(--sf);transform:translateX(-100%);
+  background:var(--sf);border-right:1.5px solid var(--bd);
+  transform:translateX(-100%);
   transition:transform .36s cubic-bezier(.32,.72,0,1);
   display:flex;flex-direction:column;
-  box-shadow:6px 0 30px rgba(0,0,0,.15);
+  box-shadow:8px 0 40px rgba(0,0,0,.7);
 }
 #mDrawer.on{transform:translateX(0)}
-.md-hdr{background:linear-gradient(135deg,var(--teal-d) 0%,var(--teal-l) 100%);padding:52px 20px 24px;color:#fff}
-.md-lr{display:flex;align-items:center;gap:12px}
-.md-logo{
-  width:52px;height:52px;background:rgba(255,255,255,.18);
-  border-radius:14px;display:flex;align-items:center;justify-content:center;
-  border:1px solid rgba(255,255,255,.28);flex-shrink:0;
+.md-hdr{
+  background:linear-gradient(145deg,#0A1F35 0%,#0D2A44 100%);
+  padding:52px 20px 24px;color:var(--tx);
+  border-bottom:1px solid var(--bd);position:relative;
 }
-.md-logo img{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.18))}
-.md-title{font-size:22px;font-weight:800}
-.md-tag{font-size:12px;opacity:.78;margin-top:6px}
+.md-hdr::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--c),transparent);
+}
+.md-lr{display:flex;align-items:center;gap:13px}
+.md-logo{
+  width:62px;height:62px;
+  background:rgba(0,212,170,.08);
+  border-radius:18px;display:flex;align-items:center;justify-content:center;
+  border:2px solid rgba(0,212,170,.2);flex-shrink:0;
+  box-shadow:0 0 20px rgba(0,212,170,.1);
+}
+.md-logo img{
+  width:50px;height:50px;object-fit:contain;
+  filter:drop-shadow(0 0 10px rgba(0,212,170,.3));
+}
+.md-title{font-size:22px;font-weight:900;color:var(--tx);letter-spacing:-.3px}
+.md-tag{font-size:12px;color:var(--tx3);margin-top:6px}
 .md-menu{padding:14px 10px;flex:1;overflow-y:auto}
 .md-item{
   display:flex;align-items:center;gap:13px;padding:14px 12px;
   border-radius:13px;cursor:pointer;color:var(--tx2);
-  font-size:15px;font-weight:500;transition:background .15s;
+  font-size:15px;font-weight:500;transition:all .15s;
 }
-.md-item:active,.md-item.on{background:var(--tp);color:var(--teal)}
-.md-item svg{width:20px;height:20px;color:var(--teal);flex-shrink:0}
+.md-item:active,.md-item.on{background:var(--cp);color:var(--c)}
+.md-item svg{width:20px;height:20px;color:var(--c);flex-shrink:0;opacity:.8}
 .md-sep{height:1px;background:var(--bd);margin:6px 0}
-.md-foot{padding:16px;font-size:12px;color:var(--tx3);text-align:center;border-top:1px solid var(--bd)}
+.md-foot{
+  padding:16px;font-size:12px;color:var(--tx3);
+  text-align:center;border-top:1px solid var(--bd);
+}
 
-/* ── EMPTY STATE ────────────────────────── */
+/* ══ EMPTY ══════════════════════════════════ */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:8px}
-.empty svg{width:46px;height:46px;color:var(--tx3);opacity:.4}
+.empty svg{width:46px;height:46px;color:var(--tx3);opacity:.35}
 .empty p{font-size:14px;color:var(--tx3)}
 
-/* ── TOAST ──────────────────────────────── */
+/* ══ TOAST ══════════════════════════════════ */
 #toast{
   position:absolute;bottom:215px;left:50%;z-index:800;
   transform:translateX(-50%) translateY(18px);
-  background:rgba(15,23,42,.92);color:#fff;
-  padding:11px 18px;border-radius:24px;
-  font-size:13px;font-weight:500;
+  background:var(--sf);border:1px solid var(--bd);color:var(--tx);
+  padding:12px 20px;border-radius:26px;
+  font-size:13px;font-weight:600;
   opacity:0;pointer-events:none;
   transition:opacity .25s,transform .25s;white-space:nowrap;
-  backdrop-filter:blur(8px);
+  box-shadow:var(--shx);backdrop-filter:blur(10px);
 }
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* ── LOADING MAP FALLBACK ───────────────── */
-#mapFallback{
-  position:absolute;inset:0;z-index:2;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:36px;text-align:center;background:var(--bg);
+/* ══ AD BANNER IN PANEL ═════════════════════ */
+.panel-ad-wrap{
+  margin:0 16px 14px;flex-shrink:0;
 }
+.panel-ad-inner{
+  display:flex;align-items:center;gap:12px;padding:12px 14px;
+  background:linear-gradient(135deg,rgba(0,212,170,.1),rgba(56,189,248,.08));
+  border:1.5px solid rgba(0,212,170,.2);
+  border-radius:14px;text-decoration:none;
+  transition:all .18s;
+}
+.panel-ad-inner:active{background:rgba(0,212,170,.16)}
 
-/* ── KEYFRAMES ──────────────────────────── */
-@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.35)}}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ══ KEYFRAMES ══════════════════════════════ */
+@keyframes pop    {from{transform:scale(.25);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp {from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse  {0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+@keyframes spin   {to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
-<!-- ══ SPLASH ══════════════════════════════ -->
+<!-- ══ SPLASH ══════════════════════════════════════ -->
 <div id="splash">
   <div class="sp-logo">
     <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png"
-         alt="Taxi Tera"
-         onerror="this.style.display='none'">
+         alt="Taxi Tera" onerror="this.style.display='none'">
   </div>
   <div class="sp-title">Taxi Tera</div>
   <div class="sp-sub" id="spSub">Find rides across Ethiopia — fast</div>
   <div class="sp-dots"><span></span><span></span><span></span></div>
 </div>
 
-<!-- ══ APP ════════════════════════════════ -->
+<!-- ══ APP ══════════════════════════════════════════ -->
 <div id="app">
-
-  <!-- Map container -->
   <div id="map"></div>
 
-  <!-- Language toggle -->
   <div id="langBar">
     <button class="lb on" id="btnEN" onclick="setLang('en')">EN</button>
     <button class="lb"    id="btnAM" onclick="setLang('am')">አማ</button>
   </div>
 
-  <!-- Search results dropdown -->
   <div id="srBox"></div>
 
-  <!-- Top search + filters -->
   <div id="topbar">
     <div class="sbar">
       <button class="ico-btn" onclick="openMenu()">
@@ -503,19 +611,18 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
           <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
       </button>
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="sbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
       <input id="sInput" type="text" autocomplete="off" spellcheck="false"
-             oninput="onSearch(this.value)"
-             onblur="onSearchBlur()">
+             oninput="onSearch(this.value)" onblur="onSearchBlur()">
       <button class="ico-btn" id="clrBtn" onclick="clearSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
     </div>
-    <div class="chips" id="chips">
+    <div class="chips">
       <div class="chip on" data-f="all"       onclick="setFilter('all')">      <span>🗺️</span><span class="ct" data-k="all">All</span></div>
       <div class="chip"    data-f="minibus"   onclick="setFilter('minibus')">  <span>🚌</span><span class="ct" data-k="minibus">Minibus</span></div>
       <div class="chip"    data-f="bajaj"     onclick="setFilter('bajaj')">    <span>🛺</span><span class="ct" data-k="bajaj">Bajaj</span></div>
@@ -524,7 +631,6 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- Locate FAB -->
   <button id="fab" onclick="locateMe()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
@@ -543,32 +649,27 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </div>
     <div class="slist" id="sList"></div>
     <!-- Adsterra Banner Ad -->
-    <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
-       target="_blank" rel="noopener"
-       style="display:block;margin:0 16px 16px;border-radius:12px;overflow:hidden;flex-shrink:0;text-decoration:none">
-      <div style="background:linear-gradient(135deg,#0F766E,#0EA5E9);padding:12px 16px;display:flex;align-items:center;gap:10px;border-radius:12px">
-        <span style="font-size:22px">🚕</span>
+    <div class="panel-ad-wrap">
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
+         target="_blank" rel="noopener" class="panel-ad-inner">
+        <span style="font-size:24px;flex-shrink:0">🚖</span>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;color:#fff">Taxi Tera Partners</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.8)">Tap to explore ride deals</div>
+          <div style="font-size:13px;font-weight:700;color:#E2EDFF">Taxi Tera Partners</div>
+          <div style="font-size:11px;color:#8899BB;margin-top:1px">Tap to explore ride deals</div>
         </div>
-        <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,.7);background:rgba(255,255,255,.15);padding:4px 9px;border-radius:8px;flex-shrink:0">Ad</div>
-      </div>
-    </a>
+        <span style="font-size:10px;font-weight:700;color:#4A5880;background:#1E2840;border:1px solid #263152;padding:3px 8px;border-radius:7px;flex-shrink:0">Ad</span>
+      </a>
+    </div>
   </div>
 
-  <!-- Station detail page -->
+  <!-- Station Detail -->
   <div id="detail">
-    <div class="d-hdr" id="dHdr">
+    <div class="d-hdr">
       <button class="d-back" onclick="closeDetail()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <button class="d-fav" id="dFav" onclick="toggleFav()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
       <div class="d-ico" id="dIco"></div>
       <div class="d-name" id="dName"></div>
@@ -589,9 +690,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div id="dHours"></div>
     </div>
     <button class="nav-btn" onclick="startNav()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-      </svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
       <span id="lNav">Navigate on Map</span>
     </button>
     <button class="share-btn" onclick="shareStation()">
@@ -604,23 +703,19 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </button>
   </div>
 
-  <!-- In-app navigation bar -->
+  <!-- Nav Bar -->
   <div id="navBar">
     <div class="nb-row">
       <div class="nb-info">
         <div class="nb-dest" id="nbDest">—</div>
         <div class="nb-meta">
-          <span id="nbDist">—</span>
-          <span class="nb-dot">·</span>
-          <span id="nbTime">—</span>
-          <span class="nb-dot">·</span>
+          <span id="nbDist">—</span><span class="nb-dot">·</span>
+          <span id="nbTime">—</span><span class="nb-dot">·</span>
           <span id="lWalk2">🚶 Walking</span>
         </div>
       </div>
       <button class="nb-stop" onclick="stopNav()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         <span id="lStop">Stop</span>
       </button>
     </div>
@@ -630,13 +725,11 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- About page -->
+  <!-- About -->
   <div id="about">
     <div class="ab-hdr">
       <button class="ab-back" onclick="closeAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
       <div class="ab-logo">
         <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png"
@@ -646,12 +739,8 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="ab-ver">v1.0.0 · Prototype</div>
     </div>
     <div class="ab-body">
-      <div class="ab-card">
-        <div class="ab-ct" id="lAbout">About</div>
-        <p id="lAboutTxt">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.</p>
-      </div>
-      <div class="ab-card">
-        <div class="ab-ct" id="lStats">Stats</div>
+      <div class="ab-card"><div class="ab-ct" id="lAbout">About</div><p id="lAboutTxt">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.</p></div>
+      <div class="ab-card"><div class="ab-ct" id="lStats">Stats</div>
         <div class="sg">
           <div class="st"><div class="st-n">120+</div><div class="st-l" id="lStatS">Stations</div></div>
           <div class="st"><div class="st-n">8</div><div class="st-l" id="lStatC">Cities</div></div>
@@ -659,8 +748,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
           <div class="st"><div class="st-n">Free</div><div class="st-l" id="lStatF">Always</div></div>
         </div>
       </div>
-      <div class="ab-card">
-        <div class="ab-ct" id="lFeat">Features</div>
+      <div class="ab-card"><div class="ab-ct" id="lFeat">Features</div>
         <ul class="f-list">
           <li id="lF1">GPS nearby detection</li>
           <li id="lF2">Filter by Minibus, Bajaj, Ride-hailing</li>
@@ -674,7 +762,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- Menu overlay + drawer -->
+  <!-- Menu -->
   <div id="mOverlay" onclick="closeMenu()"></div>
   <div id="mDrawer">
     <div class="md-hdr">
@@ -683,632 +771,348 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
           <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png"
                alt="Logo" onerror="this.style.display='none'">
         </div>
-        <div class="md-title">Taxi Tera</div>
+        <div>
+          <div class="md-title">Taxi Tera</div>
+          <div class="md-tag" id="lTagline">Your ride guide in Ethiopia</div>
+        </div>
       </div>
-      <div class="md-tag" id="lTagline">Your ride guide in Ethiopia</div>
     </div>
     <div class="md-menu">
       <div class="md-item on" onclick="closeMenu()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span id="lHome">Home Map</span>
       </div>
       <div class="md-item" onclick="closeMenu();setFilter('favorites')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span id="lSaved">Saved Stations</span>
       </div>
       <div class="md-sep"></div>
       <div class="md-item" onclick="closeMenu();openAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span id="lAboutM">About</span>
       </div>
       <div class="md-sep"></div>
       <div class="md-item" onclick="closeMenu();setLang(lang==='en'?'am':'en')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
         <span id="lLang">Switch to አማርኛ</span>
       </div>
+      <div class="md-sep"></div>
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
+         target="_blank" rel="noopener" onclick="closeMenu()"
+         style="display:flex;align-items:center;gap:13px;padding:14px 12px;border-radius:13px;text-decoration:none;
+                background:rgba(0,212,170,.07);border:1px solid rgba(0,212,170,.18);margin:0 2px;transition:background .15s">
+        <span style="font-size:20px;flex-shrink:0">🚖</span>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#E2EDFF">Ride Deals</div>
+          <div style="font-size:11px;color:#8899BB;margin-top:1px">Sponsored · Tap to explore</div>
+        </div>
+        <span style="margin-left:auto;font-size:10px;font-weight:700;color:#4A5880;background:#1E2840;border:1px solid #263152;padding:3px 8px;border-radius:6px;flex-shrink:0">Ad</span>
+      </a>
     </div>
     <div class="md-foot">v1.0.0 · Tejo Studio</div>
   </div>
 
-  <!-- Toast notification -->
   <div id="toast"></div>
-
-</div><!-- #app -->
+</div>
 
 <script>
 'use strict';
-// ══════════════════════════════════════════════
-//  TRANSLATIONS
-// ══════════════════════════════════════════════
-const TR = {
-  en:{
-    spSub:'Find rides across Ethiopia — fast',
-    ph:'Search taxi stations…',
-    all:'All',minibus:'Minibus',bajaj:'Bajaj',ride:'Ride',saved:'Saved',
-    nearTitle:'Nearby Stations',found:'found',
-    dist:'Distance',walk:'Walk time',rating:'Rating',
-    svcs:'Services Available',hrs:'Operating Hours',
-    nav:'Navigate on Map',share:'Share station',
-    walk2:'🚶 Walking',stop:'Stop',route:'Getting walking route…',
-    about:'About',stats:'Stats',feat:'Features',
-    statS:'Stations',statC:'Cities',statT:'Types',statF:'Always',
-    aboutTxt:'Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.',
-    f1:'GPS nearby detection',f2:'Filter by Minibus, Bajaj, Ride-hailing',
-    f3:'In-app walking route — no Google Maps needed',
-    f4:'Save favourite stations',f5:'Amharic & English support',
-    f6:'Operating hours for each station',
-    tagline:'Your ride guide in Ethiopia',
-    home:'Home Map',aboutM:'About',langSwitch:'Switch to አማርኛ',
-    locOk:'📍 Location updated',locFail:'📍 Showing Addis Ababa',
-    navStop:'🛑 Navigation stopped',approx:'⚠️ Showing approximate route',
-    copied:'📋 Copied!',favAdd:'⭐ Station saved!',favRm:'💔 Removed from saved',
-    today:'Today',noSt:'No stations found',noMatch:'No stations match your search',
-    closed:'Closed',open24:'Open 24 hrs',
-  },
-  am:{
-    spSub:'በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት',
-    ph:'የታክሲ ጣቢያ ፈልግ…',
-    all:'ሁሉም',minibus:'ሚኒባስ',bajaj:'ባጃጅ',ride:'ሪድ',saved:'የተቀመጡ',
-    nearTitle:'ቅርብ ጣቢያዎች',found:'ተገኝቷል',
-    dist:'ርቀት',walk:'የእግር ጊዜ',rating:'ደረጃ',
-    svcs:'አገልግሎቶች',hrs:'የሥራ ሰዓት',
-    nav:'በካርታ ላይ ለማሄድ',share:'ጣቢያ አጋራ',
-    walk2:'🚶 በእግር',stop:'አቁም',route:'የእግር መስመር…',
-    about:'ስለ',stats:'ስታቲስቲክስ',feat:'ባህሪያት',
-    statS:'ጣቢያዎች',statC:'ከተሞች',statT:'ዓይነቶች',statF:'ሁሌም',
-    aboutTxt:'ታክሲ ተራ በኢትዮጵያ ቅርብ ታክሲ ጣቢያዎችን፣ ባጃጅ ቆሚያዎችን እና ሪድ-ሃይሊንግ ቦታዎችን ለማግኘት ይረዳዎታል።',
-    f1:'GPS ቅርብ ፈለጋ',f2:'በዓይነት ማጣሪያ',
-    f3:'ካርታ ላይ ሄዶ — ጉግል ካርታ አያስፈልግም',
-    f4:'ተወዳጅ ጣቢያዎች',f5:'አማርኛ እና እንግሊዝኛ',
-    f6:'የሥራ ሰዓት',
-    tagline:'የእርስዎ ታክሲ መመሪያ',
-    home:'ካርታ',aboutM:'ስለ',langSwitch:'Switch to English',
-    locOk:'📍 አካባቢ ተዘምኗል',locFail:'📍 አዲስ አበባ ማዕከል',
-    navStop:'🛑 ማሰሻ ቆሟል',approx:'⚠️ ግምታዊ መስመር',
-    copied:'📋 ተቀድቷል!',favAdd:'⭐ ጣቢያ ተቀምጧል!',favRm:'💔 ከተቀመጡ ተወግዷል',
-    today:'ዛሬ',noSt:'ጣቢያ አልተገኘም',noMatch:'የሚዛመድ ጣቢያ የለም',
-    closed:'ተዘግቷል',open24:'24 ሰዓት ክፍት',
-  }
+const TR={
+  en:{spSub:'Find rides across Ethiopia — fast',ph:'Search taxi stations…',all:'All',minibus:'Minibus',bajaj:'Bajaj',ride:'Ride',saved:'Saved',nearTitle:'Nearby Stations',found:'found',dist:'Distance',walk:'Walk time',rating:'Rating',svcs:'Services Available',hrs:'Operating Hours',nav:'Navigate on Map',share:'Share station',walk2:'🚶 Walking',stop:'Stop',route:'Getting walking route…',about:'About',stats:'Stats',feat:'Features',statS:'Stations',statC:'Cities',statT:'Types',statF:'Always',aboutTxt:'Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.',f1:'GPS nearby detection',f2:'Filter by Minibus, Bajaj, Ride-hailing',f3:'In-app walking route — no Google Maps needed',f4:'Save favourite stations',f5:'Amharic & English support',f6:'Operating hours for each station',tagline:'Your ride guide in Ethiopia',home:'Home Map',aboutM:'About',langSwitch:'Switch to አማርኛ',locOk:'📍 Location updated',locFail:'📍 Showing Addis Ababa',navStop:'🛑 Navigation stopped',approx:'⚠️ Showing approximate route',copied:'📋 Copied!',favAdd:'⭐ Station saved!',favRm:'💔 Removed from saved',today:'Today',noSt:'No stations found',noMatch:'No stations match your search',closed:'Closed',open24:'Open 24 hrs'},
+  am:{spSub:'በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት',ph:'የታክሲ ጣቢያ ፈልግ…',all:'ሁሉም',minibus:'ሚኒባስ',bajaj:'ባጃጅ',ride:'ሪድ',saved:'የተቀመጡ',nearTitle:'ቅርብ ጣቢያዎች',found:'ተገኝቷል',dist:'ርቀት',walk:'የእግር ጊዜ',rating:'ደረጃ',svcs:'አገልግሎቶች',hrs:'የሥራ ሰዓት',nav:'በካርታ ላይ ለማሄድ',share:'ጣቢያ አጋራ',walk2:'🚶 በእግር',stop:'አቁም',route:'የእግር መስመር…',about:'ስለ',stats:'ስታቲስቲክስ',feat:'ባህሪያት',statS:'ጣቢያዎች',statC:'ከተሞች',statT:'ዓይነቶች',statF:'ሁሌም',aboutTxt:'ታክሲ ተራ በኢትዮጵያ ቅርብ ታክሲ ጣቢያዎችን፣ ባጃጅ ቆሚያዎችን እና ሪድ-ሃይሊንግ ቦታዎችን ለማግኘት ይረዳዎታል።',f1:'GPS ቅርብ ፈለጋ',f2:'በዓይነት ማጣሪያ',f3:'ካርታ ላይ ሄዶ',f4:'ተወዳጅ ጣቢያዎች',f5:'አማርኛ እና እንግሊዝኛ',f6:'የሥራ ሰዓት',tagline:'የእርስዎ ታክሲ መመሪያ',home:'ካርታ',aboutM:'ስለ',langSwitch:'Switch to English',locOk:'📍 አካባቢ ተዘምኗል',locFail:'📍 አዲስ አበባ ማዕከል',navStop:'🛑 ማሰሻ ቆሟል',approx:'⚠️ ግምታዊ መስመር',copied:'📋 ተቀድቷል!',favAdd:'⭐ ጣቢያ ተቀምጧል!',favRm:'💔 ከተቀመጡ ተወግዷል',today:'ዛሬ',noSt:'ጣቢያ አልተገኘም',noMatch:'የሚዛመድ ጣቢያ የለም',closed:'ተዘግቷል',open24:'24 ሰዓት ክፍት'}
 };
 
-// ══════════════════════════════════════════════
-//  STATION DATA
-// ══════════════════════════════════════════════
-const ST = [
-  {id:1, name:'Megenagna Minibus Hub',   am:'መገናኛ ሚኒባስ ማዕከል',   t:'minibus',lat:9.0272,lng:38.7678,addr:'Megenagna, Addis Ababa',    addrAm:'መገናኛ፣ አዲስ አበባ',    r:['Bole','Piassa','Merkato','Sarbet'],   rat:4.6,h:['5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–10:00 PM','6:00 AM–9:00 PM','Closed']},
-  {id:2, name:'Bole Atlas Station',      am:'ቦሌ አትላስ ጣቢያ',        t:'minibus',lat:8.9975,lng:38.7883,addr:'Bole Road, Addis Ababa',    addrAm:'ቦሌ መንገድ፣ አዲስ አበባ', r:['Megenagna','Piassa','Stadium'],       rat:4.4,h:['5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–9:00 PM','6:00 AM–8:00 PM','Closed']},
-  {id:3, name:'Piassa Bajaj Stop',       am:'ፒያሳ ባጃጅ ቆሚ',         t:'bajaj',  lat:9.0352,lng:38.7517,addr:'Piassa, Addis Ababa',       addrAm:'ፒያሳ፣ አዲስ አበባ',     r:['Local routes','Merkato area'],       rat:4.1,h:['6:00 AM–8:00 PM','6:00 AM–8:00 PM','6:00 AM–8:00 PM','6:00 AM–8:00 PM','6:00 AM–8:00 PM','7:00 AM–6:00 PM','7:00 AM–4:00 PM']},
-  {id:4, name:'Mexico Square Stop',      am:'ሜክሲኮ አደባባይ ቆሚ',      t:'minibus',lat:9.0177,lng:38.7497,addr:'Mexico Square, Addis Ababa', addrAm:'ሜክሲኮ አደባባይ፣ አ.አ',  r:['Piassa','Sarbet','Megenagna','4 Kilo'],rat:4.7,h:['5:00 AM–9:30 PM','5:00 AM–9:30 PM','5:00 AM–9:30 PM','5:00 AM–9:30 PM','5:00 AM–10:00 PM','5:30 AM–9:00 PM','6:00 AM–7:00 PM']},
-  {id:5, name:'Sarbet Minibus Terminal', am:'ሰርቤት ሚኒባስ ተርሚናል',   t:'minibus',lat:8.9979,lng:38.7577,addr:'Sarbet, Addis Ababa',       addrAm:'ሰርቤት፣ አዲስ አበባ',    r:['Mexico','CMC','Bole'],               rat:4.3,h:['5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:30 PM','6:00 AM–7:00 PM','Closed']},
-  {id:6, name:'CMC Ride-hailing Zone',   am:'ሲኤምሲ ሪድ ዞን',         t:'ride',   lat:9.0519,lng:38.8043,addr:'CMC Road, Addis Ababa',      addrAm:'ሲኤምሲ፣ አዲስ አበባ',    r:['Ride','FERES','Uber'],               rat:4.8,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
-  {id:7, name:'Gotera Bajaj Terminal',   am:'ጎተራ ባጃጅ ተርሚናል',     t:'bajaj',  lat:8.9889,lng:38.7693,addr:'Gotera, Addis Ababa',       addrAm:'ጎተራ፣ አዲስ አበባ',     r:['Akaki route','Sarbet route'],        rat:3.9,h:['6:00 AM–7:30 PM','6:00 AM–7:30 PM','6:00 AM–7:30 PM','6:00 AM–7:30 PM','6:00 AM–8:00 PM','7:00 AM–6:00 PM','Closed']},
-  {id:8, name:'Stadium Taxi Hub',        am:'ስታዲዬም ታክሲ ሃብ',       t:'minibus',lat:9.0220,lng:38.7523,addr:'Stadium, Addis Ababa',      addrAm:'ስታዲዬም፣ አዲስ አበባ',   r:['Piassa','Mexico','Bole','Arat Kilo'],rat:4.5,h:['5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–9:00 PM','5:00 AM–9:30 PM','5:30 AM–8:30 PM','6:00 AM–6:00 PM']},
-  {id:9, name:'Bole Ride Pickup',        am:'ቦሌ ሪድ ፒካፕ',           t:'ride',   lat:9.0054,lng:38.7884,addr:'Bole Airport Area',          addrAm:'ቦሌ አየር ማረፊያ',      r:['Ride','FERES','Pickup'],             rat:4.9,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
-  {id:10,name:'4 Kilo Minibus Stop',     am:'4 ኪሎ ሚኒባስ ቆሚ',        t:'minibus',lat:9.0381,lng:38.7634,addr:'4 Kilo, Addis Ababa',       addrAm:'4 ኪሎ፣ አዲስ አበባ',    r:['Piassa','Arat Kilo','6 Kilo','Mexico'],rat:4.2,h:['5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–8:30 PM','5:30 AM–9:00 PM','6:00 AM–8:00 PM','7:00 AM–5:00 PM']},
-  {id:11,name:'Merkato Bajaj Rank',      am:'መርካቶ ባጃጅ ደረጃ',        t:'bajaj',  lat:9.0337,lng:38.7365,addr:'Merkato, Addis Ababa',      addrAm:'መርካቶ፣ አዲስ አበባ',    r:['Piassa','Gotera','Shabelle'],        rat:4.0,h:['6:00 AM–7:00 PM','6:00 AM–7:00 PM','6:00 AM–7:00 PM','6:00 AM–7:00 PM','6:00 AM–7:00 PM','7:00 AM–5:00 PM','8:00 AM–2:00 PM']},
-  {id:12,name:'Saris Minibus Station',   am:'ሳሪስ ሚኒባስ ጣቢያ',        t:'minibus',lat:8.9743,lng:38.7813,addr:'Saris, Addis Ababa',        addrAm:'ሳሪስ፣ አዲስ አበባ',     r:['Gotera','Kaliti','Akaki'],           rat:4.1,h:['5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:00 PM','5:30 AM–8:30 PM','6:00 AM–7:00 PM','Closed']},
+const ST=[
+  {id:1, name:'Megenagna Minibus Hub',   am:'መገናኛ ሚኒባስ ማዕከል',  t:'minibus',lat:9.0272,lng:38.7678,addr:'Megenagna, Addis Ababa',   addrAm:'መገናኛ፣ አዲስ አበባ',   r:['Bole','Piassa','Merkato','Sarbet'],    rat:4.6,h:['5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:00','5:00–22:00','6:00–21:00','Closed']},
+  {id:2, name:'Bole Atlas Station',      am:'ቦሌ አትላስ ጣቢያ',       t:'minibus',lat:8.9975,lng:38.7883,addr:'Bole Road, Addis Ababa',   addrAm:'ቦሌ መንገድ፣ አዲስ አበባ',r:['Megenagna','Piassa','Stadium'],       rat:4.4,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','Closed']},
+  {id:3, name:'Piassa Bajaj Stop',       am:'ፒያሳ ባጃጅ ቆሚ',        t:'bajaj',  lat:9.0352,lng:38.7517,addr:'Piassa, Addis Ababa',        addrAm:'ፒያሳ፣ አዲስ አበባ',    r:['Local routes','Merkato area'],        rat:4.1,h:['6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','7:00–18:00','7:00–16:00']},
+  {id:4, name:'Mexico Square Stop',      am:'ሜክሲኮ አደባባይ ቆሚ',     t:'minibus',lat:9.0177,lng:38.7497,addr:'Mexico Square, Addis Ababa',addrAm:'ሜክሲኮ አደባባይ፣ አ.አ', r:['Piassa','Sarbet','Megenagna','4 Kilo'],rat:4.7,h:['5:00–21:30','5:00–21:30','5:00–21:30','5:00–21:30','5:00–22:00','5:30–21:00','6:00–19:00']},
+  {id:5, name:'Sarbet Minibus Terminal', am:'ሰርቤት ሚኒባስ ተርሚናል',  t:'minibus',lat:8.9979,lng:38.7577,addr:'Sarbet, Addis Ababa',        addrAm:'ሰርቤት፣ አዲስ አበባ',   r:['Mexico','CMC','Bole'],                rat:4.3,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']},
+  {id:6, name:'CMC Ride-hailing Zone',   am:'ሲኤምሲ ሪድ ዞን',        t:'ride',   lat:9.0519,lng:38.8043,addr:'CMC Road, Addis Ababa',       addrAm:'ሲኤምሲ፣ አዲስ አበባ',   r:['Ride','FERES','Uber'],                rat:4.8,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
+  {id:7, name:'Gotera Bajaj Terminal',   am:'ጎተራ ባጃጅ ተርሚናል',    t:'bajaj',  lat:8.9889,lng:38.7693,addr:'Gotera, Addis Ababa',         addrAm:'ጎተራ፣ አዲስ አበባ',    r:['Akaki route','Sarbet route'],         rat:3.9,h:['6:00–19:30','6:00–19:30','6:00–19:30','6:00–19:30','6:00–20:00','7:00–18:00','Closed']},
+  {id:8, name:'Stadium Taxi Hub',        am:'ስታዲዬም ታክሲ ሃብ',      t:'minibus',lat:9.0220,lng:38.7523,addr:'Stadium, Addis Ababa',         addrAm:'ስታዲዬም፣ አዲስ አበባ',  r:['Piassa','Mexico','Bole','Arat Kilo'], rat:4.5,h:['5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:30','5:30–20:30','6:00–18:00']},
+  {id:9, name:'Bole Ride Pickup',        am:'ቦሌ ሪድ ፒካፕ',          t:'ride',   lat:9.0054,lng:38.7884,addr:'Bole Airport Area',            addrAm:'ቦሌ አየር ማረፊያ',     r:['Ride','FERES','Pickup'],              rat:4.9,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
+  {id:10,name:'4 Kilo Minibus Stop',     am:'4 ኪሎ ሚኒባስ ቆሚ',       t:'minibus',lat:9.0381,lng:38.7634,addr:'4 Kilo, Addis Ababa',          addrAm:'4 ኪሎ፣ አዲስ አበባ',   r:['Piassa','Arat Kilo','6 Kilo'],       rat:4.2,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','7:00–17:00']},
+  {id:11,name:'Merkato Bajaj Rank',      am:'መርካቶ ባጃጅ ደረጃ',       t:'bajaj',  lat:9.0337,lng:38.7365,addr:'Merkato, Addis Ababa',         addrAm:'መርካቶ፣ አዲስ አበባ',   r:['Piassa','Gotera','Shabelle'],        rat:4.0,h:['6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','7:00–17:00','8:00–14:00']},
+  {id:12,name:'Saris Minibus Station',   am:'ሳሪስ ሚኒባስ ጣቢያ',       t:'minibus',lat:8.9743,lng:38.7813,addr:'Saris, Addis Ababa',           addrAm:'ሳሪስ፣ አዲስ አበባ',    r:['Gotera','Kaliti','Akaki'],           rat:4.1,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']},
 ];
 
-const TM = {
-  minibus:{emoji:'🚌',label:'Minibus',   am:'ሚኒባስ'},
-  bajaj:  {emoji:'🛺',label:'Bajaj',     am:'ባጃጅ'},
-  ride:   {emoji:'🚗',label:'Ride',      am:'ሪድ'},
-};
-const DAYS_EN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const DAYS_AM = ['ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','አርብ','ቅዳሜ','እሁድ'];
+const TM={minibus:{emoji:'🚌',label:'Minibus',am:'ሚኒባስ'},bajaj:{emoji:'🛺',label:'Bajaj',am:'ባጃጅ'},ride:{emoji:'🚗',label:'Ride',am:'ሪድ'}};
+const DAYS_EN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAYS_AM=['ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','አርብ','ቅዳሜ','እሁድ'];
 
-// ══════════════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════════════
-let map = null, uMarker = null;
-let uLat = 9.0222, uLng = 38.7469;
-let filt = 'all';
-let cur  = null;       // current station
-let panelOpen = false;
-let lang = localStorage.getItem('ttLang') || 'en';
-let favs = JSON.parse(localStorage.getItem('ttFavs') || '[]');
-let rLines = [];       // active route polyline layers
+let map=null,uMarker=null;
+let uLat=9.0222,uLng=38.7469;
+let filt='all',cur=null,panelOpen=false;
+let lang=localStorage.getItem('ttLang')||'en';
+let favs=JSON.parse(localStorage.getItem('ttFavs')||'[]');
+let rLines=[];
 
-const t = k => TR[lang][k] || k;
-const $ = id => document.getElementById(id);
+const t=k=>TR[lang][k]||k;
+const $=id=>document.getElementById(id);
 
-// ══════════════════════════════════════════════
-//  BOOT
-// ══════════════════════════════════════════════
-window.addEventListener('load', () => {
+window.addEventListener('load',()=>{
   applyLang();
-  setTimeout(() => {
+  setTimeout(()=>{
     $('splash').classList.add('hide');
-    setTimeout(() => {
-      $('splash').style.display = 'none';
-      if (typeof L === 'undefined') {
-        showMapError(); return;
-      }
-      initMap();
-      getLocation();
-    }, 650);
-  }, 2200);
+    setTimeout(()=>{
+      $('splash').style.display='none';
+      if(typeof L==='undefined'){showMapErr();return;}
+      initMap();getLocation();
+    },700);
+  },2300);
 });
 
-function showMapError() {
-  $('map').innerHTML =
-    '<div class="empty" style="height:100%;justify-content:center">' +
-    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
-    '<p style="font-size:15px;font-weight:600;color:#0f172a">Map failed to load</p>' +
-    '<p>Check your internet connection</p>' +
-    '<button onclick="location.reload()" style="margin-top:8px;padding:13px 26px;background:#0d9488;color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 14px rgba(13,148,136,.35)">🔄 Reload</button>' +
-    '</div>';
-  renderList();
-  panelOpen = false; togglePanel();
+function showMapErr(){
+  $('map').innerHTML='<div class="empty" style="height:100%;background:var(--bg)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;color:var(--tx)">Map failed to load</p><p>Check your connection</p><button onclick="location.reload()" style="padding:13px 26px;background:var(--c);color:#050D1A;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;box-shadow:0 4px 16px rgba(0,212,170,.4)">🔄 Reload</button></div>';
+  renderList();panelOpen=false;togglePanel();
 }
 
-// ══════════════════════════════════════════════
-//  LANGUAGE
-// ══════════════════════════════════════════════
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('ttLang', l);
-  $('btnEN').classList.toggle('on', l === 'en');
-  $('btnAM').classList.toggle('on', l === 'am');
-  applyLang();
-  renderList();
-  if (cur) refreshDetailLabels();
-  showToast(l === 'am' ? '🇪🇹 አማርኛ ተቀናብሯል' : '🇬🇧 English set');
+function setLang(l){
+  lang=l;localStorage.setItem('ttLang',l);
+  $('btnEN').classList.toggle('on',l==='en');
+  $('btnAM').classList.toggle('on',l==='am');
+  applyLang();renderList();
+  if(cur)refreshDLabels();
+  showToast(l==='am'?'🇪🇹 አማርኛ ተቀናብሯል':'🇬🇧 English set');
 }
 
-function applyLang() {
-  const L = TR[lang];
-  // Splash
-  const ss = $('spSub'); if (ss) ss.textContent = L.spSub;
-  // Input placeholder
-  const inp = $('sInput'); if (inp) inp.placeholder = L.ph;
-  // Chip labels
-  document.querySelectorAll('.ct').forEach(el => {
-    const k = el.dataset.k; if (L[k]) el.textContent = L[k];
-  });
-  // Static labels
-  const m = {
-    pTitle:'nearTitle', lDist:'dist', lWalk:'walk', lRate:'rating',
-    lSvcs:'svcs', lHours:'hrs', lNav:'nav', lShare:'share',
-    lWalk2:'walk2', lStop:'stop', lRoute:'route',
-    lAbout:'about', lStats:'stats', lFeat:'feat',
-    lStatS:'statS', lStatC:'statC', lStatT:'statT', lStatF:'statF',
-    lAboutTxt:'aboutTxt',
-    lF1:'f1',lF2:'f2',lF3:'f3',lF4:'f4',lF5:'f5',lF6:'f6',
-    lTagline:'tagline', lHome:'home', lSaved:'saved',
-    lAboutM:'aboutM', lLang:'langSwitch',
-  };
-  Object.entries(m).forEach(([id, key]) => {
-    const el = $(id); if (el && L[key]) el.textContent = L[key];
-  });
+function applyLang(){
+  const L=TR[lang];
+  const si=$('sInput');if(si)si.placeholder=L.ph;
+  const ss=$('spSub');if(ss)ss.textContent=L.spSub;
+  document.querySelectorAll('.ct').forEach(el=>{const k=el.dataset.k;if(L[k])el.textContent=L[k];});
+  const map2={pTitle:'nearTitle',lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route',lAbout:'about',lStats:'stats',lFeat:'feat',lStatS:'statS',lStatC:'statC',lStatT:'statT',lStatF:'statF',lAboutTxt:'aboutTxt',lF1:'f1',lF2:'f2',lF3:'f3',lF4:'f4',lF5:'f5',lF6:'f6',lTagline:'tagline',lHome:'home',lSaved:'saved',lAboutM:'aboutM',lLang:'langSwitch'};
+  Object.entries(map2).forEach(([id,key])=>{const el=$(id);if(el&&L[key])el.textContent=L[key];});
 }
 
-// ══════════════════════════════════════════════
-//  MAP INIT
-// ══════════════════════════════════════════════
-function initMap() {
-  map = L.map('map', { zoomControl:false, attributionControl:true })
-         .setView([uLat, uLng], 14);
-
-  // CartoDB Voyager — modern Google Maps-like aesthetic, no API key
-  L.tileLayer(
-    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    { attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains:'abcd', maxZoom:19 }
-  ).addTo(map);
-
-  // User dot
-  const uIcon = L.divIcon({ html:'<div class="u-dot"></div>', className:'', iconSize:[16,16], iconAnchor:[8,8] });
-  uMarker = L.marker([uLat, uLng], { icon:uIcon, zIndexOffset:1000 }).addTo(map);
-
-  renderMarkers();
-  renderList();
-  setTimeout(() => { panelOpen = false; togglePanel(); }, 700);
+function initMap(){
+  map=L.map('map',{zoomControl:false,attributionControl:true}).setView([uLat,uLng],14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+    attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd',maxZoom:19
+  }).addTo(map);
+  const uIcon=L.divIcon({html:'<div class="u-dot"></div>',className:'',iconSize:[18,18],iconAnchor:[9,9]});
+  uMarker=L.marker([uLat,uLng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
+  renderMarkers();renderList();
+  setTimeout(()=>{panelOpen=false;togglePanel();},700);
 }
 
-// ══════════════════════════════════════════════
-//  GEOLOCATION
-// ══════════════════════════════════════════════
-function getLocation() {
-  if (!navigator.geolocation) { showToast(t('locFail')); return; }
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      uLat = pos.coords.latitude;
-      uLng = pos.coords.longitude;
-      if (uMarker) uMarker.setLatLng([uLat, uLng]);
-      if (map) map.flyTo([uLat, uLng], 15, { duration:1.4 });
-      renderList(); renderMarkers();
-      showToast(t('locOk'));
-    },
-    () => showToast(t('locFail'))
-  );
+function getLocation(){
+  if(!navigator.geolocation){showToast(t('locFail'));return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    if(uMarker)uMarker.setLatLng([uLat,uLng]);
+    if(map)map.flyTo([uLat,uLng],15,{duration:1.4});
+    renderList();renderMarkers();showToast(t('locOk'));
+  },()=>showToast(t('locFail')));
 }
 
-function locateMe() {
-  const fab = $('fab');
-  fab.classList.add('spinning');
-  navigator.geolocation?.getCurrentPosition(
-    pos => {
-      uLat = pos.coords.latitude; uLng = pos.coords.longitude;
-      if (uMarker) uMarker.setLatLng([uLat, uLng]);
-      if (map) map.flyTo([uLat, uLng], 15, { duration:1 });
-      renderList(); renderMarkers();
-      fab.classList.remove('spinning');
-      showToast(t('locOk'));
-    },
-    () => { fab.classList.remove('spinning'); showToast(t('locFail')); }
-  );
+function locateMe(){
+  const fab=$('fab');fab.classList.add('spinning');
+  navigator.geolocation?.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    if(uMarker)uMarker.setLatLng([uLat,uLng]);
+    if(map)map.flyTo([uLat,uLng],15,{duration:1});
+    renderList();renderMarkers();fab.classList.remove('spinning');showToast(t('locOk'));
+  },()=>{fab.classList.remove('spinning');showToast(t('locFail'));});
 }
 
-// ══════════════════════════════════════════════
-//  DISTANCE HELPERS
-// ══════════════════════════════════════════════
-function dist(a,b,c,d) {
-  const R=6371e3, f1=a*Math.PI/180, f2=c*Math.PI/180;
-  const df=(c-a)*Math.PI/180, dl=(d-b)*Math.PI/180;
-  const x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;
-  return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-function fmtD(m)  { return m<1000 ? Math.round(m)+'m' : (m/1000).toFixed(1)+'km'; }
-function fmtW(m)  { const mn=Math.round(m/80); return mn<1?'<1 min':mn+' min'; }
-function fmtT(s)  { const m=Math.round(s/60); if(m<1)return '<1 min'; if(m<60)return m+' min'; return Math.floor(m/60)+'h '+m%60+'m'; }
+function hvs(a,b,c,d){const R=6371e3,f1=a*Math.PI/180,f2=c*Math.PI/180,df=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function fmtD(m){return m<1000?Math.round(m)+'m':((m/1000).toFixed(1))+'km';}
+function fmtW(m){const mn=Math.round(m/80);return mn<1?'<1 min':mn+' min';}
+function fmtT(s){const m=Math.round(s/60);if(m<1)return '<1 min';if(m<60)return m+' min';return Math.floor(m/60)+'h '+m%60+'m';}
 
-// ══════════════════════════════════════════════
-//  MARKERS
-// ══════════════════════════════════════════════
-function renderMarkers() {
-  if (!map) return;
-  // Remove old taxi markers only
-  map.eachLayer(l => { if (l._tt) map.removeLayer(l); });
-  getFiltered().forEach(s => {
-    const icon = L.divIcon({
-      html:`<div class="tm"><div class="tmd ${s.t}"><span>${TM[s.t].emoji}</span></div></div>`,
-      className:'', iconSize:[40,40], iconAnchor:[20,40]
-    });
-    const m = L.marker([s.lat, s.lng], { icon }).addTo(map);
-    m._tt = true;
-    m.on('click', () => openDetail(s));
+function renderMarkers(){
+  if(!map)return;
+  map.eachLayer(l=>{if(l._tt)map.removeLayer(l);});
+  getFiltered().forEach(s=>{
+    const icon=L.divIcon({html:`<div class="tm"><div class="tmd ${s.t}"><span>${TM[s.t].emoji}</span></div></div>`,className:'',iconSize:[42,42],iconAnchor:[21,42]});
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(map);
+    m._tt=true;m.on('click',()=>openDetail(s));
   });
 }
 
-// ══════════════════════════════════════════════
-//  FILTER
-// ══════════════════════════════════════════════
-function getFiltered() {
-  let list = [...ST];
-  if (filt === 'favorites') list = list.filter(s => favs.includes(s.id));
-  else if (filt !== 'all')  list = list.filter(s => s.t === filt);
-  return list.sort((a,b) => dist(uLat,uLng,a.lat,a.lng) - dist(uLat,uLng,b.lat,b.lng));
+function getFiltered(){
+  let list=[...ST];
+  if(filt==='favorites')list=list.filter(s=>favs.includes(s.id));
+  else if(filt!=='all')list=list.filter(s=>s.t===filt);
+  return list.sort((a,b)=>hvs(uLat,uLng,a.lat,a.lng)-hvs(uLat,uLng,b.lat,b.lng));
 }
 
-function setFilter(f) {
-  filt = f;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('on'));
+function setFilter(f){
+  filt=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
   document.querySelector(`.chip[data-f="${f}"]`)?.classList.add('on');
-  renderMarkers();
-  renderList();
-  if (!panelOpen) togglePanel();
+  renderMarkers();renderList();if(!panelOpen)togglePanel();
 }
 
-// ══════════════════════════════════════════════
-//  STATION LIST
-// ══════════════════════════════════════════════
-function renderList() {
-  const list = getFiltered();
-  const el   = $('sList');
-  $('pCount').textContent = list.length + ' ' + t('found');
-  $('pTitle').textContent = filt === 'favorites' ? t('saved') : t('nearTitle');
-
-  if (!list.length) {
-    el.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>'+t('noSt')+'</p></div>';
-    return;
-  }
-
-  el.innerHTML = list.map((s,i) => {
-    const d   = dist(uLat, uLng, s.lat, s.lng);
-    const nm  = lang==='am' ? s.am   : s.name;
-    const lbl = lang==='am' ? TM[s.t].am : TM[s.t].label;
-    return `<div class="s-card" style="animation-delay:${i*.045}s" onclick="openDetail(ST.find(x=>x.id===${s.id}))">
+function renderList(){
+  const list=getFiltered();
+  const el=$('sList');
+  $('pCount').textContent=list.length+' '+t('found');
+  $('pTitle').textContent=filt==='favorites'?t('saved'):t('nearTitle');
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>'+t('noSt')+'</p></div>';return;}
+  el.innerHTML=list.map((s,i)=>{
+    const d=hvs(uLat,uLng,s.lat,s.lng);
+    const nm=lang==='am'?s.am:s.name;
+    const lbl=lang==='am'?TM[s.t].am:TM[s.t].label;
+    return `<div class="s-card" style="animation-delay:${i*.04}s" onclick="openDetail(ST.find(x=>x.id===${s.id}))">
       <div class="s-ico ${s.t}">${TM[s.t].emoji}</div>
       <div class="s-info">
         <div class="s-name">${nm}</div>
-        <div class="s-meta">
-          📍 ${fmtD(d)}&emsp;🚶 ${fmtW(d)}&emsp;⭐ ${s.rat}
-        </div>
+        <div class="s-meta">📍 ${fmtD(d)}&emsp;🚶 ${fmtW(d)}&emsp;⭐ ${s.rat}</div>
       </div>
       <div class="s-badge ${s.t}">${lbl}</div>
-      <button class="go-btn" onclick="event.stopPropagation();quickNav(${s.id})" title="Navigate">
+      <button class="go-btn" onclick="event.stopPropagation();quickNav(${s.id})">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
       </button>
     </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════════════
-//  PANEL
-// ══════════════════════════════════════════════
-function togglePanel() {
-  panelOpen = !panelOpen;
-  $('panel').classList.toggle('collapsed', !panelOpen);
-  $('fab').style.bottom = panelOpen ? '232px' : '112px';
+function togglePanel(){
+  panelOpen=!panelOpen;
+  $('panel').classList.toggle('collapsed',!panelOpen);
+  $('fab').style.bottom=panelOpen?'232px':'112px';
 }
 
-// ══════════════════════════════════════════════
-//  STATION DETAIL
-// ══════════════════════════════════════════════
-function openDetail(s) {
-  if (!s) return;
-  cur = s;
-  const d = dist(uLat, uLng, s.lat, s.lng);
-  $('dIco').textContent   = TM[s.t].emoji;
-  $('dName').textContent  = lang==='am' ? s.am     : s.name;
-  $('dAddr').textContent  = lang==='am' ? s.addrAm : s.addr;
-  $('dType').textContent  = lang==='am' ? TM[s.t].am : TM[s.t].label;
-  $('dDist').textContent  = fmtD(d);
-  $('dWalk').textContent  = fmtW(d);
-  $('dRate').textContent  = s.rat + '★';
-  refreshDetailLabels();
-
-  // Routes
-  $('dSvcs').innerHTML = s.r.map(r => `<div class="svc-pill">🔹 ${r}</div>`).join('');
-
-  // Hours
-  const today = new Date().getDay();
-  const di    = today === 0 ? 6 : today - 1; // 0=Mon
-  const days  = lang==='am' ? DAYS_AM : DAYS_EN;
-  $('dHours').innerHTML = s.h.map((h, i) => {
-    const isToday  = i === di;
-    const isClosed = h === 'Closed';
-    const is24     = h === 'Open 24 hrs';
-    const label    = isClosed ? t('closed') : is24 ? t('open24') : h;
-    return `<div class="hr-row">
-      <span class="hr-day" ${isToday ? 'style="color:var(--teal)"' : ''}>
-        ${days[i]}${isToday ? ` (${t('today')})` : ''}
-      </span>
-      <span class="${isClosed ? 'hr-closed' : 'hr-open'}">${label}</span>
-    </div>`;
+function openDetail(s){
+  if(!s)return;cur=s;
+  const d=hvs(uLat,uLng,s.lat,s.lng);
+  $('dIco').textContent=TM[s.t].emoji;
+  $('dName').textContent=lang==='am'?s.am:s.name;
+  $('dAddr').textContent=lang==='am'?s.addrAm:s.addr;
+  $('dType').textContent=lang==='am'?TM[s.t].am:TM[s.t].label;
+  $('dDist').textContent=fmtD(d);$('dWalk').textContent=fmtW(d);$('dRate').textContent=s.rat+'★';
+  refreshDLabels();
+  $('dSvcs').innerHTML=s.r.map(r=>`<div class="svc-pill">🔹 ${r}</div>`).join('');
+  const today=new Date().getDay(),di=today===0?6:today-1;
+  const days=lang==='am'?DAYS_AM:DAYS_EN;
+  $('dHours').innerHTML=s.h.map((h,i)=>{
+    const it=i===di,isClosed=h==='Closed',is24=h==='Open 24 hrs';
+    const label=isClosed?t('closed'):is24?t('open24'):h;
+    return `<div class="hr-row"><span class="hr-day"${it?' style="color:var(--c)"':''}>
+      ${days[i]}${it?` (${t('today')})`:''}</span>
+      <span class="${isClosed?'hr-closed':'hr-open'}">${label}</span></div>`;
   }).join('');
-
   updateFavBtn();
-  if (map) map.flyTo([s.lat, s.lng], 16, { duration:.8 });
+  if(map)map.flyTo([s.lat,s.lng],16,{duration:.8});
   $('detail').classList.add('open');
 }
 
-function refreshDetailLabels() {
-  $('lDist').textContent  = t('dist');
-  $('lWalk').textContent  = t('walk');
-  $('lRate').textContent  = t('rating');
-  $('lSvcs').textContent  = t('svcs');
-  $('lHours').textContent = t('hrs');
-  $('lNav').textContent   = t('nav');
-  $('lShare').textContent = t('share');
-  $('lWalk2').textContent = t('walk2');
-  $('lStop').textContent  = t('stop');
-  $('lRoute').textContent = t('route');
-  if (cur) {
-    $('dName').textContent = lang==='am' ? cur.am     : cur.name;
-    $('dAddr').textContent = lang==='am' ? cur.addrAm : cur.addr;
-    $('dType').textContent = lang==='am' ? TM[cur.t].am : TM[cur.t].label;
+function refreshDLabels(){
+  const ids={lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route'};
+  Object.entries(ids).forEach(([id,k])=>{const el=$(id);if(el)el.textContent=t(k);});
+  if(cur){$('dName').textContent=lang==='am'?cur.am:cur.name;$('dAddr').textContent=lang==='am'?cur.addrAm:cur.addr;$('dType').textContent=lang==='am'?TM[cur.t].am:TM[cur.t].label;}
+}
+
+function closeDetail(){$('detail').classList.remove('open');cur=null;}
+function quickNav(id){const s=ST.find(x=>x.id===id);if(!s)return;if(map)map.flyTo([s.lat,s.lng],16,{duration:.9});setTimeout(()=>openDetail(s),350);}
+
+async function startNav(){
+  if(!cur||!map)return;
+  const s=cur;closeDetail();
+  $('nbDest').textContent=lang==='am'?s.am:s.name;
+  $('nbDist').textContent='…';$('nbTime').textContent='…';
+  $('nbLoad').classList.add('on');$('navBar').classList.add('on');
+  $('lWalk2').textContent=t('walk2');$('lStop').textContent=t('stop');$('lRoute').textContent=t('route');
+  clearRoutes();
+  map.fitBounds([[uLat,uLng],[s.lat,s.lng]],{padding:[72,72],maxZoom:16});
+  try{
+    const url=`https://router.project-osrm.org/route/v1/walking/${uLng},${uLat};${s.lng},${s.lat}?overview=full&geometries=geojson`;
+    const res=await fetch(url,{signal:AbortSignal.timeout(8000)});
+    if(!res.ok)throw 0;
+    const data=await res.json();if(data.code!=='Ok'||!data.routes.length)throw 0;
+    const route=data.routes[0];
+    const coords=route.geometry.coordinates.map(c=>[c[1],c[0]]);
+    // Route: dark base glow + bright cyan line + dashed shimmer
+    const l0=L.polyline(coords,{color:'rgba(0,212,170,.25)',weight:14,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(map);
+    const l1=L.polyline(coords,{color:'#00D4AA',weight:5,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
+    const l2=L.polyline(coords,{color:'#fff',weight:2,opacity:.4,dashArray:'8 12',lineCap:'round'}).addTo(map);
+    rLines=[l0,l1,l2];
+    $('nbDist').textContent=fmtD(route.distance);
+    $('nbTime').textContent=fmtT(route.duration);
+    $('nbLoad').classList.remove('on');
+    map.fitBounds(l1.getBounds(),{padding:[72,96],maxZoom:16});
+  }catch{
+    const l=L.polyline([[uLat,uLng],[s.lat,s.lng]],{color:'#00D4AA',weight:5,opacity:.75,dashArray:'12 9'}).addTo(map);
+    rLines=[l];
+    const dm=hvs(uLat,uLng,s.lat,s.lng);
+    $('nbDist').textContent=fmtD(dm);$('nbTime').textContent=fmtW(dm);
+    $('nbLoad').classList.remove('on');showToast(t('approx'));
   }
 }
 
-function closeDetail() {
-  $('detail').classList.remove('open');
-  cur = null;
+function stopNav(){$('navBar').classList.remove('on');clearRoutes();renderMarkers();showToast(t('navStop'));}
+function clearRoutes(){rLines.forEach(l=>{if(map)map.removeLayer(l);});rLines=[];}
+
+function shareStation(){
+  if(!cur)return;
+  const nm=lang==='am'?cur.am:cur.name;
+  const txt=`📍 ${nm}\n${lang==='am'?cur.addrAm:cur.addr}`;
+  if(navigator.share)navigator.share({title:nm,text:txt});
+  else{navigator.clipboard?.writeText(txt);showToast(t('copied'));}
 }
 
-function quickNav(id) {
-  const s = ST.find(x => x.id === id);
-  if (!s) return;
-  if (map) map.flyTo([s.lat, s.lng], 16, { duration:.9 });
-  setTimeout(() => openDetail(s), 350);
+function toggleFav(){
+  if(!cur)return;
+  const i=favs.indexOf(cur.id);
+  if(i>=0){favs.splice(i,1);showToast(t('favRm'));}else{favs.push(cur.id);showToast(t('favAdd'));}
+  localStorage.setItem('ttFavs',JSON.stringify(favs));updateFavBtn();
+}
+function updateFavBtn(){
+  if(!cur)return;
+  const btn=$('dFav'),on=favs.includes(cur.id);
+  btn.classList.toggle('on',on);
+  btn.innerHTML=on
+    ?'<svg viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 }
 
-// ══════════════════════════════════════════════
-//  IN-APP NAVIGATION  (OSRM — stays in app, NO Google Maps)
-// ══════════════════════════════════════════════
-async function startNav() {
-  if (!cur || !map) return;
-  const s = cur;
-  closeDetail();
-
-  // Show nav bar
-  $('nbDest').textContent = lang==='am' ? s.am : s.name;
-  $('nbDist').textContent = '…';
-  $('nbTime').textContent = '…';
-  $('nbLoad').classList.add('on');
-  $('navBar').classList.add('on');
-
-  clearRoutes();
-  map.fitBounds([[uLat,uLng],[s.lat,s.lng]], { padding:[72,72], maxZoom:16 });
-
-  try {
-    const url = `https://router.project-osrm.org/route/v1/walking/${uLng},${uLat};${s.lng},${s.lat}?overview=full&geometries=geojson`;
-    const res  = await fetch(url, { signal: AbortSignal.timeout(8000) });
-    if (!res.ok) throw new Error();
-    const data = await res.json();
-    if (data.code !== 'Ok' || !data.routes.length) throw new Error();
-
-    const route  = data.routes[0];
-    const coords = route.geometry.coordinates.map(c => [c[1], c[0]]);
-
-    // Draw: thick base + dashed shimmer on top
-    const l1 = L.polyline(coords, { color:'#0D9488', weight:8, opacity:.88, lineJoin:'round', lineCap:'round' }).addTo(map);
-    const l2 = L.polyline(coords, { color:'#5EEAD4', weight:3, opacity:.8, dashArray:'12 9', lineCap:'round' }).addTo(map);
-    rLines = [l1, l2];
-
-    $('nbDist').textContent = fmtD(route.distance);
-    $('nbTime').textContent = fmtT(route.duration);
-    $('nbLoad').classList.remove('on');
-    map.fitBounds(l1.getBounds(), { padding:[72,96], maxZoom:16 });
-
-  } catch {
-    // Straight-line fallback
-    const l = L.polyline([[uLat,uLng],[s.lat,s.lng]], {
-      color:'#0D9488', weight:5, opacity:.75, dashArray:'14 9'
-    }).addTo(map);
-    rLines = [l];
-    const dm = dist(uLat, uLng, s.lat, s.lng);
-    $('nbDist').textContent = fmtD(dm);
-    $('nbTime').textContent = fmtW(dm);
-    $('nbLoad').classList.remove('on');
-    showToast(t('approx'));
-  }
-}
-
-function stopNav() {
-  $('navBar').classList.remove('on');
-  clearRoutes();
-  renderMarkers();
-  showToast(t('navStop'));
-}
-
-function clearRoutes() {
-  rLines.forEach(l => { if (map) map.removeLayer(l); });
-  rLines = [];
-}
-
-// ══════════════════════════════════════════════
-//  SHARE
-// ══════════════════════════════════════════════
-function shareStation() {
-  if (!cur) return;
-  const nm  = lang==='am' ? cur.am     : cur.name;
-  const adr = lang==='am' ? cur.addrAm : cur.addr;
-  const txt = `📍 ${nm}\n${adr}`;
-  if (navigator.share) navigator.share({ title:nm, text:txt });
-  else { navigator.clipboard?.writeText(txt); showToast(t('copied')); }
-}
-
-// ══════════════════════════════════════════════
-//  FAVOURITES
-// ══════════════════════════════════════════════
-function toggleFav() {
-  if (!cur) return;
-  const i = favs.indexOf(cur.id);
-  if (i >= 0) { favs.splice(i,1); showToast(t('favRm')); }
-  else         { favs.push(cur.id); showToast(t('favAdd')); }
-  localStorage.setItem('ttFavs', JSON.stringify(favs));
-  updateFavBtn();
-}
-
-function updateFavBtn() {
-  if (!cur) return;
-  const btn = $('dFav');
-  const on  = favs.includes(cur.id);
-  btn.classList.toggle('on', on);
-  btn.innerHTML = on
-    ? '<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
-    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
-}
-
-// ══════════════════════════════════════════════
-//  SEARCH
-// ══════════════════════════════════════════════
-let sTimer = null;
-
-function onSearch(v) {
-  $('clrBtn').classList.toggle('show', v.length > 0);
-  clearTimeout(sTimer);
-  if (!v.trim()) { closeSR(); return; }
-  sTimer = setTimeout(() => {
-    const q = v.toLowerCase();
-    const r = ST.filter(s =>
-      s.name.toLowerCase().includes(q) || s.am.includes(q) ||
-      s.addr.toLowerCase().includes(q) || s.t.includes(q)  ||
-      s.r.some(x => x.toLowerCase().includes(q))
-    );
+let sTimer=null;
+function onSearch(v){
+  $('clrBtn').classList.toggle('show',v.length>0);
+  clearTimeout(sTimer);if(!v.trim()){closeSR();return;}
+  sTimer=setTimeout(()=>{
+    const q=v.toLowerCase();
+    const r=ST.filter(s=>s.name.toLowerCase().includes(q)||s.am.includes(q)||s.addr.toLowerCase().includes(q)||s.t.includes(q)||s.r.some(x=>x.toLowerCase().includes(q)));
     showSR(r);
-  }, 200);
+  },200);
 }
-
-function showSR(r) {
-  const el = $('srBox');
-  if (!r.length) {
-    el.innerHTML = `<div class="empty" style="padding:30px"><p>${t('noMatch')}</p></div>`;
-  } else {
-    el.innerHTML = r.map(s => {
-      const d  = dist(uLat, uLng, s.lat, s.lng);
-      const nm = lang==='am' ? s.am : s.name;
-      const ad = lang==='am' ? s.addrAm : s.addr;
-      return `<div class="sr-item" onclick="pickSR(${s.id})">
-        <div class="sr-ico ${s.t}">${TM[s.t].emoji}</div>
-        <div>
-          <div class="sr-name">${nm}</div>
-          <div class="sr-sub">${fmtD(d)} · ${ad}</div>
-        </div>
-      </div>`;
-    }).join('');
-  }
+function showSR(r){
+  const el=$('srBox');
+  if(!r.length){el.innerHTML=`<div class="empty" style="padding:30px"><p>${t('noMatch')}</p></div>`;}
+  else{el.innerHTML=r.map(s=>{const d=hvs(uLat,uLng,s.lat,s.lng);const nm=lang==='am'?s.am:s.name;return `<div class="sr-item" onclick="pickSR(${s.id})"><div class="sr-ico ${s.t}">${TM[s.t].emoji}</div><div><div class="sr-name">${nm}</div><div class="sr-sub">${fmtD(d)} · ${lang==='am'?s.addrAm:s.addr}</div></div></div>`;}).join('');}
   el.classList.add('open');
 }
+function pickSR(id){const s=ST.find(x=>x.id===id);clearSearch();if(s)setTimeout(()=>openDetail(s),180);}
+function onSearchBlur(){setTimeout(()=>{if(!$('sInput').value)closeSR();},160);}
+function closeSR(){$('srBox').classList.remove('open');}
+function clearSearch(){$('sInput').value='';$('clrBtn').classList.remove('show');closeSR();$('sInput').blur();}
 
-function pickSR(id) {
-  const s = ST.find(x => x.id === id);
-  clearSearch();
-  if (s) setTimeout(() => openDetail(s), 180);
+function openMenu(){$('mDrawer').classList.add('on');$('mOverlay').classList.add('on');}
+function closeMenu(){$('mDrawer').classList.remove('on');$('mOverlay').classList.remove('on');}
+function openAbout(){$('about').classList.add('open');}
+function closeAbout(){$('about').classList.remove('open');}
+
+let tTimer=null;
+function showToast(msg){
+  const el=$('toast');el.textContent=msg;el.classList.add('on');
+  clearTimeout(tTimer);tTimer=setTimeout(()=>el.classList.remove('on'),2800);
 }
 
-function onSearchBlur() {
-  setTimeout(() => { if (!$('sInput').value) closeSR(); }, 160);
-}
-
-function closeSR()  { $('srBox').classList.remove('open'); }
-
-function clearSearch() {
-  $('sInput').value = '';
-  $('clrBtn').classList.remove('show');
-  closeSR();
-  $('sInput').blur();
-}
-
-// ══════════════════════════════════════════════
-//  MENU + ABOUT
-// ══════════════════════════════════════════════
-function openMenu()   { $('mDrawer').classList.add('on');    $('mOverlay').classList.add('on'); }
-function closeMenu()  { $('mDrawer').classList.remove('on'); $('mOverlay').classList.remove('on'); }
-function openAbout()  { $('about').classList.add('open'); }
-function closeAbout() { $('about').classList.remove('open'); }
-
-// ══════════════════════════════════════════════
-//  TOAST
-// ══════════════════════════════════════════════
-let tTimer = null;
-function showToast(msg) {
-  const el = $('toast');
-  el.textContent = msg;
-  el.classList.add('on');
-  clearTimeout(tTimer);
-  tTimer = setTimeout(() => el.classList.remove('on'), 2800);
-}
-
-// ══════════════════════════════════════════════
-//  PANEL SWIPE TO CLOSE/OPEN
-// ══════════════════════════════════════════════
-let swipeY = 0;
-const pnl = $('panel');
-pnl.addEventListener('touchstart', e => { swipeY = e.touches[0].clientY; }, { passive:true });
-pnl.addEventListener('touchend',   e => {
-  const d = e.changedTouches[0].clientY - swipeY;
-  if (d > 55 && panelOpen)  togglePanel();
-  if (d < -55 && !panelOpen) togglePanel();
-}, { passive:true });
+let swipeY=0;
+const pnl=$('panel');
+pnl.addEventListener('touchstart',e=>{swipeY=e.touches[0].clientY;},{passive:true});
+pnl.addEventListener('touchend',e=>{
+  const d=e.changedTouches[0].clientY-swipeY;
+  if(d>55&&panelOpen)togglePanel();
+  if(d<-55&&!panelOpen)togglePanel();
+},{passive:true});
 </script>
 
 <!-- Adsterra Popunder Ad -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9347972643579148"
-     crossorigin="anonymous"></script>
+<script src="https://pl29044791.profitablecpmratenetwork.com/c1/1a/19/c11a199d537c757adaac7c6d1899f72d.js"></script>
 </body>
 </html>
