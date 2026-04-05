@@ -1,1003 +1,617 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#0D9488">
-<title>Taxi Tera \u2014 Smart Taxi Navigation for Ethiopia</title>
+<meta name="theme-color" content="#0891B2">
+<title>Taxi Tera — Find Your Ride in Ethiopia</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   DESIGN TOKENS \u2014 LIGHT THEME
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS — Cyan-Teal + Warm Neutrals
+   Primary:  #0891B2  deep cyan
+   Primary L:#06B6D4  lighter cyan
+   Primary P:#ECFEFF  pale cyan tint
+   Amber:    #F59E0B  bajaj
+   Indigo:   #6366F1  ride
+   BG:       #F8FAFC  off-white warm
+   Surface:  #FFFFFF
+   Border:   #E2E8F0
+   Text:     #0F172A  near-black
+   Text2:    #475569  slate
+   Text3:    #94A3B8  muted
+   Green:    #059669  success
+   Red:      #EF4444  error
+══════════════════════════════════════════════ */
 :root {
-  --teal:   #0D9488;
-  --teal-d: #0F766E;
-  --teal-l: #14B8A6;
-  --teal-x: #5EEAD4;
-  --sky:    #0EA5E9;
-  --amber:  #F59E0B;
-  --green:  #22C55E;
-  --red:    #EF4444;
-
-  --bg:     #F0FDF9;
-  --sf:     #FFFFFF;
-  --sf2:    #F8FFFE;
-  --bd:     #CCFBF1;
-  --bd2:    #A7F3D0;
-  --tp:     rgba(13,148,136,.1);
-  --tp2:    rgba(13,148,136,.18);
-
-  --tx:     #0C1A17;
-  --tx2:    #2D4A45;
-  --tx3:    #5B8A82;
-  --tx4:    #8BBDB6;
-
-  --sh:     0 2px 16px rgba(13,148,136,.10);
-  --sh2:    0 6px 28px rgba(13,148,136,.16);
-  --sh3:    0 12px 48px rgba(13,148,136,.22);
-  --sh-b:   0 -4px 32px rgba(13,148,136,.14);
-
-  --r:      16px;
-  --rs:     10px;
-  --rx:     24px;
-  --trans:  .22s cubic-bezier(.4,0,.2,1);
-  --spring: .42s cubic-bezier(.32,.72,0,1);
+  --p:   #0891B2;
+  --pl:  #06B6D4;
+  --pd:  #0E7490;
+  --pp:  #ECFEFF;
+  --pb:  #A5F3FC;
+  --amb: #F59E0B;
+  --ind: #6366F1;
+  --grn: #059669;
+  --red: #EF4444;
+  --bg:  #F8FAFC;
+  --sf:  #FFFFFF;
+  --sf2: #F1F5F9;
+  --bd:  #E2E8F0;
+  --bd2: #CBD5E1;
+  --tx:  #0F172A;
+  --tx2: #475569;
+  --tx3: #94A3B8;
+  --sh:  0 1px 3px rgba(0,0,0,.06), 0 4px 16px rgba(8,145,178,.08);
+  --shm: 0 2px 8px rgba(0,0,0,.08), 0 8px 32px rgba(8,145,178,.12);
+  --shl: 0 4px 16px rgba(0,0,0,.10), 0 16px 48px rgba(8,145,178,.14);
+  --r: 16px; --rs: 10px;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   DARK THEME
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-[data-theme="dark"] {
-  --bg:     #0A0F0E;
-  --sf:     #121A18;
-  --sf2:    #172320;
-  --bd:     #1E2D2A;
-  --bd2:    #243530;
-  --tp:     rgba(13,148,136,.14);
-  --tp2:    rgba(13,148,136,.22);
-
-  --tx:     #E2F5F2;
-  --tx2:    #A8D4CE;
-  --tx3:    #6B9E98;
-  --tx4:    #3D6B65;
-
-  --sh:     0 2px 16px rgba(0,0,0,.45);
-  --sh2:    0 6px 28px rgba(0,0,0,.5);
-  --sh3:    0 12px 48px rgba(0,0,0,.6);
-  --sh-b:   0 -4px 32px rgba(0,0,0,.5);
-}
-
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   RESET + BASE
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body {
-  height:100%;
-  font-family:'Outfit', 'Noto Sans Ethiopic', sans-serif;
-  background:var(--bg);
-  color:var(--tx);
-  overflow:hidden;
-  -webkit-font-smoothing:antialiased;
-  transition:background var(--trans), color var(--trans);
+  height: 100%;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--tx);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   SPLASH SCREEN
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── SPLASH ─────────────────────────────────── */
 #splash {
-  position:fixed; inset:0; z-index:9999;
-  background:linear-gradient(160deg, #064E47 0%, #0D9488 45%, #0EA5E9 100%);
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-  transition:opacity .7s ease, transform .7s ease;
+  position: fixed; inset: 0; z-index: 9999;
+  background: linear-gradient(160deg, #0C4A6E 0%, #0891B2 55%, #06B6D4 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  transition: opacity .65s ease, transform .65s ease;
 }
-#splash.hide { opacity:0; transform:scale(1.07); pointer-events:none; }
+#splash.hide { opacity: 0; transform: scale(1.04); pointer-events: none; }
 .sp-logo {
-  width:120px; height:120px;
-  background:rgba(255,255,255,.12);
-  border-radius:30px;
-  display:flex; align-items:center; justify-content:center;
-  border:1.5px solid rgba(255,255,255,.2);
-  box-shadow:0 12px 40px rgba(0,0,0,.25), 0 0 0 8px rgba(255,255,255,.04);
-  animation:pop .8s cubic-bezier(.34,1.56,.64,1) .1s both;
-  overflow:hidden;
+  width: 160px; height: 160px;
+  display: flex; align-items: center; justify-content: center;
+  animation: pop .8s cubic-bezier(.34,1.56,.64,1) .2s both;
 }
-.sp-logo img { width:96px; height:96px; object-fit:contain; filter:drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
-.sp-wordmark {
-  display:flex; flex-direction:column; align-items:center;
-  animation:fadeUp .5s ease .5s both;
+.sp-logo img {
+  width: 160px; height: 160px; object-fit: contain;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.3)) drop-shadow(0 2px 8px rgba(0,0,0,.2));
 }
-.sp-title { font-size:36px; font-weight:900; color:#fff; letter-spacing:-.5px; line-height:1; }
-.sp-sub { font-size:13px; color:rgba(255,255,255,.72); letter-spacing:.3px; margin-top:5px; }
-.sp-tagline {
-  font-size:12px; color:rgba(255,255,255,.55);
-  background:rgba(255,255,255,.1);
-  border:1px solid rgba(255,255,255,.15);
-  padding:6px 16px; border-radius:20px;
-  animation:fadeUp .5s ease .7s both;
-  letter-spacing:.5px;
+.sp-title {
+  font-size: 40px; font-weight: 900; color: #fff;
+  letter-spacing: -1px; margin-top: 4px;
+  animation: fadeUp .5s ease .45s both;
+  text-shadow: 0 2px 12px rgba(0,0,0,.2);
 }
-.sp-dots { display:flex; gap:6px; margin-top:20px; animation:fadeUp .5s ease .85s both; }
+.sp-sub {
+  font-size: 14px; color: rgba(255,255,255,.82);
+  animation: fadeUp .5s ease .6s both;
+}
+.sp-dots {
+  display: flex; gap: 7px; margin-top: 26px;
+  animation: fadeUp .5s ease .75s both;
+}
 .sp-dots span {
-  width:6px; height:6px;
-  background:rgba(255,255,255,.4);
-  border-radius:50%;
-  animation:pulseDot 1.4s ease-in-out infinite;
+  width: 7px; height: 7px; border-radius: 50%;
+  background: rgba(255,255,255,.5);
+  animation: pulse 1.3s ease-in-out infinite;
 }
-.sp-dots span:nth-child(2) { animation-delay:.2s; }
-.sp-dots span:nth-child(3) { animation-delay:.4s; }
+.sp-dots span:nth-child(2) { animation-delay: .18s; }
+.sp-dots span:nth-child(3) { animation-delay: .36s; }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   APP SHELL
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#app { position:fixed; inset:0; }
+/* ── APP SHELL ──────────────────────────────── */
+#app { position: fixed; inset: 0; }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   MAP
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#map { position:absolute; inset:0; z-index:1; }
-.leaflet-container { background:#CBD5E1; }
-[data-theme="dark"] .leaflet-container { background:#1a2320; }
-.leaflet-control-zoom { display:none !important; }
+/* ── MAP ────────────────────────────────────── */
+#map { position: absolute; inset: 0; z-index: 1; }
+.leaflet-container { background: #e8f4f8; }
+.leaflet-control-zoom { display: none !important; }
 .leaflet-control-attribution {
-  font-size:9px !important; opacity:.35;
-  background:rgba(255,255,255,.65) !important;
-  backdrop-filter:blur(6px);
-  padding:2px 6px !important; border-radius:8px 0 0 0 !important;
-}
-[data-theme="dark"] .leaflet-control-attribution {
-  background:rgba(0,0,0,.5) !important; color:#aaa !important;
+  font-size: 9px !important; opacity: .45;
+  background: rgba(255,255,255,.8) !important;
+  padding: 2px 6px !important; border-radius: 6px 0 0 0 !important;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   MARKERS
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-.tt-marker {
-  display:flex; align-items:center; justify-content:center;
-  animation:markerPop .35s cubic-bezier(.34,1.56,.64,1) both;
-  cursor:pointer;
+/* ── STATION MARKERS ────────────────────────── */
+.tm { display: flex; align-items: center; justify-content: center; cursor: pointer; }
+.tmd {
+  width: 42px; height: 42px; border-radius: 50% 50% 50% 5px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+  border: 3px solid #fff;
+  transform: rotate(-45deg); transition: transform .2s;
 }
-.tt-pin {
-  width:42px; height:42px;
-  border-radius:50% 50% 50% 6px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:18px;
-  border:2.5px solid rgba(255,255,255,.9);
-  box-shadow:0 4px 18px rgba(0,0,0,.25), 0 1px 4px rgba(0,0,0,.15);
-  transform:rotate(-45deg);
-  transition:transform var(--trans), box-shadow var(--trans);
-  position:relative;
-}
-.tt-pin span { transform:rotate(45deg); display:block; line-height:1; }
-.tt-pin.minibus { background:linear-gradient(135deg, #0F766E, #14B8A6); }
-.tt-pin.bajaj   { background:linear-gradient(135deg, #D97706, #F59E0B); }
-.tt-pin.ride    { background:linear-gradient(135deg, #0284C7, #38BDF8); }
+.tmd span { transform: rotate(45deg); display: block; line-height: 1; }
+.tmd.minibus { background: var(--p);   box-shadow: 0 4px 16px rgba(8,145,178,.5),  0 0 0 4px rgba(8,145,178,.15); }
+.tmd.bajaj   { background: var(--amb); box-shadow: 0 4px 16px rgba(245,158,11,.5), 0 0 0 4px rgba(245,158,11,.15); }
+.tmd.ride    { background: var(--ind); box-shadow: 0 4px 16px rgba(99,102,241,.5), 0 0 0 4px rgba(99,102,241,.15); }
+.tm:active .tmd { transform: rotate(-45deg) scale(1.22); }
 
-/* Selected/active marker */
-.tt-marker.selected .tt-pin {
-  transform:rotate(-45deg) scale(1.25);
-  box-shadow:0 6px 24px rgba(13,148,136,.5), 0 0 0 4px rgba(13,148,136,.2);
-}
-
-/* Busy level indicator dot on marker */
-.tt-busy-dot {
-  position:absolute; top:-4px; right:-4px;
-  width:11px; height:11px; border-radius:50%;
-  border:2px solid #fff;
-  transform:rotate(45deg);
-}
-.busy-low  .tt-busy-dot { background:#22C55E; }
-.busy-med  .tt-busy-dot { background:#F59E0B; }
-.busy-high .tt-busy-dot { background:#EF4444; animation:busyPulse 1.5s ease-in-out infinite; }
-
-/* User location */
-.u-wrap { position:relative; display:flex; align-items:center; justify-content:center; }
-.u-pulse {
-  position:absolute;
-  width:40px; height:40px;
-  background:rgba(14,165,233,.25);
-  border-radius:50%;
-  animation:uRipple 2.2s ease-out infinite;
-}
-.u-pulse-2 {
-  position:absolute;
-  width:28px; height:28px;
-  background:rgba(14,165,233,.18);
-  border-radius:50%;
-  animation:uRipple 2.2s ease-out .7s infinite;
-}
+/* User dot */
 .u-dot {
-  width:15px; height:15px;
-  background:#0EA5E9;
-  border-radius:50%;
-  border:3px solid #fff;
-  box-shadow:0 2px 8px rgba(14,165,233,.5);
-  position:relative; z-index:2;
+  width: 18px; height: 18px; background: #3B82F6; border-radius: 50%;
+  border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  animation: uPulse 2.2s ease-out infinite;
+}
+@keyframes uPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(59,130,246,.6), 0 2px 8px rgba(0,0,0,.3); }
+  70%  { box-shadow: 0 0 0 14px rgba(59,130,246,0), 0 2px 8px rgba(0,0,0,.3); }
+  100% { box-shadow: 0 0 0 0 rgba(59,130,246,0), 0 2px 8px rgba(0,0,0,.3); }
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   TOP CONTROLS AREA
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#topbar {
-  position:absolute; top:0; left:0; right:0; z-index:410;
-  padding:14px 14px 0;
-  pointer-events:none;
-}
-
-/* Search bar */
-.sbar {
-  display:flex; align-items:center; gap:8px;
-  background:var(--sf);
-  border-radius:14px;
-  padding:11px 13px;
-  box-shadow:var(--sh2);
-  border:1.5px solid var(--bd);
-  pointer-events:all;
-  transition:border-color var(--trans), box-shadow var(--trans), background var(--trans);
-  margin-right:108px;
-}
-.sbar:focus-within {
-  border-color:var(--teal-l);
-  box-shadow:0 4px 28px rgba(13,148,136,.24);
-}
-.sbar svg { width:18px; height:18px; color:var(--teal); flex-shrink:0; }
-.sbar input {
-  flex:1; border:none; outline:none;
-  font-family:'Outfit', sans-serif;
-  font-size:15px; font-weight:500;
-  color:var(--tx); background:transparent; min-width:0;
-}
-.sbar input::placeholder { color:var(--tx3); font-weight:400; }
-
-.ico-btn {
-  width:32px; height:32px; border-radius:10px; border:none;
-  background:var(--tp);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:var(--teal);
-  transition:all var(--trans); flex-shrink:0;
-}
-.ico-btn:active { transform:scale(.86); background:var(--tp2); }
-.ico-btn svg { width:15px; height:15px; }
-#clrBtn { display:none; }
-#clrBtn.show { display:flex; }
-
-/* Filter + Sort chips */
-.chips-wrap { pointer-events:all; }
-.chips-row {
-  display:flex; gap:7px;
-  padding:9px 0 0;
-  overflow-x:auto; scrollbar-width:none;
-  -webkit-overflow-scrolling:touch;
-}
-.chips-row::-webkit-scrollbar { display:none; }
-.chip {
-  display:flex; align-items:center; gap:5px;
-  padding:7px 13px; border-radius:22px;
-  font-size:13px; font-weight:600; white-space:nowrap;
-  cursor:pointer; border:1.5px solid var(--bd); flex-shrink:0;
-  background:var(--sf); color:var(--tx2);
-  box-shadow:var(--sh); transition:all .2s; user-select:none;
-}
-.chip.on {
-  background:var(--teal); color:#fff;
-  border-color:var(--teal);
-  box-shadow:0 3px 12px rgba(13,148,136,.32);
-}
-.chip.sort-chip.on {
-  background:linear-gradient(135deg, #0F766E, #0EA5E9);
-  border-color:transparent;
-}
-.chip:active { transform:scale(.93); }
-.chip-sep {
-  width:1.5px; background:var(--bd); border-radius:2px;
-  flex-shrink:0; align-self:stretch; margin:7px 2px 0;
-}
-
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   CONTROL CLUSTER (right side top)
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#ctrlCluster {
-  position:absolute; top:14px; right:14px; z-index:420;
-  display:flex; align-items:center; gap:7px;
-}
-.ctrl-pill {
-  display:flex; align-items:center;
-  background:var(--sf); border:1.5px solid var(--bd);
-  border-radius:22px; padding:4px; box-shadow:var(--sh); gap:2px;
-  transition:background var(--trans), border-color var(--trans);
+/* ── LANGUAGE TOGGLE ────────────────────────── */
+#langBar {
+  position: absolute; top: 14px; right: 14px; z-index: 420;
+  display: flex; align-items: center;
+  background: var(--sf); border: 1.5px solid var(--bd);
+  border-radius: 24px; padding: 4px; gap: 2px;
+  box-shadow: var(--shl);
 }
 .lb {
-  padding:6px 11px; border-radius:18px; border:none;
-  font-family:'Outfit', sans-serif; font-size:12px; font-weight:700;
-  cursor:pointer; transition:all .2s; color:var(--tx3); background:transparent;
+  padding: 6px 13px; border-radius: 20px; border: none;
+  font-family: 'Outfit', sans-serif; font-size: 12px; font-weight: 700;
+  cursor: pointer; transition: all .22s; color: var(--tx3); background: transparent;
 }
-.lb.on { background:var(--teal); color:#fff; box-shadow:0 2px 8px rgba(13,148,136,.3); }
-.ctrl-icon-btn {
-  width:34px; height:34px; border-radius:10px; border:none;
-  background:transparent;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:var(--tx3);
-  transition:all var(--trans);
-}
-.ctrl-icon-btn:active { transform:scale(.86); background:var(--tp); }
-.ctrl-icon-btn svg { width:17px; height:17px; }
-.ctrl-icon-btn.on { color:var(--teal); }
+.lb.on { background: var(--p); color: #fff; box-shadow: 0 2px 8px rgba(8,145,178,.35); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   SEARCH RESULTS DROPDOWN
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-#srBox {
-  position:absolute; top:0; left:0; right:0; z-index:408;
-  background:var(--sf); border-radius:0 0 22px 22px;
-  box-shadow:var(--sh3); max-height:65vh; overflow-y:auto;
-  transform:translateY(-108%);
-  transition:transform var(--spring);
-  padding-top:84px;
-  transition:background var(--trans), transform var(--spring);
+/* ── SEARCH BAR ─────────────────────────────── */
+#topbar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 410;
+  padding: 14px 14px 0; pointer-events: none;
 }
-#srBox.open { transform:translateY(0); }
-.sr-item {
-  display:flex; align-items:center; gap:12px;
-  padding:13px 18px; cursor:pointer;
-  border-bottom:1px solid var(--bd); transition:background var(--trans);
+.sbar {
+  display: flex; align-items: center; gap: 9px;
+  background: var(--sf); border-radius: 16px; padding: 12px 14px;
+  box-shadow: var(--shl); border: 1.5px solid var(--bd);
+  pointer-events: all; transition: border-color .2s, box-shadow .2s;
+  margin-right: 90px;
 }
-.sr-item:last-child { border-bottom:none; }
-.sr-item:active { background:var(--tp); }
-.sr-ico {
-  width:38px; height:38px; border-radius:11px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:17px; flex-shrink:0;
+.sbar:focus-within {
+  border-color: var(--pl);
+  box-shadow: var(--shl), 0 0 0 3px rgba(6,182,212,.12);
 }
-.sr-ico.minibus { background:var(--tp); }
-.sr-ico.bajaj   { background:rgba(245,158,11,.12); }
-.sr-ico.ride    { background:rgba(14,165,233,.12); }
-.sr-name { font-size:14px; font-weight:600; color:var(--tx); }
-.sr-sub  { font-size:12px; color:var(--tx3); margin-top:2px; }
+.sbar-icon { width: 18px; height: 18px; color: var(--p); flex-shrink: 0; }
+.sbar input {
+  flex: 1; border: none; outline: none;
+  font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 500;
+  color: var(--tx); background: transparent; min-width: 0;
+}
+.sbar input::placeholder { color: var(--tx3); font-weight: 400; }
+.ico-btn {
+  width: 32px; height: 32px; border-radius: 9px; border: none;
+  background: var(--pp); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--p); transition: all .15s; flex-shrink: 0;
+}
+.ico-btn:active { transform: scale(.87); background: var(--pb); }
+.ico-btn svg { width: 15px; height: 15px; }
+#clrBtn { display: none; }
+#clrBtn.show { display: flex; }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   LOCATE FAB
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* Filter chips */
+.chips {
+  display: flex; gap: 7px; padding: 9px 0 0;
+  overflow-x: auto; scrollbar-width: none;
+  pointer-events: all; -webkit-overflow-scrolling: touch;
+}
+.chips::-webkit-scrollbar { display: none; }
+.chip {
+  display: flex; align-items: center; gap: 6px; padding: 7px 14px;
+  border-radius: 24px; font-size: 12.5px; font-weight: 600; white-space: nowrap;
+  cursor: pointer; border: 1.5px solid var(--bd); flex-shrink: 0;
+  background: var(--sf); color: var(--tx2);
+  box-shadow: var(--sh); transition: all .2s;
+}
+.chip.on {
+  background: var(--p); color: #fff; border-color: var(--p);
+  box-shadow: 0 3px 12px rgba(8,145,178,.35);
+}
+.chip:active { transform: scale(.93); }
+
+/* ── FAB ────────────────────────────────────── */
 #fab {
-  position:absolute; right:16px; bottom:220px; z-index:410;
-  width:50px; height:50px; border-radius:14px;
-  background:var(--sf); border:1.5px solid var(--bd);
-  box-shadow:var(--sh2);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:var(--teal);
-  transition:all var(--trans);
+  position: absolute; right: 16px; bottom: 220px; z-index: 410;
+  width: 52px; height: 52px; border-radius: 16px;
+  background: var(--sf); border: 1.5px solid var(--bd);
+  box-shadow: var(--shl);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--p); transition: all .2s;
 }
-#fab:active { transform:scale(.88); background:var(--tp); }
-#fab svg { width:22px; height:22px; }
-#fab.spinning { animation:spin .9s linear infinite; }
+#fab:active { transform: scale(.9); background: var(--pp); border-color: var(--p); }
+#fab svg { width: 22px; height: 22px; }
+#fab.spinning { animation: spin 1s linear infinite; }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   BOTTOM STATION LIST PANEL
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── BOTTOM PANEL ───────────────────────────── */
 #panel {
-  position:absolute; bottom:0; left:0; right:0; z-index:300;
-  background:var(--sf);
-  border-radius:22px 22px 0 0;
-  box-shadow:var(--sh-b);
-  transition:transform var(--spring), background var(--trans);
-  max-height:76vh; display:flex; flex-direction:column;
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 300;
+  background: var(--sf); border-radius: 24px 24px 0 0;
+  box-shadow: 0 -4px 32px rgba(0,0,0,.1), 0 -1px 0 var(--bd);
+  transition: transform .38s cubic-bezier(.32,.72,0,1);
+  max-height: 74vh; display: flex; flex-direction: column;
 }
-#panel.collapsed { transform:translateY(calc(100% - 86px)); }
-
+#panel.collapsed { transform: translateY(calc(100% - 90px)); }
 .ph-row {
-  display:flex; align-items:center; justify-content:center;
-  padding:11px 0 0; cursor:pointer; flex-shrink:0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 12px 0 0; cursor: pointer; flex-shrink: 0;
 }
-.ph { width:32px; height:4px; background:var(--bd2); border-radius:2px; }
-
-.p-head { padding:10px 18px 2px; flex-shrink:0; }
-.p-tr { display:flex; align-items:center; justify-content:space-between; }
-.p-title { font-size:17px; font-weight:700; color:var(--tx); }
+.ph { width: 36px; height: 4px; background: var(--bd2); border-radius: 2px; }
+.p-head { padding: 10px 18px 0; flex-shrink: 0; }
+.p-tr { display: flex; align-items: center; justify-content: space-between; }
+.p-title { font-size: 17px; font-weight: 700; color: var(--tx); }
 .p-count {
-  font-size:12px; font-weight:700; padding:3px 10px;
-  background:var(--tp); color:var(--teal); border-radius:20px;
+  font-size: 12px; font-weight: 700; padding: 3px 11px;
+  background: var(--pp); color: var(--p); border-radius: 20px;
+  border: 1px solid var(--pb);
 }
-
 .slist {
-  overflow-y:auto; padding:10px 14px 28px;
-  display:flex; flex-direction:column; gap:8px;
-  -webkit-overflow-scrolling:touch; flex:1;
+  overflow-y: auto; padding: 10px 16px 16px;
+  display: flex; flex-direction: column; gap: 9px;
+  -webkit-overflow-scrolling: touch; flex: 1;
 }
-.slist::-webkit-scrollbar { display:none; }
+.slist::-webkit-scrollbar { display: none; }
 
-/* \u2500\u2500 Station Card \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+/* ── STATION CARD ───────────────────────────── */
 .s-card {
-  display:flex; align-items:center; gap:12px;
-  padding:13px 13px 13px 0;
-  background:var(--sf2);
-  border-radius:var(--r);
-  border:1.5px solid var(--bd);
-  cursor:pointer;
-  transition:all .2s; overflow:hidden;
-  animation:fadeUp .32s ease both;
-  position:relative;
+  display: flex; align-items: center; gap: 12px; padding: 14px;
+  background: var(--bg); border-radius: var(--r);
+  border: 1.5px solid var(--bd); cursor: pointer;
+  transition: all .2s; animation: fadeUp .3s ease both;
 }
-.s-card::before {
-  content:'';
-  position:absolute; left:0; top:0; bottom:0; width:4px;
-  border-radius:4px 0 0 4px;
-  transition:width .2s;
+.s-card:active {
+  transform: scale(.97); background: var(--pp);
+  border-color: var(--pl); box-shadow: 0 0 0 3px rgba(6,182,212,.1);
 }
-.s-card.minibus::before { background:linear-gradient(180deg, #0D9488, #14B8A6); }
-.s-card.bajaj::before   { background:linear-gradient(180deg, #D97706, #F59E0B); }
-.s-card.ride::before    { background:linear-gradient(180deg, #0284C7, #38BDF8); }
-.s-card:active { transform:scale(.97); border-color:var(--teal-l); }
-
 .s-ico {
-  width:48px; height:48px; border-radius:13px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px; flex-shrink:0; margin-left:12px;
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
 }
-.s-ico.minibus { background:var(--tp); }
-.s-ico.bajaj   { background:rgba(245,158,11,.12); }
-.s-ico.ride    { background:rgba(14,165,233,.12); }
-
-.s-info { flex:1; min-width:0; }
-.s-name {
-  font-size:15px; font-weight:600;
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  color:var(--tx);
-}
-.s-meta {
-  font-size:12px; color:var(--tx3); margin-top:3px;
-  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-}
-.s-dot { color:var(--bd2); }
-
-.s-footer {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-top:6px; gap:6px;
-}
-.s-busy-chip {
-  display:inline-flex; align-items:center; gap:4px;
-  font-size:11px; font-weight:700; padding:3px 8px; border-radius:8px;
-}
-.s-busy-chip::before { content:''; width:6px; height:6px; border-radius:50%; flex-shrink:0; }
-.s-busy-chip.low    { background:rgba(34,197,94,.12);  color:#15803D; }
-.s-busy-chip.low::before    { background:#22C55E; }
-.s-busy-chip.medium { background:rgba(245,158,11,.12); color:#B45309; }
-.s-busy-chip.medium::before { background:#F59E0B; }
-.s-busy-chip.high   { background:rgba(239,68,68,.1);   color:#B91C1C; }
-.s-busy-chip.high::before   { background:#EF4444; }
-
-[data-theme="dark"] .s-busy-chip.low    { background:rgba(34,197,94,.15);  color:#4ADE80; }
-[data-theme="dark"] .s-busy-chip.medium { background:rgba(245,158,11,.15); color:#FCD34D; }
-[data-theme="dark"] .s-busy-chip.high   { background:rgba(239,68,68,.15);  color:#FCA5A5; }
-
-.s-wait { font-size:11px; color:var(--tx3); font-weight:500; }
-.s-badge {
-  font-size:11px; font-weight:700; padding:3px 9px;
-  border-radius:8px; flex-shrink:0; white-space:nowrap;
-}
-.s-badge.minibus { background:var(--tp); color:var(--teal-d); }
-.s-badge.bajaj   { background:rgba(245,158,11,.12); color:#92400E; }
-.s-badge.ride    { background:rgba(14,165,233,.12); color:#0369A1; }
-[data-theme="dark"] .s-badge.bajaj { color:#FCD34D; }
-[data-theme="dark"] .s-badge.ride  { color:#38BDF8; }
-
+.s-ico.minibus { background: var(--pp); border: 1.5px solid rgba(8,145,178,.15); }
+.s-ico.bajaj   { background: #FFFBEB;   border: 1.5px solid rgba(245,158,11,.15); }
+.s-ico.ride    { background: #EEF2FF;   border: 1.5px solid rgba(99,102,241,.15); }
+.s-info { flex: 1; min-width: 0; }
+.s-name { font-size: 15px; font-weight: 600; color: var(--tx); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.s-meta { font-size: 12px; color: var(--tx3); margin-top: 4px; display: flex; align-items: center; gap: 8px; }
+.s-badge { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 8px; flex-shrink: 0; }
+.s-badge.minibus { background: var(--pp); color: var(--pd); border: 1px solid rgba(8,145,178,.2); }
+.s-badge.bajaj   { background: #FEF3C7; color: #92400E; border: 1px solid rgba(245,158,11,.2); }
+.s-badge.ride    { background: #EEF2FF; color: #4338CA; border: 1px solid rgba(99,102,241,.2); }
 .go-btn {
-  width:38px; height:38px; border-radius:11px;
-  background:var(--teal); border:none;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:#fff; transition:all var(--trans); flex-shrink:0;
-  box-shadow:0 2px 8px rgba(13,148,136,.3);
+  width: 40px; height: 40px; border-radius: 12px; background: var(--p); border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; transition: all .15s; flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(8,145,178,.4);
 }
-.go-btn:active { transform:scale(.86); background:var(--teal-d); }
-.go-btn svg { width:15px; height:15px; }
+.go-btn:active { transform: scale(.87); background: var(--pd); }
+.go-btn svg { width: 15px; height: 15px; }
 
-/* \u2500\u2500 Skeleton loading \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
-.skel-card {
-  display:flex; align-items:center; gap:12px;
-  padding:13px 13px 13px 16px;
-  background:var(--sf2); border-radius:var(--r);
-  border:1.5px solid var(--bd); animation:skelFade 1.4s ease-in-out infinite;
+/* ── SEARCH RESULTS ─────────────────────────── */
+#srBox {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 408;
+  background: var(--sf); border-radius: 0 0 22px 22px;
+  box-shadow: var(--shl); max-height: 62vh; overflow-y: auto;
+  transform: translateY(-100%); transition: transform .32s cubic-bezier(.32,.72,0,1);
+  padding-top: 82px; border: 1.5px solid var(--bd); border-top: none;
 }
-.skel { background:var(--bd); border-radius:6px; }
-.skel-ico { width:48px; height:48px; border-radius:13px; flex-shrink:0; }
-.skel-info { flex:1; display:flex; flex-direction:column; gap:7px; }
-.skel-name { height:14px; width:65%; }
-.skel-sub  { height:11px; width:45%; }
+#srBox.open { transform: translateY(0); }
+.sr-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 13px 18px; cursor: pointer;
+  border-bottom: 1px solid var(--bd); transition: background .15s;
+}
+.sr-item:last-child { border-bottom: none; }
+.sr-item:active { background: var(--pp); }
+.sr-ico { width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+.sr-ico.minibus { background: var(--pp); }
+.sr-ico.bajaj   { background: #FFFBEB; }
+.sr-ico.ride    { background: #EEF2FF; }
+.sr-name { font-size: 14px; font-weight: 600; color: var(--tx); }
+.sr-sub  { font-size: 12px; color: var(--tx3); margin-top: 2px; }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   STATION DETAIL \u2014 BOTTOM SHEET
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── STATION DETAIL ─────────────────────────── */
 #detail {
-  position:absolute; bottom:0; left:0; right:0; z-index:500;
-  background:var(--sf);
-  border-radius:26px 26px 0 0;
-  box-shadow:0 -8px 48px rgba(0,0,0,.22);
-  transform:translateY(100%);
-  transition:transform var(--spring), background var(--trans);
-  max-height:88vh;
-  display:flex; flex-direction:column;
-  overflow:hidden;
+  position: absolute; inset: 0; z-index: 500;
+  background: var(--bg); transform: translateY(100%);
+  transition: transform .42s cubic-bezier(.32,.72,0,1);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
-#detail.open { transform:translateY(0); }
-
-/* Sheet drag handle */
-.det-handle-row {
-  display:flex; align-items:center; justify-content:center;
-  padding:12px 0 2px; flex-shrink:0; cursor:pointer;
+#detail.open { transform: translateY(0); }
+.d-hdr {
+  background: linear-gradient(145deg, var(--pd) 0%, var(--p) 50%, var(--pl) 100%);
+  padding: 58px 20px 30px; position: relative; color: #fff;
 }
-.det-handle { width:36px; height:4px; background:var(--bd2); border-radius:2px; }
-
-/* Sheet header \u2014 compact horizontal */
-.det-hdr {
-  padding:12px 18px 14px; flex-shrink:0;
-  border-bottom:1px solid var(--bd);
+.d-back, .d-fav {
+  position: absolute; top: 16px; width: 40px; height: 40px; border-radius: 13px;
+  background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; backdrop-filter: blur(8px); transition: all .15s;
 }
-.det-hdr-top {
-  display:flex; align-items:flex-start; justify-content:space-between;
-  margin-bottom:14px;
+.d-back:active, .d-fav:active { background: rgba(255,255,255,.32); }
+.d-back { left: 16px; }
+.d-back svg { width: 20px; height: 20px; }
+.d-fav  { right: 16px; }
+.d-fav svg { width: 19px; height: 19px; }
+.d-fav.on { color: #FCD34D; border-color: rgba(252,211,77,.4); background: rgba(252,211,77,.15); }
+.d-ico {
+  width: 68px; height: 68px; background: rgba(255,255,255,.2); border-radius: 20px;
+  display: flex; align-items: center; justify-content: center; font-size: 32px;
+  margin-bottom: 14px; border: 1.5px solid rgba(255,255,255,.3);
+  box-shadow: 0 4px 16px rgba(0,0,0,.15);
 }
-.det-id-row { display:flex; align-items:flex-start; gap:13px; flex:1; min-width:0; }
-.det-ico {
-  width:56px; height:56px; border-radius:15px;
-  display:flex; align-items:center; justify-content:center;
-  font-size:26px; flex-shrink:0;
-  border:1.5px solid var(--bd);
+.d-name { font-size: 24px; font-weight: 800; line-height: 1.2; }
+.d-addr { font-size: 13px; opacity: .85; margin-top: 5px; }
+.d-type {
+  display: inline-flex; align-items: center;
+  background: rgba(255,255,255,.2); border: 1.5px solid rgba(255,255,255,.3);
+  border-radius: 20px; padding: 4px 14px; font-size: 12px;
+  font-weight: 700; margin-top: 11px; letter-spacing: .2px;
 }
-.det-ico.minibus { background:var(--tp); }
-.det-ico.bajaj   { background:rgba(245,158,11,.12); }
-.det-ico.ride    { background:rgba(14,165,233,.12); }
-
-.det-title { flex:1; min-width:0; }
-.det-name {
-  font-size:20px; font-weight:800; color:var(--tx);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
-  line-height:1.2;
+.d-stats {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px; background: var(--bd);
 }
-.det-addr { font-size:13px; color:var(--tx3); margin-top:3px; }
-.det-type {
-  display:inline-flex; align-items:center; gap:5px;
-  background:var(--tp); border-radius:20px;
-  padding:4px 12px; font-size:12px; font-weight:700;
-  color:var(--teal); margin-top:7px;
+.d-stat { background: var(--sf); padding: 18px 10px; text-align: center; }
+.d-sv { font-size: 20px; font-weight: 800; color: var(--p); }
+.d-sl { font-size: 11px; color: var(--tx3); margin-top: 3px; font-weight: 500; text-transform: uppercase; letter-spacing: .4px; }
+.d-sec { padding: 22px 18px 0; }
+.d-sec-h {
+  font-size: 11px; font-weight: 700; color: var(--p);
+  text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
 }
-
-.det-actions {
-  display:flex; align-items:flex-start; gap:8px; flex-shrink:0; margin-left:6px;
-}
-.det-act-btn {
-  width:40px; height:40px; border-radius:12px; border:none;
-  background:var(--tp); color:var(--teal);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all var(--trans);
-}
-.det-act-btn:active { transform:scale(.88); background:var(--tp2); }
-.det-act-btn svg { width:18px; height:18px; }
-.det-act-btn.fav-on svg { fill:#FCD34D; stroke:#FCD34D; }
-.det-act-btn.close-btn { background:var(--sf2); color:var(--tx3); }
-
-/* Live data strip */
-.det-live {
-  display:grid; grid-template-columns:1fr 1fr 1fr;
-  gap:8px; margin-top:0;
-}
-.dl-cell {
-  background:var(--sf2);
-  border:1.5px solid var(--bd);
-  border-radius:12px;
-  padding:10px 8px 9px;
-  text-align:center;
-}
-.dl-val {
-  font-size:18px; font-weight:800; color:var(--teal); line-height:1;
-}
-.dl-val.busy-low   { color:#16A34A; }
-.dl-val.busy-medium{ color:#D97706; }
-.dl-val.busy-high  { color:#DC2626; }
-[data-theme="dark"] .dl-val.busy-low    { color:#4ADE80; }
-[data-theme="dark"] .dl-val.busy-medium { color:#FCD34D; }
-[data-theme="dark"] .dl-val.busy-high   { color:#FCA5A5; }
-.dl-lbl { font-size:10px; font-weight:600; color:var(--tx3); margin-top:4px; text-transform:uppercase; letter-spacing:.5px; }
-
-/* Scrollable body */
-.det-body {
-  overflow-y:auto; padding:18px 18px 0;
-  -webkit-overflow-scrolling:touch; flex:1;
-}
-.det-body::-webkit-scrollbar { display:none; }
-
-/* Stats row */
-.det-stats {
-  display:grid; grid-template-columns:1fr 1fr 1fr;
-  gap:1px; background:var(--bd);
-  border-radius:14px; overflow:hidden;
-  border:1px solid var(--bd);
-  margin-bottom:20px;
-}
-.det-stat { background:var(--sf); padding:14px 8px; text-align:center; }
-.det-sv { font-size:18px; font-weight:800; color:var(--teal); }
-.det-sl { font-size:10px; color:var(--tx3); margin-top:3px; font-weight:500; text-transform:uppercase; letter-spacing:.4px; }
-
-/* Stars */
-.star-row { font-size:16px; letter-spacing:1px; }
-
-/* Section headers */
-.det-sec { margin-bottom:20px; }
-.det-sec-h {
-  font-size:11px; font-weight:700; color:var(--tx3);
-  text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;
-}
-
-/* Crowd / live info banner */
-.live-banner {
-  background:linear-gradient(135deg, rgba(13,148,136,.08), rgba(14,165,233,.08));
-  border:1.5px solid var(--bd);
-  border-left:3px solid var(--teal);
-  border-radius:12px;
-  padding:12px 14px;
-  margin-bottom:20px;
-  display:flex; align-items:center; gap:10px;
-}
-[data-theme="dark"] .live-banner { background:linear-gradient(135deg, rgba(13,148,136,.12), rgba(14,165,233,.1)); }
-.live-dot {
-  width:8px; height:8px; background:#22C55E;
-  border-radius:50%; flex-shrink:0;
-  animation:busyPulse 1.5s ease-in-out infinite;
-}
-.live-text { font-size:13px; color:var(--tx2); font-weight:500; }
-.live-text strong { color:var(--tx); }
-
-/* Service pills */
-.svc-pills { display:flex; flex-wrap:wrap; gap:7px; }
+.svc-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .svc-pill {
-  padding:6px 12px; background:var(--sf2);
-  border:1.5px solid var(--bd); border-radius:20px;
-  font-size:13px; font-weight:500; color:var(--tx2);
-  transition:background var(--trans), border-color var(--trans);
+  padding: 7px 14px; background: var(--bg);
+  border: 1.5px solid var(--bd); border-radius: 20px;
+  font-size: 13px; font-weight: 500; color: var(--tx2);
 }
-
-/* Hours */
 .hr-row {
-  display:flex; align-items:center; gap:10px;
-  padding:10px 0; border-bottom:1px solid var(--bd); font-size:14px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 0; border-bottom: 1px solid var(--bd); font-size: 14px;
 }
-.hr-row:last-child { border-bottom:none; }
-.hr-day { font-weight:600; min-width:80px; color:var(--tx); }
-.hr-today { color:var(--teal) !important; }
-.hr-open   { color:#16A34A; font-weight:600; }
-.hr-closed { color:#EF4444; font-weight:500; }
-[data-theme="dark"] .hr-open { color:#4ADE80; }
-[data-theme="dark"] .hr-closed { color:#FCA5A5; }
+.hr-row:last-child { border-bottom: none; }
+.hr-day { font-weight: 600; min-width: 90px; color: var(--tx); }
+.hr-open   { color: var(--grn); font-weight: 600; }
+.hr-closed { color: var(--red); font-weight: 500; }
 
-/* Navigate button */
 .nav-btn {
-  display:flex; align-items:center; justify-content:center; gap:9px;
-  width:100%; margin-bottom:10px; padding:17px;
-  background:linear-gradient(135deg, var(--teal-d), var(--teal-l));
-  border:none; border-radius:16px; color:#fff;
-  font-family:'Outfit', sans-serif; font-size:16px; font-weight:700;
-  cursor:pointer;
-  box-shadow:0 5px 20px rgba(13,148,136,.4);
-  transition:transform var(--trans), box-shadow var(--trans);
+  display: flex; align-items: center; justify-content: center; gap: 9px;
+  width: calc(100% - 36px); margin: 22px 18px 0; padding: 18px;
+  background: linear-gradient(135deg, var(--pd) 0%, var(--pl) 100%);
+  border: none; border-radius: 17px; color: #fff;
+  font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 6px 20px rgba(8,145,178,.45);
+  transition: transform .15s, box-shadow .15s;
 }
-.nav-btn:active { transform:scale(.97); box-shadow:0 2px 8px rgba(13,148,136,.2); }
-.nav-btn svg { width:20px; height:20px; flex-shrink:0; }
+.nav-btn:active { transform: scale(.97); box-shadow: 0 2px 8px rgba(8,145,178,.3); }
+.nav-btn svg { width: 20px; height: 20px; }
 
 .share-btn {
-  display:flex; align-items:center; justify-content:center; gap:8px;
-  width:100%; margin-bottom:32px; padding:14px;
-  background:var(--sf2); border:1.5px solid var(--bd);
-  border-radius:14px; color:var(--tx2);
-  font-family:'Outfit', sans-serif; font-size:14px; font-weight:600;
-  cursor:pointer; transition:background var(--trans);
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: calc(100% - 36px); margin: 10px 18px 36px; padding: 15px;
+  background: var(--sf); border: 1.5px solid var(--bd); border-radius: 14px;
+  color: var(--tx2); font-family: 'Outfit', sans-serif;
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: all .18s;
 }
-.share-btn:active { background:var(--tp); }
-.share-btn svg { width:16px; height:16px; color:var(--teal); }
+.share-btn:active { background: var(--pp); border-color: var(--pl); color: var(--p); }
+.share-btn svg { width: 16px; height: 16px; color: var(--p); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   IN-APP NAVIGATION BAR
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── NAV BAR ────────────────────────────────── */
 #navBar {
-  position:absolute; bottom:0; left:0; right:0; z-index:350;
-  background:linear-gradient(135deg, var(--teal-d) 0%, var(--teal) 100%);
-  border-radius:22px 22px 0 0;
-  padding:18px 18px 36px;
-  box-shadow:0 -6px 28px rgba(13,148,136,.38);
-  color:#fff;
-  transform:translateY(100%);
-  transition:transform var(--spring);
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 350;
+  background: linear-gradient(135deg, var(--pd) 0%, var(--p) 100%);
+  border-radius: 24px 24px 0 0; padding: 18px 18px 32px;
+  box-shadow: 0 -6px 28px rgba(8,145,178,.3); color: #fff;
+  transform: translateY(100%); transition: transform .42s cubic-bezier(.32,.72,0,1);
 }
-#navBar.on { transform:translateY(0); }
-.nb-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
-.nb-info { flex:1; min-width:0; }
-.nb-label { font-size:11px; font-weight:600; opacity:.65; text-transform:uppercase; letter-spacing:.5px; margin-bottom:3px; }
-.nb-dest { font-size:16px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.nb-meta {
-  font-size:13px; opacity:.88; margin-top:4px;
-  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-}
-.nb-dot { opacity:.45; }
+#navBar.on { transform: translateY(0); }
+.nb-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.nb-info { flex: 1; min-width: 0; }
+.nb-dest { font-size: 16px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nb-meta { font-size: 13px; opacity: .9; margin-top: 4px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.nb-dot { opacity: .5; }
 .nb-stop {
-  display:flex; align-items:center; gap:6px;
-  padding:11px 16px;
-  background:rgba(255,255,255,.18);
-  border:1.5px solid rgba(255,255,255,.28);
-  border-radius:13px; color:#fff;
-  font-family:'Outfit', sans-serif; font-size:14px; font-weight:700;
-  cursor:pointer; flex-shrink:0; backdrop-filter:blur(8px);
-  transition:background .18s;
+  display: flex; align-items: center; gap: 6px; padding: 11px 16px;
+  background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.3);
+  border-radius: 13px; color: #fff;
+  font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 700;
+  cursor: pointer; flex-shrink: 0; backdrop-filter: blur(8px); transition: background .18s;
 }
-.nb-stop:active { background:rgba(255,255,255,.32); }
-.nb-stop svg { width:14px; height:14px; }
-.nb-load { display:none; align-items:center; gap:9px; margin-top:11px; font-size:13px; opacity:.85; }
-.nb-load.on { display:flex; }
+.nb-stop:active { background: rgba(255,255,255,.32); }
+.nb-stop svg { width: 14px; height: 14px; }
+.nb-load { display: none; align-items: center; gap: 9px; margin-top: 12px; font-size: 13px; opacity: .9; }
+.nb-load.on { display: flex; }
 .nb-spin {
-  width:14px; height:14px;
-  border:2px solid rgba(255,255,255,.28); border-top-color:#fff;
-  border-radius:50%; animation:spin .8s linear infinite; flex-shrink:0;
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin .8s linear infinite; flex-shrink: 0;
 }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   ABOUT PAGE
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── ABOUT ──────────────────────────────────── */
 #about {
-  position:absolute; inset:0; z-index:500;
-  background:var(--bg);
-  transform:translateX(100%);
-  transition:transform var(--spring), background var(--trans);
-  overflow-y:auto; -webkit-overflow-scrolling:touch;
+  position: absolute; inset: 0; z-index: 500; background: var(--bg);
+  transform: translateX(100%); transition: transform .42s cubic-bezier(.32,.72,0,1);
+  overflow-y: auto; -webkit-overflow-scrolling: touch;
 }
-#about.open { transform:translateX(0); }
+#about.open { transform: translateX(0); }
 .ab-hdr {
-  background:linear-gradient(140deg, #064E47 0%, #0D9488 55%, #0EA5E9 100%);
-  padding:62px 24px 40px; text-align:center; color:#fff; position:relative;
+  background: linear-gradient(145deg, var(--pd) 0%, var(--pl) 100%);
+  padding: 62px 24px 40px; text-align: center; color: #fff; position: relative;
 }
 .ab-back {
-  position:absolute; top:16px; left:16px;
-  width:40px; height:40px; border-radius:13px;
-  background:rgba(255,255,255,.15); border:1.5px solid rgba(255,255,255,.2);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; color:#fff; transition:background .15s;
+  position: absolute; top: 16px; left: 16px;
+  width: 40px; height: 40px; border-radius: 13px;
+  background: rgba(255,255,255,.18); border: 1.5px solid rgba(255,255,255,.25);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; transition: all .15s;
 }
-.ab-back:active { background:rgba(255,255,255,.28); }
-.ab-back svg { width:20px; height:20px; }
-.ab-logo-wrap {
-  width:90px; height:90px;
-  background:rgba(255,255,255,.15);
-  border-radius:24px; margin:0 auto 16px;
-  display:flex; align-items:center; justify-content:center;
-  border:1.5px solid rgba(255,255,255,.22);
+.ab-back:active { background: rgba(255,255,255,.3); }
+.ab-back svg { width: 20px; height: 20px; }
+.ab-logo {
+  width: 130px; height: 130px;
+  background: rgba(255,255,255,.18);
+  border-radius: 34px; margin: 0 auto 18px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,.28);
+  box-shadow: 0 8px 32px rgba(0,0,0,.2);
 }
-.ab-logo-wrap img { width:70px; height:70px; object-fit:contain; filter:drop-shadow(0 4px 12px rgba(0,0,0,.2)); }
-.ab-title { font-size:28px; font-weight:900; }
-.ab-tag { font-size:13px; opacity:.72; margin-top:4px; }
-.ab-ver { font-size:12px; opacity:.5; margin-top:6px; }
-.ab-body { padding:20px 16px 52px; }
-.ab-card {
-  background:var(--sf); border-radius:var(--r);
-  border:1.5px solid var(--bd); padding:16px; margin-bottom:12px;
-  transition:background var(--trans), border-color var(--trans);
+.ab-logo img {
+  width: 104px; height: 104px; object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,.2));
 }
-.ab-ct { font-size:11px; font-weight:800; color:var(--teal); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
-.ab-card p { font-size:14px; color:var(--tx2); line-height:1.75; }
-.sg { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.st {
-  background:var(--sf2); border-radius:var(--rs);
-  padding:14px; text-align:center;
-  border:1px solid var(--bd);
-  transition:background var(--trans);
+.ab-title { font-size: 30px; font-weight: 900; letter-spacing: -.4px; }
+.ab-ver   { font-size: 13px; opacity: .75; margin-top: 4px; }
+.ab-body  { padding: 20px 18px 44px; }
+.ab-card  {
+  background: var(--sf); border-radius: var(--r);
+  border: 1.5px solid var(--bd); padding: 18px; margin-bottom: 12px;
+  box-shadow: var(--sh);
 }
-.st-n { font-size:22px; font-weight:800; color:var(--teal); }
-.st-l { font-size:11px; color:var(--tx3); margin-top:2px; font-weight:500; }
-.f-list { list-style:none; }
-.f-list li {
-  display:flex; align-items:flex-start; gap:10px;
-  padding:9px 0; font-size:14px; color:var(--tx2);
-  border-bottom:1px solid var(--bd);
-}
-.f-list li:last-child { border-bottom:none; }
-.f-check {
-  width:18px; height:18px; background:var(--tp);
-  border-radius:6px; display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; margin-top:1px;
-}
-.f-check svg { width:11px; height:11px; color:var(--teal); }
-.built { text-align:center; font-size:13px; color:var(--tx3); padding:16px 0 4px; }
-.built strong { color:var(--teal); font-weight:700; }
+.ab-ct { font-size: 11px; font-weight: 700; color: var(--p); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 11px; }
+.ab-card p { font-size: 14px; color: var(--tx2); line-height: 1.7; }
+.sg { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.st { background: var(--bg); border-radius: var(--rs); padding: 14px; text-align: center; border: 1.5px solid var(--bd); }
+.st-n { font-size: 22px; font-weight: 800; color: var(--p); }
+.st-l { font-size: 11px; color: var(--tx3); margin-top: 2px; font-weight: 500; }
+.f-list { list-style: none; }
+.f-list li { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; font-size: 14px; color: var(--tx2); border-bottom: 1px solid var(--bd); }
+.f-list li:last-child { border-bottom: none; }
+.f-list li::before { content: '✓'; color: var(--p); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+.built { text-align: center; font-size: 13px; color: var(--tx3); padding: 10px 0; }
+.built strong { color: var(--p); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   SIDE DRAWER + OVERLAY
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── MENU ───────────────────────────────────── */
 #mOverlay {
-  position:absolute; inset:0; z-index:450;
-  background:rgba(0,0,0,.45);
-  opacity:0; pointer-events:none;
-  transition:opacity .3s; backdrop-filter:blur(4px);
+  position: absolute; inset: 0; z-index: 450;
+  background: rgba(15,23,42,.45); opacity: 0; pointer-events: none;
+  transition: opacity .3s; backdrop-filter: blur(6px);
 }
-#mOverlay.on { opacity:1; pointer-events:all; }
+#mOverlay.on { opacity: 1; pointer-events: all; }
 #mDrawer {
-  position:absolute; top:0; left:0; bottom:0; width:290px; z-index:460;
-  background:var(--sf);
-  transform:translateX(-100%);
-  transition:transform var(--spring), background var(--trans);
-  display:flex; flex-direction:column;
-  box-shadow:8px 0 40px rgba(0,0,0,.2);
+  position: absolute; top: 0; left: 0; bottom: 0; width: 285px; z-index: 460;
+  background: var(--sf); border-right: 1.5px solid var(--bd);
+  transform: translateX(-100%); transition: transform .36s cubic-bezier(.32,.72,0,1);
+  display: flex; flex-direction: column;
+  box-shadow: 6px 0 40px rgba(0,0,0,.15);
 }
-#mDrawer.on { transform:translateX(0); }
+#mDrawer.on { transform: translateX(0); }
 .md-hdr {
-  background:linear-gradient(145deg, #064E47, #0D9488);
-  padding:52px 20px 24px; color:#fff;
+  background: linear-gradient(145deg, var(--pd) 0%, var(--pl) 100%);
+  padding: 54px 20px 26px; color: #fff;
 }
-.md-lr { display:flex; align-items:center; gap:12px; }
+.md-lr { display: flex; align-items: center; gap: 13px; }
 .md-logo {
-  width:50px; height:50px;
-  background:rgba(255,255,255,.15); border-radius:14px;
-  display:flex; align-items:center; justify-content:center;
-  border:1px solid rgba(255,255,255,.22); flex-shrink:0;
+  width: 62px; height: 62px;
+  background: rgba(255,255,255,.18); border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid rgba(255,255,255,.25); flex-shrink: 0;
 }
-.md-logo img { width:38px; height:38px; object-fit:contain; }
-.md-title { font-size:22px; font-weight:900; }
-.md-tag { font-size:12px; opacity:.72; margin-top:7px; }
-.md-menu { padding:14px 10px; flex:1; overflow-y:auto; }
+.md-logo img { width: 50px; height: 50px; object-fit: contain; filter: drop-shadow(0 2px 8px rgba(0,0,0,.2)); }
+.md-title { font-size: 22px; font-weight: 900; letter-spacing: -.3px; }
+.md-tag   { font-size: 12px; opacity: .78; margin-top: 5px; }
+.md-menu  { padding: 14px 10px; flex: 1; overflow-y: auto; }
 .md-item {
-  display:flex; align-items:center; gap:13px; padding:13px 12px;
-  border-radius:13px; cursor:pointer; color:var(--tx2);
-  font-size:15px; font-weight:500; transition:background var(--trans);
+  display: flex; align-items: center; gap: 13px; padding: 14px 12px;
+  border-radius: 13px; cursor: pointer; color: var(--tx2);
+  font-size: 15px; font-weight: 500; transition: all .15s;
 }
-.md-item:active, .md-item.on { background:var(--tp); color:var(--teal); }
-.md-item svg { width:20px; height:20px; color:var(--teal); flex-shrink:0; }
-.md-sep { height:1px; background:var(--bd); margin:6px 0; }
-.md-foot { padding:16px; font-size:12px; color:var(--tx3); text-align:center; border-top:1px solid var(--bd); }
+.md-item:active, .md-item.on { background: var(--pp); color: var(--p); }
+.md-item svg { width: 20px; height: 20px; color: var(--p); flex-shrink: 0; opacity: .85; }
+.md-sep  { height: 1px; background: var(--bd); margin: 6px 0; }
+.md-foot { padding: 16px; font-size: 12px; color: var(--tx3); text-align: center; border-top: 1px solid var(--bd); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   EMPTY STATE
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-.empty {
-  display:flex; flex-direction:column; align-items:center;
-  justify-content:center; padding:32px; text-align:center; gap:10px;
-}
-.empty-icon { font-size:38px; opacity:.5; }
-.empty p { font-size:14px; color:var(--tx3); line-height:1.6; }
+/* ── EMPTY STATE ────────────────────────────── */
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px; text-align: center; gap: 8px; }
+.empty svg { width: 46px; height: 46px; color: var(--tx3); opacity: .35; }
+.empty p { font-size: 14px; color: var(--tx3); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   TOAST
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
+/* ── TOAST ──────────────────────────────────── */
 #toast {
-  position:absolute; bottom:218px; left:50%; z-index:800;
-  transform:translateX(-50%) translateY(14px);
-  background:rgba(10,20,18,.92);
-  color:#fff; padding:11px 18px; border-radius:24px;
-  font-size:13px; font-weight:500;
-  opacity:0; pointer-events:none;
-  transition:opacity .25s, transform .25s;
-  white-space:nowrap; backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,.08);
+  position: absolute; bottom: 215px; left: 50%; z-index: 800;
+  transform: translateX(-50%) translateY(18px);
+  background: var(--tx); color: #fff;
+  padding: 12px 20px; border-radius: 26px;
+  font-size: 13px; font-weight: 600;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s, transform .25s; white-space: nowrap;
+  box-shadow: var(--shl);
 }
-[data-theme="dark"] #toast { background:rgba(255,255,255,.12); backdrop-filter:blur(16px); }
-#toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   KEYFRAMES
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-@keyframes pop       { from{transform:scale(.3);opacity:0} to{transform:scale(1);opacity:1} }
-@keyframes fadeUp    { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
-@keyframes pulseDot  { 0%,100%{opacity:.35;transform:scale(1)} 50%{opacity:1;transform:scale(1.4)} }
-@keyframes spin      { to{transform:rotate(360deg)} }
-@keyframes uRipple   { 0%{transform:scale(.5);opacity:.6} 100%{transform:scale(2.4);opacity:0} }
-@keyframes markerPop { from{transform:scale(0) translateY(10px);opacity:0} to{transform:scale(1) translateY(0);opacity:1} }
-@keyframes busyPulse { 0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)} }
-@keyframes skelFade  { 0%,100%{opacity:.5} 50%{opacity:1} }
+/* ── AD BANNER ──────────────────────────────── */
+.panel-ad-wrap { margin: 0 16px 14px; flex-shrink: 0; }
+.panel-ad-inner {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: linear-gradient(135deg, rgba(8,145,178,.07), rgba(6,182,212,.05));
+  border: 1.5px solid rgba(8,145,178,.18);
+  border-radius: 14px; text-decoration: none; transition: all .18s;
+}
+.panel-ad-inner:active { background: var(--pp); }
 
-/* \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-   DARK-MODE SPECIFIC OVERRIDES
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 */
-[data-theme="dark"] .sbar { border-color:var(--bd); background:var(--sf); }
-[data-theme="dark"] .chip { background:var(--sf); border-color:var(--bd); color:var(--tx2); }
-[data-theme="dark"] .chip.on { background:var(--teal); border-color:var(--teal); color:#fff; }
-[data-theme="dark"] .ctrl-pill { background:var(--sf); border-color:var(--bd); }
-[data-theme="dark"] #panel { background:var(--sf); }
-[data-theme="dark"] #detail { background:var(--sf); }
-[data-theme="dark"] #srBox { background:var(--sf); }
-[data-theme="dark"] .ab-card { background:var(--sf); }
-[data-theme="dark"] .det-stat { background:var(--sf); }
-[data-theme="dark"] .dl-cell { background:var(--sf); }
-[data-theme="dark"] .md-hdr { background:linear-gradient(145deg, #041F1C, #0A3D38); }
+/* ── KEYFRAMES ──────────────────────────────── */
+@keyframes pop    { from { transform: scale(.25); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse  { 0%,100% { opacity: .4; transform: scale(1); } 50% { opacity: 1; transform: scale(1.4); } }
+@keyframes spin   { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
-<!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     SPLASH SCREEN
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
+<!-- SPLASH -->
 <div id="splash">
   <div class="sp-logo">
     <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png"
          alt="Taxi Tera" onerror="this.style.display='none'">
   </div>
-  <div class="sp-wordmark">
-    <div class="sp-title">Taxi Tera</div>
-    <div class="sp-sub" id="spSub">Find rides across Ethiopia \u2014 fast</div>
-  </div>
-  <div class="sp-tagline">Smart Taxi Navigation for Ethiopia</div>
+  <div class="sp-title">Taxi Tera</div>
+  <div class="sp-sub" id="spSub">Find rides across Ethiopia — fast</div>
   <div class="sp-dots"><span></span><span></span><span></span></div>
 </div>
 
-<!-- \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-     APP SHELL
-\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550 -->
+<!-- APP -->
 <div id="app">
-
-  <!-- Map -->
   <div id="map"></div>
 
-  <!-- Search results dropdown (renders above topbar content) -->
+  <div id="langBar">
+    <button class="lb on" id="btnEN" onclick="setLang('en')">EN</button>
+    <button class="lb"    id="btnAM" onclick="setLang('am')">አማ</button>
+  </div>
+
   <div id="srBox"></div>
 
-  <!-- Top search bar + filter chips -->
   <div id="topbar">
     <div class="sbar">
-      <!-- Menu button -->
-      <button class="ico-btn" onclick="openMenu()" aria-label="Menu">
+      <button class="ico-btn" onclick="openMenu()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="16" y2="12"/>
-          <line x1="3" y1="18" x2="21" y2="18"/>
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
         </svg>
       </button>
-      <!-- Search icon -->
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <svg class="sbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
       <input id="sInput" type="text" autocomplete="off" spellcheck="false"
              oninput="onSearch(this.value)" onblur="onSearchBlur()">
-      <button class="ico-btn" id="clrBtn" onclick="clearSearch()" aria-label="Clear">
+      <button class="ico-btn" id="clrBtn" onclick="clearSearch()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
           <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
         </svg>
       </button>
     </div>
-    <!-- Type filter chips + sort chips -->
-    <div class="chips-wrap">
-      <div class="chips-row" id="typeChips">
-        <div class="chip on"  data-f="all"       onclick="setFilter('all')">      <span>\ud83d\uddfa\ufe0f</span><span class="ct" data-k="all">All</span></div>
-        <div class="chip"     data-f="minibus"   onclick="setFilter('minibus')">  <span>\ud83d\ude8c</span><span class="ct" data-k="minibus">Minibus</span></div>
-        <div class="chip"     data-f="bajaj"     onclick="setFilter('bajaj')">    <span>\ud83d\udefa</span><span class="ct" data-k="bajaj">Bajaj</span></div>
-        <div class="chip"     data-f="ride"      onclick="setFilter('ride')">     <span>\ud83d\ude97</span><span class="ct" data-k="ride">Ride</span></div>
-        <div class="chip"     data-f="favorites" onclick="setFilter('favorites')"><span>\u2b50</span><span class="ct" data-k="saved">Saved</span></div>
-        <div class="chip-sep"></div>
-        <div class="chip sort-chip on"  data-s="nearest"   onclick="setSort('nearest')">  <span>\ud83d\udccd</span><span class="st-ct" data-sk="sortNearest">Nearest</span></div>
-        <div class="chip sort-chip"     data-s="leastBusy" onclick="setSort('leastBusy')"><span>\ud83d\ude0c</span><span class="st-ct" data-sk="sortLeast">Least Busy</span></div>
-        <div class="chip sort-chip"     data-s="topRated"  onclick="setSort('topRated')"> <span>\ud83c\udfc6</span><span class="st-ct" data-sk="sortTop">Top Rated</span></div>
-      </div>
+    <div class="chips">
+      <div class="chip on" data-f="all"       onclick="setFilter('all')">      <span>🗺️</span><span class="ct" data-k="all">All</span></div>
+      <div class="chip"    data-f="minibus"   onclick="setFilter('minibus')">  <span>🚌</span><span class="ct" data-k="minibus">Minibus</span></div>
+      <div class="chip"    data-f="bajaj"     onclick="setFilter('bajaj')">    <span>🛺</span><span class="ct" data-k="bajaj">Bajaj</span></div>
+      <div class="chip"    data-f="ride"      onclick="setFilter('ride')">     <span>🚗</span><span class="ct" data-k="ride">Ride</span></div>
+      <div class="chip"    data-f="favorites" onclick="setFilter('favorites')"><span>⭐</span><span class="ct" data-k="saved">Saved</span></div>
     </div>
   </div>
 
-  <!-- Right-side control cluster: Lang toggle + Dark mode toggle -->
-  <div id="ctrlCluster">
-    <div class="ctrl-pill">
-      <button class="lb on" id="btnEN" onclick="setLang('en')">EN</button>
-      <button class="lb"    id="btnAM" onclick="setLang('am')">\u12a0\u121b</button>
-    </div>
-    <div class="ctrl-pill">
-      <button class="ctrl-icon-btn" id="darkBtn" onclick="toggleDark()" aria-label="Toggle dark mode">
-        <!-- Moon icon (default: show moon = switch to dark) -->
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Locate / GPS FAB -->
-  <button id="fab" onclick="locateMe()" aria-label="Find my location">
+  <button id="fab" onclick="locateMe()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="12" cy="12" r="3"/>
-      <path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+      <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
       <circle cx="12" cy="12" r="7" stroke-dasharray="3 2"/>
     </svg>
   </button>
 
-  <!-- \u2500\u2500 Bottom Station List Panel \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <!-- Bottom panel -->
   <div id="panel" class="collapsed">
     <div class="ph-row" onclick="togglePanel()"><div class="ph"></div></div>
     <div class="p-head">
@@ -1007,172 +621,94 @@ html, body {
       </div>
     </div>
     <div class="slist" id="sList"></div>
-    <!-- Ad banner (non-intrusive) -->
-    <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
-       target="_blank" rel="noopener"
-       style="display:block;margin:0 14px 16px;border-radius:14px;overflow:hidden;flex-shrink:0;text-decoration:none">
-      <div style="background:linear-gradient(135deg,#0F766E,#0EA5E9);padding:12px 16px;display:flex;align-items:center;gap:10px">
-        <span style="font-size:22px">\ud83d\ude95</span>
+    <div class="panel-ad-wrap">
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
+         target="_blank" rel="noopener" class="panel-ad-inner">
+        <span style="font-size:24px;flex-shrink:0">🚖</span>
         <div style="flex:1;min-width:0">
-          <div style="font-size:13px;font-weight:700;color:#fff">Taxi Tera Partners</div>
-          <div style="font-size:11px;color:rgba(255,255,255,.75)">Explore ride deals near you</div>
+          <div style="font-size:13px;font-weight:700;color:#0F172A">Taxi Tera Partners</div>
+          <div style="font-size:11px;color:#64748B;margin-top:1px">Tap to explore ride deals</div>
         </div>
-        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,.6);background:rgba(255,255,255,.12);padding:3px 8px;border-radius:8px;flex-shrink:0">Ad</div>
-      </div>
-    </a>
+        <span style="font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 8px;border-radius:7px;flex-shrink:0">Ad</span>
+      </a>
+    </div>
   </div>
 
-  <!-- \u2500\u2500 Station Detail Bottom Sheet \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <!-- Station Detail -->
   <div id="detail">
-    <div class="det-handle-row" onclick="closeDetail()"><div class="det-handle"></div></div>
-    <!-- Compact horizontal header -->
-    <div class="det-hdr">
-      <div class="det-hdr-top">
-        <div class="det-id-row">
-          <div class="det-ico" id="dIco"></div>
-          <div class="det-title">
-            <div class="det-name" id="dName"></div>
-            <div class="det-addr" id="dAddr"></div>
-            <div class="det-type" id="dType"></div>
-          </div>
-        </div>
-        <div class="det-actions">
-          <button class="det-act-btn" id="dFav" onclick="toggleFav()" aria-label="Save station">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-            </svg>
-          </button>
-          <button class="det-act-btn close-btn" onclick="closeDetail()" aria-label="Close">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-              <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-          </button>
-        </div>
-      </div>
-      <!-- Live data strip (wait / people / busy) -->
-      <div class="det-live">
-        <div class="dl-cell">
-          <div class="dl-val" id="dWaitVal">\u2014</div>
-          <div class="dl-lbl" id="lWaitLbl">Avg Wait</div>
-        </div>
-        <div class="dl-cell">
-          <div class="dl-val" id="dCrowd">\u2014</div>
-          <div class="dl-lbl" id="lCrowdLbl">People</div>
-        </div>
-        <div class="dl-cell">
-          <div class="dl-val" id="dBusy">\u2014</div>
-          <div class="dl-lbl" id="lBusyLbl">Busyness</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Scrollable detail body -->
-    <div class="det-body">
-
-      <!-- Key stats: Distance / Walk / Rating -->
-      <div class="det-stats">
-        <div class="det-stat">
-          <div class="det-sv" id="dDist">\u2014</div>
-          <div class="det-sl" id="lDist">Distance</div>
-        </div>
-        <div class="det-stat">
-          <div class="det-sv" id="dWalk">\u2014</div>
-          <div class="det-sl" id="lWalk">Walk time</div>
-        </div>
-        <div class="det-stat">
-          <div class="det-sv star-row" id="dRate">\u2014</div>
-          <div class="det-sl" id="lRate">Rating</div>
-        </div>
-      </div>
-
-      <!-- Live crowd banner -->
-      <div class="live-banner" id="liveBanner">
-        <div class="live-dot"></div>
-        <div class="live-text" id="liveText">Loading live data\u2026</div>
-      </div>
-
-      <!-- Routes / Services -->
-      <div class="det-sec">
-        <div class="det-sec-h" id="lSvcs">Services Available</div>
-        <div class="svc-pills" id="dSvcs"></div>
-      </div>
-
-      <!-- Operating Hours -->
-      <div class="det-sec" style="margin-top:20px">
-        <div class="det-sec-h" id="lHours">Operating Hours</div>
-        <div id="dHours"></div>
-      </div>
-
-      <!-- Navigate CTA -->
-      <button class="nav-btn" onclick="startNav()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="3 11 22 2 13 21 11 13 3 11"/>
-        </svg>
-        <span id="lNav">Navigate on Map</span>
+    <div class="d-hdr">
+      <button class="d-back" onclick="closeDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-
-      <!-- Share -->
-      <button class="share-btn" onclick="shareStation()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
-          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-        </svg>
-        <span id="lShare">Share station</span>
+      <button class="d-fav" id="dFav" onclick="toggleFav()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
       </button>
+      <div class="d-ico" id="dIco"></div>
+      <div class="d-name" id="dName"></div>
+      <div class="d-addr" id="dAddr"></div>
+      <div class="d-type" id="dType"></div>
     </div>
+    <div class="d-stats">
+      <div class="d-stat"><div class="d-sv" id="dDist">—</div><div class="d-sl" id="lDist">Distance</div></div>
+      <div class="d-stat"><div class="d-sv" id="dWalk">—</div><div class="d-sl" id="lWalk">Walk time</div></div>
+      <div class="d-stat"><div class="d-sv" id="dRate">—</div><div class="d-sl" id="lRate">Rating</div></div>
+    </div>
+    <div class="d-sec">
+      <div class="d-sec-h" id="lSvcs">Services Available</div>
+      <div class="svc-pills" id="dSvcs"></div>
+    </div>
+    <div class="d-sec" style="margin-top:18px">
+      <div class="d-sec-h" id="lHours">Operating Hours</div>
+      <div id="dHours"></div>
+    </div>
+    <button class="nav-btn" onclick="startNav()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      <span id="lNav">Navigate on Map</span>
+    </button>
+    <button class="share-btn" onclick="shareStation()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+      </svg>
+      <span id="lShare">Share station</span>
+    </button>
   </div>
 
-  <!-- \u2500\u2500 In-App Navigation Bar \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <!-- Nav Bar -->
   <div id="navBar">
     <div class="nb-row">
       <div class="nb-info">
-        <div class="nb-label">\ud83d\udeb6 Walking to</div>
-        <div class="nb-dest" id="nbDest">\u2014</div>
+        <div class="nb-dest" id="nbDest">—</div>
         <div class="nb-meta">
-          <span id="nbDist">\u2014</span>
-          <span class="nb-dot">\u00b7</span>
-          <span id="nbTime">\u2014</span>
-          <span class="nb-dot">\u00b7</span>
-          <span id="lWalk2">\ud83d\udeb6 Walking</span>
+          <span id="nbDist">—</span><span class="nb-dot">·</span>
+          <span id="nbTime">—</span><span class="nb-dot">·</span>
+          <span id="lWalk2">🚶 Walking</span>
         </div>
       </div>
       <button class="nb-stop" onclick="stopNav()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         <span id="lStop">Stop</span>
       </button>
     </div>
-    <div class="nb-load" id="nbLoad">
-      <div class="nb-spin"></div>
-      <span id="lRoute">Getting walking route\u2026</span>
-    </div>
+    <div class="nb-load" id="nbLoad"><div class="nb-spin"></div><span id="lRoute">Getting walking route…</span></div>
   </div>
 
-  <!-- \u2500\u2500 About Page \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 -->
+  <!-- About -->
   <div id="about">
     <div class="ab-hdr">
       <button class="ab-back" onclick="closeAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <div class="ab-logo-wrap">
+      <div class="ab-logo">
         <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png"
              alt="Logo" onerror="this.style.display='none'">
       </div>
       <div class="ab-title">Taxi Tera</div>
-      <div class="ab-tag">Smart Taxi Navigation for Ethiopia</div>
-      <div class="ab-ver">v2.0.0 \u00b7 Tejo Studio</div>
+      <div class="ab-ver">v1.0.0 · Prototype</div>
     </div>
     <div class="ab-body">
-      <div class="ab-card">
-        <div class="ab-ct" id="lAbout">About</div>
-        <p id="lAboutTxt">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with real-time busyness data and in-app walking navigation.</p>
-      </div>
-      <div class="ab-card">
-        <div class="ab-ct" id="lStats">Stats</div>
+      <div class="ab-card"><div class="ab-ct" id="lAbout">About</div><p id="lAboutTxt">Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.</p></div>
+      <div class="ab-card"><div class="ab-ct" id="lStats">Stats</div>
         <div class="sg">
           <div class="st"><div class="st-n">120+</div><div class="st-l" id="lStatS">Stations</div></div>
           <div class="st"><div class="st-n">8</div><div class="st-l" id="lStatC">Cities</div></div>
@@ -1180,22 +716,19 @@ html, body {
           <div class="st"><div class="st-n">Free</div><div class="st-l" id="lStatF">Always</div></div>
         </div>
       </div>
-      <div class="ab-card">
-        <div class="ab-ct" id="lFeat">Features</div>
+      <div class="ab-card"><div class="ab-ct" id="lFeat">Features</div>
         <ul class="f-list">
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF1">GPS nearby detection</span></li>
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF2">Filter by Minibus, Bajaj, Ride-hailing</span></li>
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF3">In-app walking route \u2014 no Google Maps needed</span></li>
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF4">Save favourite stations</span></li>
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF5">Amharic &amp; English support</span></li>
-          <li><div class="f-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div><span id="lF6">Live busyness &amp; wait time data</span></li>
+          <li id="lF1">GPS nearby detection</li><li id="lF2">Filter by Minibus, Bajaj, Ride-hailing</li>
+          <li id="lF3">In-app walking route — no Google Maps needed</li>
+          <li id="lF4">Save favourite stations</li><li id="lF5">Amharic & English support</li>
+          <li id="lF6">Operating hours for each station</li>
         </ul>
       </div>
-      <div class="built">Built with \u2764\ufe0f in Ethiopia \u00b7 <strong>Tejo Studio</strong></div>
+      <div class="built">Built with ❤️ in Ethiopia · <strong>Tejo Studio</strong></div>
     </div>
   </div>
 
-  <!-- Menu overlay + drawer -->
+  <!-- Menu -->
   <div id="mOverlay" onclick="closeMenu()"></div>
   <div id="mDrawer">
     <div class="md-hdr">
@@ -1206,457 +739,316 @@ html, body {
         </div>
         <div>
           <div class="md-title">Taxi Tera</div>
+          <div class="md-tag" id="lTagline">Your ride guide in Ethiopia</div>
         </div>
       </div>
-      <div class="md-tag" id="lTagline">Smart Taxi Navigation for Ethiopia</div>
     </div>
     <div class="md-menu">
       <div class="md-item on" onclick="closeMenu()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         <span id="lHome">Home Map</span>
       </div>
       <div class="md-item" onclick="closeMenu();setFilter('favorites')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
         <span id="lSaved">Saved Stations</span>
       </div>
       <div class="md-sep"></div>
-      <div class="md-item" onclick="closeMenu();toggleDark()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-        <span id="lDarkMenu">Dark Mode</span>
-      </div>
-      <div class="md-sep"></div>
       <div class="md-item" onclick="closeMenu();openAbout()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
-        </svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         <span id="lAboutM">About</span>
       </div>
       <div class="md-sep"></div>
       <div class="md-item" onclick="closeMenu();setLang(lang==='en'?'am':'en')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"/>
-          <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
-        </svg>
-        <span id="lLang">Switch to \u12a0\u121b\u122d\u129b</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        <span id="lLang">Switch to አማርኛ</span>
       </div>
+      <div class="md-sep"></div>
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30"
+         target="_blank" rel="noopener" onclick="closeMenu()"
+         style="display:flex;align-items:center;gap:13px;padding:14px 12px;border-radius:13px;text-decoration:none;background:rgba(8,145,178,.06);border:1.5px solid rgba(8,145,178,.15);margin:0 2px;transition:background .15s">
+        <span style="font-size:20px;flex-shrink:0">🚖</span>
+        <div>
+          <div style="font-size:14px;font-weight:600;color:#0F172A">Ride Deals</div>
+          <div style="font-size:11px;color:#64748B;margin-top:1px">Sponsored · Tap to explore</div>
+        </div>
+        <span style="margin-left:auto;font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 8px;border-radius:6px;flex-shrink:0">Ad</span>
+      </a>
     </div>
-    <div class="md-foot">v2.0.0 \u00b7 Tejo Studio \u00b7 Addis Ababa, Ethiopia</div>
+    <div class="md-foot">v1.0.0 · Tejo Studio</div>
   </div>
 
-  <!-- Toast notification -->
   <div id="toast"></div>
-
-</div><!-- /#app -->
+</div>
 
 <script>
 'use strict';
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  TRANSLATIONS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-const TR = {
-  en: {
-    spSub:'Find rides across Ethiopia \u2014 fast',
-    ph:'Search taxi stations\u2026',
-    all:'All', minibus:'Minibus', bajaj:'Bajaj', ride:'Ride', saved:'Saved',
-    sortNearest:'Nearest', sortLeast:'Least Busy', sortTop:'Top Rated',
-    nearTitle:'Nearby Stations', found:'found',
-    dist:'Distance', walk:'Walk time', rating:'Rating',
-    waitLbl:'Avg Wait', crowdLbl:'People Nearby', busyLbl:'Busyness',
-    svcs:'Routes Available', hrs:'Operating Hours',
-    nav:'Navigate on Map', share:'Share station',
-    walk2:'\ud83d\udeb6 Walking', stop:'Stop', route:'Getting walking route\u2026',
-    about:'About', stats:'Stats', feat:'Features',
-    statS:'Stations', statC:'Cities', statT:'Types', statF:'Always',
-    aboutTxt:'Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points \u2014 with real-time busyness data and in-app walking navigation.',
-    f1:'GPS nearby detection', f2:'Filter by Minibus, Bajaj, Ride-hailing',
-    f3:'In-app walking route \u2014 no Google Maps needed',
-    f4:'Save favourite stations', f5:'Amharic & English support',
-    f6:'Live busyness & wait time data',
-    tagline:'Smart Taxi Navigation for Ethiopia',
-    home:'Home Map', aboutM:'About', langSwitch:'Switch to \u12a0\u121b\u122d\u129b',
-    locOk:'\ud83d\udccd Location updated', locFail:'\ud83d\udccd Showing Addis Ababa',
-    navStop:'\ud83d\uded1 Navigation stopped', approx:'\u26a0\ufe0f Showing approximate route',
-    copied:'\ud83d\udccb Copied!', favAdd:'\u2b50 Station saved!', favRm:'\ud83d\udc94 Removed from saved',
-    today:'Today', noSt:'No stations found', noMatch:'No stations match your search',
-    closed:'Closed', open24:'Open 24 hrs',
-    darkOn:'\ud83c\udf19 Dark mode on', darkOff:'\u2600\ufe0f Light mode on',
-    busyLow:'Low', busyMed:'Medium', busyHigh:'High',
-    liveText1:'people are heading here right now',
-    liveAvg:'Avg wait',
-    darkMenuOn:'Dark Mode \u00b7 On', darkMenuOff:'Dark Mode \u00b7 Off',
-  },
-  am: {
-    spSub:'\u1260\u12a2\u1275\u12ee\u1335\u12eb \u1273\u12ad\u1232 \u1348\u120d\u1309 \u2014 \u1260\u134d\u1325\u1290\u1275',
-    ph:'\u12e8\u1273\u12ad\u1232 \u1323\u1262\u12eb \u1348\u120d\u130d\u2026',
-    all:'\u1201\u1209\u121d', minibus:'\u121a\u1292\u1263\u1235', bajaj:'\u1263\u1303\u1305', ride:'\u122a\u12f5', saved:'\u12e8\u1270\u1240\u1218\u1321',
-    sortNearest:'\u1245\u122d\u1265', sortLeast:'\u12eb\u1290\u1230 \u1240\u120d\u1323\u134b', sortTop:'\u12a8\u134d\u1270\u129b \u12f0\u1228\u1303',
-    nearTitle:'\u1245\u122d\u1265 \u1323\u1262\u12eb\u12ce\u127d', found:'\u1270\u1308\u129d\u1277\u120d',
-    dist:'\u122d\u1240\u1275', walk:'\u12e8\u12a5\u130d\u122d \u130a\u12dc', rating:'\u12f0\u1228\u1303',
-    waitLbl:'\u130a\u12dc', crowdLbl:'\u1230\u12ce\u127d', busyLbl:'\u1201\u1294\u1273',
-    svcs:'\u12a0\u1308\u120d\u130d\u120e\u1276\u127d', hrs:'\u12e8\u1225\u122b \u1230\u12d3\u1275',
-    nav:'\u1260\u12ab\u122d\u1273 \u120b\u12ed \u1208\u121b\u1204\u12f5', share:'\u1323\u1262\u12eb \u12a0\u130b\u122b',
-    walk2:'\ud83d\udeb6 \u1260\u12a5\u130d\u122d', stop:'\u12a0\u1241\u121d', route:'\u12e8\u12a5\u130d\u122d \u1218\u1235\u1218\u122d\u2026',
-    about:'\u1235\u1208', stats:'\u1235\u1273\u1272\u1235\u1272\u12ad\u1235', feat:'\u1263\u1205\u122a\u12eb\u1275',
-    statS:'\u1323\u1262\u12eb\u12ce\u127d', statC:'\u12a8\u1270\u121e\u127d', statT:'\u12d3\u12ed\u1290\u1276\u127d', statF:'\u1201\u120c\u121d',
-    aboutTxt:'\u1273\u12ad\u1232 \u1270\u122b \u1260\u12a2\u1275\u12ee\u1335\u12eb \u1245\u122d\u1265 \u1273\u12ad\u1232 \u1323\u1262\u12eb\u12ce\u127d\u1295\u1363 \u1263\u1303\u1305 \u1246\u121a\u12eb\u12ce\u127d\u1295 \u12a5\u1293 \u122a\u12f5-\u1203\u12ed\u120a\u1295\u130d \u1266\u1273\u12ce\u127d\u1295 \u1208\u121b\u130d\u1298\u1275 \u12ed\u1228\u12f3\u12ce\u1273\u120d\u1362',
-    f1:'GPS \u1245\u122d\u1265 \u1348\u1208\u130b', f2:'\u1260\u12d3\u12ed\u1290\u1275 \u121b\u1323\u122a\u12eb',
-    f3:'\u12ab\u122d\u1273 \u120b\u12ed \u1204\u12f6 \u2014 \u1309\u130d\u120d \u12ab\u122d\u1273 \u12a0\u12eb\u1235\u1348\u120d\u130d\u121d',
-    f4:'\u1270\u12c8\u12f3\u1305 \u1323\u1262\u12eb\u12ce\u127d', f5:'\u12a0\u121b\u122d\u129b \u12a5\u1293 \u12a5\u1295\u130d\u120a\u12dd\u129b', f6:'\u1240\u1325\u1273 \u1201\u1294\u1273',
-    tagline:'\u1208\u12a2\u1275\u12ee\u1335\u12eb \u1273\u12ad\u1232 \u1348\u120d\u130a',
-    home:'\u12ab\u122d\u1273', aboutM:'\u1235\u1208', langSwitch:'Switch to English',
-    locOk:'\ud83d\udccd \u12a0\u12ab\u1263\u1262 \u1270\u12d8\u121d\u1297\u120d', locFail:'\ud83d\udccd \u12a0\u12f2\u1235 \u12a0\u1260\u1263 \u121b\u12d5\u12a8\u120d',
-    navStop:'\ud83d\uded1 \u121b\u1230\u123b \u1246\u121f\u120d', approx:'\u26a0\ufe0f \u130d\u121d\u1273\u12ca \u1218\u1235\u1218\u122d',
-    copied:'\ud83d\udccb \u1270\u1240\u12f5\u1277\u120d!', favAdd:'\u2b50 \u1323\u1262\u12eb \u1270\u1240\u121d\u1327\u120d!', favRm:'\ud83d\udc94 \u12a8\u1270\u1240\u1218\u1321 \u1270\u12c8\u130d\u12f7\u120d',
-    today:'\u12db\u122c', noSt:'\u1323\u1262\u12eb \u12a0\u120d\u1270\u1308\u1298\u121d', noMatch:'\u12e8\u121a\u12db\u1218\u12f5 \u1323\u1262\u12eb \u12e8\u1208\u121d',
-    closed:'\u1270\u12d8\u130d\u1277\u120d', open24:'24 \u1230\u12d3\u1275 \u12ad\u134d\u1275',
-    darkOn:'\ud83c\udf19 \u1328\u1208\u121b \u1201\u1290\u1273', darkOff:'\u2600\ufe0f \u1265\u122d\u1203\u1295 \u1201\u1290\u1273',
-    busyLow:'\u12dd\u1245\u1270\u129b', busyMed:'\u1218\u12ab\u12a8\u1208\u129b', busyHigh:'\u12a8\u134d\u1270\u129b',
-    liveText1:'\u1230\u12ce\u127d \u12a0\u1201\u1295 \u12a5\u12da\u1205 \u1293\u1278\u12cd',
-    liveAvg:'\u1240. \u130a\u12dc',
-    darkMenuOn:'\u1328\u1208\u121b \u00b7 \u1240\u1293\u12ca', darkMenuOff:'\u1328\u1208\u121b \u00b7 \u1320\u134d\u1277\u120d',
-  }
+const TR={
+  en:{spSub:'Find rides across Ethiopia — fast',ph:'Search taxi stations…',all:'All',minibus:'Minibus',bajaj:'Bajaj',ride:'Ride',saved:'Saved',nearTitle:'Nearby Stations',found:'found',dist:'Distance',walk:'Walk time',rating:'Rating',svcs:'Services Available',hrs:'Operating Hours',nav:'Navigate on Map',share:'Share station',walk2:'🚶 Walking',stop:'Stop',route:'Getting walking route…',about:'About',stats:'Stats',feat:'Features',statS:'Stations',statC:'Cities',statT:'Types',statF:'Always',aboutTxt:'Taxi Tera helps people across Ethiopia find nearby taxi stations, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.',f1:'GPS nearby detection',f2:'Filter by Minibus, Bajaj, Ride-hailing',f3:'In-app walking route — no Google Maps needed',f4:'Save favourite stations',f5:'Amharic & English support',f6:'Operating hours for each station',tagline:'Your ride guide in Ethiopia',home:'Home Map',aboutM:'About',langSwitch:'Switch to አማርኛ',locOk:'📍 Location updated',locFail:'📍 Showing Addis Ababa',navStop:'🛑 Navigation stopped',approx:'⚠️ Showing approximate route',copied:'📋 Copied!',favAdd:'⭐ Station saved!',favRm:'💔 Removed from saved',today:'Today',noSt:'No stations found',noMatch:'No stations match your search',closed:'Closed',open24:'Open 24 hrs'},
+  am:{spSub:'በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት',ph:'የታክሲ ጣቢያ ፈልግ…',all:'ሁሉም',minibus:'ሚኒባስ',bajaj:'ባጃጅ',ride:'ሪድ',saved:'የተቀመጡ',nearTitle:'ቅርብ ጣቢያዎች',found:'ተገኝቷል',dist:'ርቀት',walk:'የእግር ጊዜ',rating:'ደረጃ',svcs:'አገልግሎቶች',hrs:'የሥራ ሰዓት',nav:'በካርታ ላይ ለማሄድ',share:'ጣቢያ አጋራ',walk2:'🚶 በእግር',stop:'አቁም',route:'የእግር መስመር…',about:'ስለ',stats:'ስታቲስቲክስ',feat:'ባህሪያት',statS:'ጣቢያዎች',statC:'ከተሞች',statT:'ዓይነቶች',statF:'ሁሌም',aboutTxt:'ታክሲ ተራ በኢትዮጵያ ቅርብ ታክሲ ጣቢያዎችን፣ ባጃጅ ቆሚያዎችን እና ሪድ-ሃይሊንግ ቦታዎችን ለማግኘት ይረዳዎታል።',f1:'GPS ቅርብ ፈለጋ',f2:'በዓይነት ማጣሪያ',f3:'ካርታ ላይ ሄዶ',f4:'ተወዳጅ ጣቢያዎች',f5:'አማርኛ እና እንግሊዝኛ',f6:'የሥራ ሰዓት',tagline:'የእርስዎ ታክሲ መመሪያ',home:'ካርታ',aboutM:'ስለ',langSwitch:'Switch to English',locOk:'📍 አካባቢ ተዘምኗል',locFail:'📍 አዲስ አበባ ማዕከል',navStop:'🛑 ማሰሻ ቆሟል',approx:'⚠️ ግምታዊ መስመር',copied:'📋 ተቀድቷል!',favAdd:'⭐ ጣቢያ ተቀምጧል!',favRm:'💔 ከተቀመጡ ተወግዷል',today:'ዛሬ',noSt:'ጣቢያ አልተገኘም',noMatch:'የሚዛመድ ጣቢያ የለም',closed:'ተዘግቷል',open24:'24 ሰዓት ክፍት'}
 };
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  STATION DATA  (with busyness, wait time, crowd count)
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-const ST = [
-  {id:1,  name:'Megenagna Minibus Hub',   am:'\u1218\u1308\u1293\u129b \u121a\u1292\u1263\u1235 \u121b\u12d5\u12a8\u120d',
-   t:'minibus', lat:9.0272, lng:38.7678, addr:'Megenagna, Addis Ababa', addrAm:'\u1218\u1308\u1293\u129b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Bole','Piassa','Merkato','Sarbet'], rat:4.6,
-   busy:'high',   wait:15, crowd:23,
-   h:['5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u201310:00 PM','6:00 AM\u20139:00 PM','Closed']},
-
-  {id:2,  name:'Bole Atlas Station',      am:'\u1266\u120c \u12a0\u1275\u120b\u1235 \u1323\u1262\u12eb',
-   t:'minibus', lat:8.9975, lng:38.7883, addr:'Bole Road, Addis Ababa', addrAm:'\u1266\u120c \u1218\u1295\u1308\u12f5\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Megenagna','Piassa','Stadium'], rat:4.4,
-   busy:'medium', wait:7,  crowd:11,
-   h:['5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20139:00 PM','6:00 AM\u20138:00 PM','Closed']},
-
-  {id:3,  name:'Piassa Bajaj Stop',       am:'\u1352\u12eb\u1233 \u1263\u1303\u1305 \u1246\u121a',
-   t:'bajaj', lat:9.0352, lng:38.7517, addr:'Piassa, Addis Ababa', addrAm:'\u1352\u12eb\u1233\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Local routes','Merkato area'], rat:4.1,
-   busy:'medium', wait:6,  crowd:8,
-   h:['6:00 AM\u20138:00 PM','6:00 AM\u20138:00 PM','6:00 AM\u20138:00 PM','6:00 AM\u20138:00 PM','6:00 AM\u20138:00 PM','7:00 AM\u20136:00 PM','7:00 AM\u20134:00 PM']},
-
-  {id:4,  name:'Mexico Square Stop',      am:'\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed \u1246\u121a',
-   t:'minibus', lat:9.0177, lng:38.7497, addr:'Mexico Square, Addis Ababa', addrAm:'\u121c\u12ad\u1232\u12ae \u12a0\u12f0\u1263\u1263\u12ed\u1363 \u12a0.\u12a0',
-   r:['Piassa','Sarbet','Megenagna','4 Kilo'], rat:4.7,
-   busy:'high',   wait:18, crowd:31,
-   h:['5:00 AM\u20139:30 PM','5:00 AM\u20139:30 PM','5:00 AM\u20139:30 PM','5:00 AM\u20139:30 PM','5:00 AM\u201310:00 PM','5:30 AM\u20139:00 PM','6:00 AM\u20137:00 PM']},
-
-  {id:5,  name:'Sarbet Minibus Terminal', am:'\u1230\u122d\u1264\u1275 \u121a\u1292\u1263\u1235 \u1270\u122d\u121a\u1293\u120d',
-   t:'minibus', lat:8.9979, lng:38.7577, addr:'Sarbet, Addis Ababa', addrAm:'\u1230\u122d\u1264\u1275\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Mexico','CMC','Bole'], rat:4.3,
-   busy:'low',    wait:3,  crowd:4,
-   h:['5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:30 PM','6:00 AM\u20137:00 PM','Closed']},
-
-  {id:6,  name:'CMC Ride-hailing Zone',   am:'\u1232\u12a4\u121d\u1232 \u122a\u12f5 \u12de\u1295',
-   t:'ride', lat:9.0519, lng:38.8043, addr:'CMC Road, Addis Ababa', addrAm:'\u1232\u12a4\u121d\u1232\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Ride','FERES','Uber'], rat:4.8,
-   busy:'low',    wait:2,  crowd:6,
-   h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
-
-  {id:7,  name:'Gotera Bajaj Terminal',   am:'\u130e\u1270\u122b \u1263\u1303\u1305 \u1270\u122d\u121a\u1293\u120d',
-   t:'bajaj', lat:8.9889, lng:38.7693, addr:'Gotera, Addis Ababa', addrAm:'\u130e\u1270\u122b\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Akaki route','Sarbet route'], rat:3.9,
-   busy:'medium', wait:8,  crowd:9,
-   h:['6:00 AM\u20137:30 PM','6:00 AM\u20137:30 PM','6:00 AM\u20137:30 PM','6:00 AM\u20137:30 PM','6:00 AM\u20138:00 PM','7:00 AM\u20136:00 PM','Closed']},
-
-  {id:8,  name:'Stadium Taxi Hub',        am:'\u1235\u1273\u12f2\u12ec\u121d \u1273\u12ad\u1232 \u1203\u1265',
-   t:'minibus', lat:9.0220, lng:38.7523, addr:'Stadium, Addis Ababa', addrAm:'\u1235\u1273\u12f2\u12ec\u121d\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Piassa','Mexico','Bole','Arat Kilo'], rat:4.5,
-   busy:'high',   wait:12, crowd:19,
-   h:['5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u20139:00 PM','5:00 AM\u20139:30 PM','5:30 AM\u20138:30 PM','6:00 AM\u20136:00 PM']},
-
-  {id:9,  name:'Bole Ride Pickup',        am:'\u1266\u120c \u122a\u12f5 \u1352\u12ab\u1355',
-   t:'ride', lat:9.0054, lng:38.7884, addr:'Bole Airport Area', addrAm:'\u1266\u120c \u12a0\u12e8\u122d \u121b\u1228\u134a\u12eb',
-   r:['Ride','FERES','Pickup'], rat:4.9,
-   busy:'low',    wait:1,  crowd:3,
-   h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
-
-  {id:10, name:'4 Kilo Minibus Stop',     am:'4 \u12aa\u120e \u121a\u1292\u1263\u1235 \u1246\u121a',
-   t:'minibus', lat:9.0381, lng:38.7634, addr:'4 Kilo, Addis Ababa', addrAm:'4 \u12aa\u120e\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Piassa','Arat Kilo','6 Kilo','Mexico'], rat:4.2,
-   busy:'medium', wait:5,  crowd:7,
-   h:['5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20138:30 PM','5:30 AM\u20139:00 PM','6:00 AM\u20138:00 PM','7:00 AM\u20135:00 PM']},
-
-  {id:11, name:'Merkato Bajaj Rank',      am:'\u1218\u122d\u12ab\u1276 \u1263\u1303\u1305 \u12f0\u1228\u1303',
-   t:'bajaj', lat:9.0337, lng:38.7365, addr:'Merkato, Addis Ababa', addrAm:'\u1218\u122d\u12ab\u1276\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Piassa','Gotera','Shabelle'], rat:4.0,
-   busy:'high',   wait:14, crowd:17,
-   h:['6:00 AM\u20137:00 PM','6:00 AM\u20137:00 PM','6:00 AM\u20137:00 PM','6:00 AM\u20137:00 PM','6:00 AM\u20137:00 PM','7:00 AM\u20135:00 PM','8:00 AM\u20132:00 PM']},
-
-  {id:12, name:'Saris Minibus Station',   am:'\u1233\u122a\u1235 \u121a\u1292\u1263\u1235 \u1323\u1262\u12eb',
-   t:'minibus', lat:8.9743, lng:38.7813, addr:'Saris, Addis Ababa', addrAm:'\u1233\u122a\u1235\u1363 \u12a0\u12f2\u1235 \u12a0\u1260\u1263',
-   r:['Gotera','Kaliti','Akaki'], rat:4.1,
-   busy:'low',    wait:4,  crowd:5,
-   h:['5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:00 PM','5:30 AM\u20138:30 PM','6:00 AM\u20137:00 PM','Closed']},
+const ST=[
+  {id:1,name:'Megenagna Minibus Hub',am:'መገናኛ ሚኒባስ ማዕከል',t:'minibus',lat:9.0272,lng:38.7678,addr:'Megenagna, Addis Ababa',addrAm:'መገናኛ፣ አዲስ አበባ',r:['Bole','Piassa','Merkato','Sarbet'],rat:4.6,h:['5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:00','5:00–22:00','6:00–21:00','Closed']},
+  {id:2,name:'Bole Atlas Station',am:'ቦሌ አትላስ ጣቢያ',t:'minibus',lat:8.9975,lng:38.7883,addr:'Bole Road, Addis Ababa',addrAm:'ቦሌ መንገድ፣ አዲስ አበባ',r:['Megenagna','Piassa','Stadium'],rat:4.4,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','Closed']},
+  {id:3,name:'Piassa Bajaj Stop',am:'ፒያሳ ባጃጅ ቆሚ',t:'bajaj',lat:9.0352,lng:38.7517,addr:'Piassa, Addis Ababa',addrAm:'ፒያሳ፣ አዲስ አበባ',r:['Local routes','Merkato area'],rat:4.1,h:['6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','7:00–18:00','7:00–16:00']},
+  {id:4,name:'Mexico Square Stop',am:'ሜክሲኮ አደባባይ ቆሚ',t:'minibus',lat:9.0177,lng:38.7497,addr:'Mexico Square, Addis Ababa',addrAm:'ሜክሲኮ አደባባይ፣ አ.አ',r:['Piassa','Sarbet','Megenagna','4 Kilo'],rat:4.7,h:['5:00–21:30','5:00–21:30','5:00–21:30','5:00–21:30','5:00–22:00','5:30–21:00','6:00–19:00']},
+  {id:5,name:'Sarbet Minibus Terminal',am:'ሰርቤት ሚኒባስ ተርሚናል',t:'minibus',lat:8.9979,lng:38.7577,addr:'Sarbet, Addis Ababa',addrAm:'ሰርቤት፣ አዲስ አበባ',r:['Mexico','CMC','Bole'],rat:4.3,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']},
+  {id:6,name:'CMC Ride-hailing Zone',am:'ሲኤምሲ ሪድ ዞን',t:'ride',lat:9.0519,lng:38.8043,addr:'CMC Road, Addis Ababa',addrAm:'ሲኤምሲ፣ አዲስ አበባ',r:['Ride','FERES','Uber'],rat:4.8,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
+  {id:7,name:'Gotera Bajaj Terminal',am:'ጎተራ ባጃጅ ተርሚናል',t:'bajaj',lat:8.9889,lng:38.7693,addr:'Gotera, Addis Ababa',addrAm:'ጎተራ፣ አዲስ አበባ',r:['Akaki route','Sarbet route'],rat:3.9,h:['6:00–19:30','6:00–19:30','6:00–19:30','6:00–19:30','6:00–20:00','7:00–18:00','Closed']},
+  {id:8,name:'Stadium Taxi Hub',am:'ስታዲዬም ታክሲ ሃብ',t:'minibus',lat:9.0220,lng:38.7523,addr:'Stadium, Addis Ababa',addrAm:'ስታዲዬም፣ አዲስ አበባ',r:['Piassa','Mexico','Bole','Arat Kilo'],rat:4.5,h:['5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:30','5:30–20:30','6:00–18:00']},
+  {id:9,name:'Bole Ride Pickup',am:'ቦሌ ሪድ ፒካፕ',t:'ride',lat:9.0054,lng:38.7884,addr:'Bole Airport Area',addrAm:'ቦሌ አየር ማረፊያ',r:['Ride','FERES','Pickup'],rat:4.9,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
+  {id:10,name:'4 Kilo Minibus Stop',am:'4 ኪሎ ሚኒባስ ቆሚ',t:'minibus',lat:9.0381,lng:38.7634,addr:'4 Kilo, Addis Ababa',addrAm:'4 ኪሎ፣ አዲስ አበባ',r:['Piassa','Arat Kilo','6 Kilo'],rat:4.2,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','7:00–17:00']},
+  {id:11,name:'Merkato Bajaj Rank',am:'መርካቶ ባጃጅ ደረጃ',t:'bajaj',lat:9.0337,lng:38.7365,addr:'Merkato, Addis Ababa',addrAm:'መርካቶ፣ አዲስ አበባ',r:['Piassa','Gotera','Shabelle'],rat:4.0,h:['6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','7:00–17:00','8:00–14:00']},
+  {id:12,name:'Saris Minibus Station',am:'ሳሪስ ሚኒባስ ጣቢያ',t:'minibus',lat:8.9743,lng:38.7813,addr:'Saris, Addis Ababa',addrAm:'ሳሪስ፣ አዲስ አበባ',r:['Gotera','Kaliti','Akaki'],rat:4.1,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']},
 ];
+const TM={minibus:{emoji:'🚌',label:'Minibus',am:'ሚኒባስ'},bajaj:{emoji:'🛺',label:'Bajaj',am:'ባጃጅ'},ride:{emoji:'🚗',label:'Ride',am:'ሪድ'}};
+const DAYS_EN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+const DAYS_AM=['ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','አርብ','ቅዳሜ','እሁድ'];
+let map=null,uMarker=null,uLat=9.0222,uLng=38.7469;
+let filt='all',cur=null,panelOpen=false;
+let lang=localStorage.getItem('ttLang')||'en';
+let favs=JSON.parse(localStorage.getItem('ttFavs')||'[]');
+let rLines=[];
+const t=k=>TR[lang][k]||k;
+const $=id=>document.getElementById(id);
 
-const TM = {
-  minibus: { emoji:'\ud83d\ude8c', label:'Minibus', am:'\u121a\u1292\u1263\u1235' },
-  bajaj:   { emoji:'\ud83d\udefa', label:'Bajaj',   am:'\u1263\u1303\u1305' },
-  ride:    { emoji:'\ud83d\ude97', label:'Ride',    am:'\u122a\u12f5' },
-};
-const DAYS_EN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const DAYS_AM = ['\u1230\u129e','\u121b\u12ad\u1230\u129e','\u1228\u1261\u12d5','\u1210\u1219\u1235','\u12a0\u122d\u1265','\u1245\u12f3\u121c','\u12a5\u1201\u12f5'];
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  STATE
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-let map      = null;
-let uMarker  = null;
-let tileL    = null;           // active tile layer reference
-let uLat     = 9.0222;
-let uLng     = 38.7469;
-let filt     = 'all';
-let sortMode = 'nearest';      // 'nearest' | 'leastBusy' | 'topRated'
-let cur      = null;           // currently selected station
-let panelOpen = false;
-let activeMarker = null;       // currently highlighted marker element
-let lang     = localStorage.getItem('ttLang')  || 'en';
-let favs     = JSON.parse(localStorage.getItem('ttFavs') || '[]');
-let darkMode = localStorage.getItem('ttDark')  === '1';
-let rLines   = [];             // active route polyline layers
-
-const t = k  => TR[lang][k] || k;
-const $ = id => document.getElementById(id);
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  BOOT
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-window.addEventListener('load', () => {
-  // Apply saved theme before anything renders
-  applyTheme(false);
+window.addEventListener('load',()=>{
   applyLang();
-
-  setTimeout(() => {
+  setTimeout(()=>{
     $('splash').classList.add('hide');
-    setTimeout(() => {
-      $('splash').style.display = 'none';
-      if (typeof L === 'undefined') { showMapError(); return; }
-      initMap();
-      getLocation();
-    }, 700);
-  }, 2400);
+    setTimeout(()=>{
+      $('splash').style.display='none';
+      if(typeof L==='undefined'){showMapErr();return;}
+      initMap();getLocation();
+    },700);
+  },2300);
 });
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  MAP INIT
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function initMap() {
-  map = L.map('map', { zoomControl:false, attributionControl:true })
-         .setView([uLat, uLng], 14);
+function showMapErr(){
+  $('map').innerHTML='<div class="empty" style="height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;color:var(--tx)">Map failed to load</p><p>Check your connection</p><button onclick="location.reload()" style="margin-top:8px;padding:13px 26px;background:var(--p);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(8,145,178,.4)">🔄 Reload</button></div>';
+  renderList();panelOpen=false;togglePanel();
+}
 
-  const attr = '\u00a9 <a href="https://openstreetmap.org/copyright">OSM</a> \u00a9 <a href="https://carto.com/attributions">CARTO</a>';
-  const lightUrl = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  const darkUrl  = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+function setLang(l){
+  lang=l;localStorage.setItem('ttLang',l);
+  $('btnEN').classList.toggle('on',l==='en');
+  $('btnAM').classList.toggle('on',l==='am');
+  applyLang();renderList();
+  if(cur)refreshDLabels();
+  showToast(l==='am'?'🇪🇹 አማርኛ ተቀናብሯል':'🇬🇧 English set');
+}
 
-  tileL = L.tileLayer(darkMode ? darkUrl : lightUrl,
-    { attribution:attr, subdomains:'abcd', maxZoom:19 }).addTo(map);
+function applyLang(){
+  const L=TR[lang];
+  const si=$('sInput');if(si)si.placeholder=L.ph;
+  const ss=$('spSub');if(ss)ss.textContent=L.spSub;
+  document.querySelectorAll('.ct').forEach(el=>{const k=el.dataset.k;if(L[k])el.textContent=L[k];});
+  const m2={pTitle:'nearTitle',lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route',lAbout:'about',lStats:'stats',lFeat:'feat',lStatS:'statS',lStatC:'statC',lStatT:'statT',lStatF:'statF',lAboutTxt:'aboutTxt',lF1:'f1',lF2:'f2',lF3:'f3',lF4:'f4',lF5:'f5',lF6:'f6',lTagline:'tagline',lHome:'home',lSaved:'saved',lAboutM:'aboutM',lLang:'langSwitch'};
+  Object.entries(m2).forEach(([id,key])=>{const el=$(id);if(el&&L[key])el.textContent=L[key];});
+}
 
-  // User location marker with ripple effect
-  const uIcon = L.divIcon({
-    html:`<div class="u-wrap">
-            <div class="u-pulse"></div>
-            <div class="u-pulse-2"></div>
-            <div class="u-dot"></div>
-          </div>`,
-    className:'', iconSize:[40,40], iconAnchor:[20,20]
+function initMap(){
+  map=L.map('map',{zoomControl:false,attributionControl:true}).setView([uLat,uLng],14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
+    attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains:'abcd',maxZoom:19
+  }).addTo(map);
+  const uIcon=L.divIcon({html:'<div class="u-dot"></div>',className:'',iconSize:[18,18],iconAnchor:[9,9]});
+  uMarker=L.marker([uLat,uLng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
+  renderMarkers();renderList();
+  setTimeout(()=>{panelOpen=false;togglePanel();},700);
+}
+
+function getLocation(){
+  if(!navigator.geolocation){showToast(t('locFail'));return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    if(uMarker)uMarker.setLatLng([uLat,uLng]);
+    if(map)map.flyTo([uLat,uLng],15,{duration:1.4});
+    renderList();renderMarkers();showToast(t('locOk'));
+  },()=>showToast(t('locFail')));
+}
+
+function locateMe(){
+  const fab=$('fab');fab.classList.add('spinning');
+  navigator.geolocation?.getCurrentPosition(pos=>{
+    uLat=pos.coords.latitude;uLng=pos.coords.longitude;
+    if(uMarker)uMarker.setLatLng([uLat,uLng]);
+    if(map)map.flyTo([uLat,uLng],15,{duration:1});
+    renderList();renderMarkers();fab.classList.remove('spinning');showToast(t('locOk'));
+  },()=>{fab.classList.remove('spinning');showToast(t('locFail'));});
+}
+
+function hvs(a,b,c,d){const R=6371e3,f1=a*Math.PI/180,f2=c*Math.PI/180,df=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
+function fmtD(m){return m<1000?Math.round(m)+'m':((m/1000).toFixed(1))+'km';}
+function fmtW(m){const mn=Math.round(m/80);return mn<1?'<1 min':mn+' min';}
+function fmtT(s){const m=Math.round(s/60);if(m<1)return '<1 min';if(m<60)return m+' min';return Math.floor(m/60)+'h '+m%60+'m';}
+
+function renderMarkers(){
+  if(!map)return;
+  map.eachLayer(l=>{if(l._tt)map.removeLayer(l);});
+  getFiltered().forEach(s=>{
+    const icon=L.divIcon({html:`<div class="tm"><div class="tmd ${s.t}"><span>${TM[s.t].emoji}</span></div></div>`,className:'',iconSize:[42,42],iconAnchor:[21,42]});
+    const m=L.marker([s.lat,s.lng],{icon}).addTo(map);
+    m._tt=true;m.on('click',()=>openDetail(s));
   });
-  uMarker = L.marker([uLat, uLng], { icon:uIcon, zIndexOffset:1000 }).addTo(map);
-
-  renderMarkers();
-  renderList(true); // true = show skeleton first
-  setTimeout(() => { panelOpen = false; togglePanel(); }, 750);
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  DARK MODE
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function toggleDark() {
-  darkMode = !darkMode;
-  localStorage.setItem('ttDark', darkMode ? '1' : '0');
-  applyTheme(true);
-  showToast(t(darkMode ? 'darkOn' : 'darkOff'));
+function getFiltered(){
+  let list=[...ST];
+  if(filt==='favorites')list=list.filter(s=>favs.includes(s.id));
+  else if(filt!=='all')list=list.filter(s=>s.t===filt);
+  return list.sort((a,b)=>hvs(uLat,uLng,a.lat,a.lng)-hvs(uLat,uLng,b.lat,b.lng));
 }
 
-function applyTheme(animate) {
-  document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+function setFilter(f){
+  filt=f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  document.querySelector(`.chip[data-f="${f}"]`)?.classList.add('on');
+  renderMarkers();renderList();if(!panelOpen)togglePanel();
+}
 
-  // Update dark button icon
-  const btn = $('darkBtn');
-  if (btn) {
-    btn.innerHTML = darkMode
-      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-           <circle cx="12" cy="12" r="5"/>
-           <line x1="12" y1="1" x2="12" y2="3"/>
-           <line x1="12" y1="21" x2="12" y2="23"/>
-           <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-           <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-           <line x1="1" y1="12" x2="3" y2="12"/>
-           <line x1="21" y1="12" x2="23" y2="12"/>
-           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-         </svg>`
-      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
-           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-         </svg>`;
-    btn.classList.toggle('on', darkMode);
+function renderList(){
+  const list=getFiltered(),el=$('sList');
+  $('pCount').textContent=list.length+' '+t('found');
+  $('pTitle').textContent=filt==='favorites'?t('saved'):t('nearTitle');
+  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>'+t('noSt')+'</p></div>';return;}
+  el.innerHTML=list.map((s,i)=>{
+    const d=hvs(uLat,uLng,s.lat,s.lng),nm=lang==='am'?s.am:s.name,lbl=lang==='am'?TM[s.t].am:TM[s.t].label;
+    return `<div class="s-card" style="animation-delay:${i*.04}s" onclick="openDetail(ST.find(x=>x.id===${s.id}))">
+      <div class="s-ico ${s.t}">${TM[s.t].emoji}</div>
+      <div class="s-info"><div class="s-name">${nm}</div><div class="s-meta">📍 ${fmtD(d)}&emsp;🚶 ${fmtW(d)}&emsp;⭐ ${s.rat}</div></div>
+      <div class="s-badge ${s.t}">${lbl}</div>
+      <button class="go-btn" onclick="event.stopPropagation();quickNav(${s.id})">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      </button></div>`;
+  }).join('');
+}
+
+function togglePanel(){
+  panelOpen=!panelOpen;
+  $('panel').classList.toggle('collapsed',!panelOpen);
+  $('fab').style.bottom=panelOpen?'232px':'112px';
+}
+
+function openDetail(s){
+  if(!s)return;cur=s;
+  const d=hvs(uLat,uLng,s.lat,s.lng);
+  $('dIco').textContent=TM[s.t].emoji;
+  $('dName').textContent=lang==='am'?s.am:s.name;
+  $('dAddr').textContent=lang==='am'?s.addrAm:s.addr;
+  $('dType').textContent=lang==='am'?TM[s.t].am:TM[s.t].label;
+  $('dDist').textContent=fmtD(d);$('dWalk').textContent=fmtW(d);$('dRate').textContent=s.rat+'★';
+  refreshDLabels();
+  $('dSvcs').innerHTML=s.r.map(r=>`<div class="svc-pill">🔹 ${r}</div>`).join('');
+  const today=new Date().getDay(),di=today===0?6:today-1;
+  const days=lang==='am'?DAYS_AM:DAYS_EN;
+  $('dHours').innerHTML=s.h.map((h,i)=>{
+    const it=i===di,isClosed=h==='Closed',is24=h==='Open 24 hrs';
+    const label=isClosed?t('closed'):is24?t('open24'):h;
+    return `<div class="hr-row"><span class="hr-day"${it?' style="color:var(--p)"':''}>
+      ${days[i]}${it?` (${t('today')})`:''}</span>
+      <span class="${isClosed?'hr-closed':'hr-open'}">${label}</span></div>`;
+  }).join('');
+  updateFavBtn();
+  if(map)map.flyTo([s.lat,s.lng],16,{duration:.8});
+  $('detail').classList.add('open');
+}
+
+function refreshDLabels(){
+  const ids={lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route'};
+  Object.entries(ids).forEach(([id,k])=>{const el=$(id);if(el)el.textContent=t(k);});
+  if(cur){$('dName').textContent=lang==='am'?cur.am:cur.name;$('dAddr').textContent=lang==='am'?cur.addrAm:cur.addr;$('dType').textContent=lang==='am'?TM[cur.t].am:TM[cur.t].label;}
+}
+function closeDetail(){$('detail').classList.remove('open');cur=null;}
+function quickNav(id){const s=ST.find(x=>x.id===id);if(!s)return;if(map)map.flyTo([s.lat,s.lng],16,{duration:.9});setTimeout(()=>openDetail(s),350);}
+
+async function startNav(){
+  if(!cur||!map)return;
+  const s=cur;closeDetail();
+  $('nbDest').textContent=lang==='am'?s.am:s.name;
+  $('nbDist').textContent='…';$('nbTime').textContent='…';
+  $('nbLoad').classList.add('on');$('navBar').classList.add('on');
+  $('lWalk2').textContent=t('walk2');$('lStop').textContent=t('stop');$('lRoute').textContent=t('route');
+  clearRoutes();
+  map.fitBounds([[uLat,uLng],[s.lat,s.lng]],{padding:[72,72],maxZoom:16});
+  try{
+    const res=await fetch(`https://router.project-osrm.org/route/v1/walking/${uLng},${uLat};${s.lng},${s.lat}?overview=full&geometries=geojson`,{signal:AbortSignal.timeout(8000)});
+    if(!res.ok)throw 0;
+    const data=await res.json();if(data.code!=='Ok'||!data.routes.length)throw 0;
+    const route=data.routes[0],coords=route.geometry.coordinates.map(c=>[c[1],c[0]]);
+    const l0=L.polyline(coords,{color:'rgba(8,145,178,.18)',weight:16,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(map);
+    const l1=L.polyline(coords,{color:'#0891B2',weight:5,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
+    const l2=L.polyline(coords,{color:'#fff',weight:2,opacity:.5,dashArray:'8 12',lineCap:'round'}).addTo(map);
+    rLines=[l0,l1,l2];
+    $('nbDist').textContent=fmtD(route.distance);$('nbTime').textContent=fmtT(route.duration);
+    $('nbLoad').classList.remove('on');
+    map.fitBounds(l1.getBounds(),{padding:[72,96],maxZoom:16});
+  }catch{
+    const l=L.polyline([[uLat,uLng],[s.lat,s.lng]],{color:'#0891B2',weight:5,opacity:.75,dashArray:'12 9'}).addTo(map);
+    rLines=[l];const dm=hvs(uLat,uLng,s.lat,s.lng);
+    $('nbDist').textContent=fmtD(dm);$('nbTime').textContent=fmtW(dm);
+    $('nbLoad').classList.remove('on');showToast(t('approx'));
   }
+}
+function stopNav(){$('navBar').classList.remove('on');clearRoutes();renderMarkers();showToast(t('navStop'));}
+function clearRoutes(){rLines.forEach(l=>{if(map)map.removeLayer(l);});rLines=[];}
 
-  // Update dark menu label
-  const dm = $('lDarkMenu'); if (dm) dm.textContent = t(darkMode ? 'darkMenuOn' : 'darkMenuOff');
-
-  // Swap map tiles
-  if (map && tileL) {
-    map.removeLayer(tileL);
-    const url = darkMode
-      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-      : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-    tileL = L.tileLayer(url, {
-      attribution:'\u00a9 <a href="https://openstreetmap.org/copyright">OSM</a> \u00a9 <a href="https://carto.com/attributions">CARTO</a>',
-      subdomains:'abcd', maxZoom:19
-    }).addTo(map);
-    tileL.bringToBack();
-  }
+function shareStation(){
+  if(!cur)return;
+  const nm=lang==='am'?cur.am:cur.name,txt=`📍 ${nm}\n${lang==='am'?cur.addrAm:cur.addr}`;
+  if(navigator.share)navigator.share({title:nm,text:txt});
+  else{navigator.clipboard?.writeText(txt);showToast(t('copied'));}
+}
+function toggleFav(){
+  if(!cur)return;
+  const i=favs.indexOf(cur.id);
+  if(i>=0){favs.splice(i,1);showToast(t('favRm'));}else{favs.push(cur.id);showToast(t('favAdd'));}
+  localStorage.setItem('ttFavs',JSON.stringify(favs));updateFavBtn();
+}
+function updateFavBtn(){
+  if(!cur)return;
+  const btn=$('dFav'),on=favs.includes(cur.id);
+  btn.classList.toggle('on',on);
+  btn.innerHTML=on
+    ?'<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 }
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  GEOLOCATION
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function getLocation() {
-  if (!navigator.geolocation) { showToast(t('locFail')); return; }
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      uLat = pos.coords.latitude;
-      uLng = pos.coords.longitude;
-      if (uMarker) uMarker.setLatLng([uLat, uLng]);
-      if (map) map.flyTo([uLat, uLng], 15, { duration:1.4 });
-      renderList(); renderMarkers();
-      showToast(t('locOk'));
-    },
-    () => showToast(t('locFail'))
-  );
+let sTimer=null;
+function onSearch(v){
+  $('clrBtn').classList.toggle('show',v.length>0);
+  clearTimeout(sTimer);if(!v.trim()){closeSR();return;}
+  sTimer=setTimeout(()=>{
+    const q=v.toLowerCase();
+    const r=ST.filter(s=>s.name.toLowerCase().includes(q)||s.am.includes(q)||s.addr.toLowerCase().includes(q)||s.t.includes(q)||s.r.some(x=>x.toLowerCase().includes(q)));
+    showSR(r);
+  },200);
 }
-
-function locateMe() {
-  const fab = $('fab');
-  fab.classList.add('spinning');
-  navigator.geolocation?.getCurrentPosition(
-    pos => {
-      uLat = pos.coords.latitude; uLng = pos.coords.longitude;
-      if (uMarker) uMarker.setLatLng([uLat, uLng]);
-      if (map) map.flyTo([uLat, uLng], 15, { duration:1 });
-      renderList(); renderMarkers();
-      fab.classList.remove('spinning');
-      showToast(t('locOk'));
-    },
-    () => { fab.classList.remove('spinning'); showToast(t('locFail')); }
-  );
+function showSR(r){
+  const el=$('srBox');
+  if(!r.length){el.innerHTML=`<div class="empty" style="padding:30px"><p>${t('noMatch')}</p></div>`;}
+  else{el.innerHTML=r.map(s=>{const d=hvs(uLat,uLng,s.lat,s.lng),nm=lang==='am'?s.am:s.name;return `<div class="sr-item" onclick="pickSR(${s.id})"><div class="sr-ico ${s.t}">${TM[s.t].emoji}</div><div><div class="sr-name">${nm}</div><div class="sr-sub">${fmtD(d)} · ${lang==='am'?s.addrAm:s.addr}</div></div></div>`;}).join('');}
+  el.classList.add('open');
 }
+function pickSR(id){const s=ST.find(x=>x.id===id);clearSearch();if(s)setTimeout(()=>openDetail(s),180);}
+function onSearchBlur(){setTimeout(()=>{if(!$('sInput').value)closeSR();},160);}
+function closeSR(){$('srBox').classList.remove('open');}
+function clearSearch(){$('sInput').value='';$('clrBtn').classList.remove('show');closeSR();$('sInput').blur();}
+function openMenu(){$('mDrawer').classList.add('on');$('mOverlay').classList.add('on');}
+function closeMenu(){$('mDrawer').classList.remove('on');$('mOverlay').classList.remove('on');}
+function openAbout(){$('about').classList.add('open');}
+function closeAbout(){$('about').classList.remove('open');}
 
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  LANGUAGE
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function setLang(l) {
-  lang = l;
-  localStorage.setItem('ttLang', l);
-  $('btnEN').classList.toggle('on', l === 'en');
-  $('btnAM').classList.toggle('on', l === 'am');
-  applyLang();
-  renderList();
-  if (cur) refreshDetailLabels();
-  showToast(l === 'am' ? '\ud83c\uddea\ud83c\uddf9 \u12a0\u121b\u122d\u129b \u1270\u1240\u1293\u1265\u122f\u120d' : '\ud83c\uddec\ud83c\udde7 English set');
+let tTimer=null;
+function showToast(msg){
+  const el=$('toast');el.textContent=msg;el.classList.add('on');
+  clearTimeout(tTimer);tTimer=setTimeout(()=>el.classList.remove('on'),2800);
 }
-
-function applyLang() {
-  const L = TR[lang];
-  const sp = $('spSub'); if (sp) sp.textContent = L.spSub;
-  const inp = $('sInput'); if (inp) inp.placeholder = L.ph;
-
-  // Type chip labels
-  document.querySelectorAll('.ct').forEach(el => {
-    const k = el.dataset.k; if (L[k]) el.textContent = L[k];
-  });
-  // Sort chip labels
-  document.querySelectorAll('.st-ct').forEach(el => {
-    const k = el.dataset.sk; if (L[k]) el.textContent = L[k];
-  });
-
-  // Static label map
-  const m = {
-    pTitle:'nearTitle', lDist:'dist', lWalk:'walk', lRate:'rating',
-    lWaitLbl:'waitLbl', lCrowdLbl:'crowdLbl', lBusyLbl:'busyLbl',
-    lSvcs:'svcs', lHours:'hrs', lNav:'nav', lShare:'share',
-    lWalk2:'walk2', lStop:'stop', lRoute:'route',
-    lAbout:'about', lStats:'stats', lFeat:'feat',
-    lStatS:'statS', lStatC:'statC', lStatT:'statT', lStatF:'statF',
-    lAboutTxt:'aboutTxt',
-    lF1:'f1', lF2:'f2', lF3:'f3', lF4:'f4', lF5:'f5', lF6:'f6',
-    lTagline:'tagline', lHome:'home', lSaved:'saved',
-    lAboutM:'aboutM', lLang:'langSwitch',
-    lDarkMenu: darkMode ? 'darkMenuOn' : 'darkMenuOff',
-  };
-  Object.entries(m).forEach(([id, key]) => {
-    const el = $(id); if (el && L[key]) el.textContent = L[key];
-  });
-}
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  DISTANCE HELPERS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function dist(a, b, c, d) {
-  const R = 6371e3, f1 = a*Math.PI/180, f2 = c*Math.PI/180;
-  const df = (c-a)*Math.PI/180, dl = (d-b)*Math.PI/180;
-  const x  = Math.sin(df/2)**2 + Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
-}
-const fmtD = m  => m < 1000 ? Math.round(m) + 'm' : (m/1000).toFixed(1) + 'km';
-const fmtW = m  => { const mn = Math.round(m/80); return mn < 1 ? '<1 min' : mn + ' min'; };
-const fmtT = s  => { const m = Math.round(s/60); if(m<1)return '<1 min'; if(m<60)return m+' min'; return Math.floor(m/60)+'h '+m%60+'m'; };
-
-// Star renderer (e.g. 4.6 \u2192 \u2605\u2605\u2605\u2605\u2605 with partial visual)
-function starsHTML(rat) {
-  const full  = Math.floor(rat);
-  const half  = rat - full >= 0.5 ? 1 : 0;
-  const empty = 5 - full - half;
-  return '\u2605'.repeat(full) + (half ? '\u00bd' : '') + '\u2606'.repeat(empty) + ` <small style="font-size:.75em;font-weight:600;opacity:.7">${rat}</small>`;
-}
-
-// Busy label
-function busyLabel(b) {
-  return b === 'high' ? t('busyHigh') : b === 'medium' ? t('busyMed') : t('busyLow');
-}
-
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-//  MARKERS
-// \u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550
-function renderMarkers() {
-  if (!map) return;
-  // Remove old taxi markers only (keep user marker)
-  map.eachLayer(l => { if (l._tt) map.removeLayer(l); });
-
-  getFiltered().forEach((s, i) => {
-    const busyCls = `busy-${s.busy === 'medium' ? 'med' : s.busy}`;
-    const icon = L.divIcon({
-      html: `<div class="tt-marker ${busyCls}" style="animation-delay:${i * 0.04}s">
-               <div class="tt-pin ${s.t}">
-                 <span>${TM[s.t].emoji}</span>
-                 <div class="tt-busy-dot"></div>
-               </div>
-             </div>`,
-      className:'', iconSize:[44,44], iconAnchor:[22,44]
-    });
-    const m = L.marker([s.lat
+let swipeY=0;
+const pnl=$('panel');
+pnl.addEventListener('touchstart',e=>{swipeY=e.touches[0].clientY;},{passive:true});
+pnl.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientY-swipeY;if(d>55&&panelOpen)togglePanel();if(d<-55&&!panelOpen)togglePanel();},{passive:true});
+</script>
+<script src="https://pl29044791.profitablecpmratenetwork.com/c1/1a/19/c11a199d537c757adaac7c6d1899f72d.js"></script>
+</body>
+</html>
