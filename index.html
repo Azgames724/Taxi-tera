@@ -974,22 +974,21 @@ const $=id=>document.getElementById(id);
 
 // ═══ BOOT ═══
 window.addEventListener('load',()=>{
-  // Build place→routes lookup
-  ROUTES.forEach(r=>{
-    if(!ROUTE_MAP[r.from]) ROUTE_MAP[r.from]=[];
-    ROUTE_MAP[r.from].push(r);
-    if(!ROUTE_MAP[r.to]) ROUTE_MAP[r.to]=[];
-    if(!ROUTE_MAP[r.to].find(x=>x.id===r.id)) ROUTE_MAP[r.to].push(r);
-  });
   applyLang();
+  // Short splash then init — ROUTE_MAP built after map loads
   setTimeout(()=>{
     $('splash').classList.add('hide');
     setTimeout(()=>{
       $('splash').style.display='none';
       if(typeof L==='undefined'){showMapErr();return;}
+      // Build FROM-only lookup after splash gone
+      ROUTES.forEach(r=>{
+        if(!ROUTE_MAP[r.from]) ROUTE_MAP[r.from]=[];
+        ROUTE_MAP[r.from].push(r);
+      });
       initMap(); getLocation();
-    },700);
-  },2200);
+    },500);
+  },1800);
 });
 
 function showMapErr(){
@@ -1062,11 +1061,11 @@ function renderMarkers(){
   map.eachLayer(l=>{if(l._tt)map.removeLayer(l);});
   clearRouteMapLines();
 
-  // 1. Route stop markers — one per unique place that has coordinates
+  // Route START markers — one per unique FROM location
   if(filt==='all'||filt==='routes'){
-    Object.entries(LOCS).forEach(([place,coord])=>{
-      const routes=ROUTE_MAP[place];
-      if(!routes||!routes.length)return;
+    Object.entries(ROUTE_MAP).forEach(([place,routes])=>{
+      const coord=LOCS[place];
+      if(!coord)return;
       const icon=L.divIcon({
         html:`<div class="bs-pin"><span>🚌</span></div>`,
         className:'',iconSize:[28,28],iconAnchor:[14,28]
@@ -1077,7 +1076,7 @@ function renderMarkers(){
     });
   }
 
-  // 2. Station markers (always on top)
+  // Station markers on top
   if(filt!=='routes'){
     getFiltered().forEach(s=>{
       const icon=L.divIcon({
