@@ -2,359 +2,327 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#0891B2">
-<title>Taxi Tera — Find Your Ride in Ethiopia</title>
+<title>Taxi Tera</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Noto+Sans+Ethiopic:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 :root{
-  --p:#0891B2; --pl:#06B6D4; --pd:#0E7490; --pp:#ECFEFF; --pb:#A5F3FC;
-  --amb:#F59E0B; --ind:#6366F1; --grn:#059669; --red:#EF4444;
-  --bg:#F8FAFC; --sf:#FFFFFF; --sf2:#F1F5F9; --bd:#E2E8F0; --bd2:#CBD5E1;
-  --tx:#0F172A; --tx2:#475569; --tx3:#94A3B8;
-  --sh:0 1px 3px rgba(0,0,0,.06),0 4px 16px rgba(8,145,178,.08);
-  --shl:0 4px 16px rgba(0,0,0,.10),0 16px 48px rgba(8,145,178,.14);
-  --r:16px; --rs:10px;
+  --p:#0891B2;--pl:#06B6D4;--pd:#0E7490;--pp:#ECFEFF;--pb:#A5F3FC;
+  --amb:#F59E0B;--ind:#6366F1;--grn:#059669;--red:#EF4444;
+  --bg:#F8FAFC;--sf:#FFF;--sf2:#F1F5F9;--bd:#E2E8F0;--bd2:#CBD5E1;
+  --tx:#0F172A;--tx2:#475569;--tx3:#94A3B8;
+  --sh:0 2px 8px rgba(0,0,0,.08),0 4px 20px rgba(8,145,178,.1);
+  --shx:0 4px 20px rgba(0,0,0,.12),0 12px 40px rgba(8,145,178,.14);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--tx);overflow:hidden;-webkit-font-smoothing:antialiased}
 
-/* SPLASH */
-#splash{position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#0C4A6E 0%,#0891B2 55%,#06B6D4 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .65s,transform .65s}
+/* ── SPLASH ── */
+#splash{
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#0C4A6E,#0891B2 55%,#06B6D4);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+  transition:opacity .6s,transform .6s;
+}
 #splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
-.sp-logo{width:160px;height:160px;display:flex;align-items:center;justify-content:center;animation:pop .8s cubic-bezier(.34,1.56,.64,1) .2s both}
-.sp-logo img{width:160px;height:160px;object-fit:contain;filter:drop-shadow(0 8px 24px rgba(0,0,0,.3))}
-.sp-title{font-size:40px;font-weight:900;color:#fff;letter-spacing:-1px;animation:fadeUp .5s ease .45s both;text-shadow:0 2px 12px rgba(0,0,0,.2)}
-.sp-sub{font-size:14px;color:rgba(255,255,255,.82);animation:fadeUp .5s ease .6s both}
-.sp-dots{display:flex;gap:7px;margin-top:26px;animation:fadeUp .5s ease .75s both}
-.sp-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);animation:pulse 1.3s ease-in-out infinite}
-.sp-dots span:nth-child(2){animation-delay:.18s}
-.sp-dots span:nth-child(3){animation-delay:.36s}
+.sp-logo{width:160px;height:160px;display:flex;align-items:center;justify-content:center;animation:pop .8s cubic-bezier(.34,1.56,.64,1) .1s both}
+.sp-logo img{width:160px;height:160px;object-fit:contain;filter:drop-shadow(0 6px 20px rgba(0,0,0,.3))}
+.sp-title{font-size:38px;font-weight:900;color:#fff;letter-spacing:-1px;animation:fadeUp .4s ease .3s both}
+.sp-sub{font-size:14px;color:rgba(255,255,255,.8);animation:fadeUp .4s ease .45s both}
+.sp-dots{display:flex;gap:7px;margin-top:22px;animation:fadeUp .4s ease .6s both}
+.sp-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.5);animation:pulse 1.2s ease-in-out infinite}
+.sp-dots span:nth-child(2){animation-delay:.2s}
+.sp-dots span:nth-child(3){animation-delay:.4s}
 
-/* APP */
+/* ── APP ── */
 #app{position:fixed;inset:0}
+
+/* ── MAP ── */
 #map{position:absolute;inset:0;z-index:1}
 .leaflet-container{background:#e8f4f8}
 .leaflet-control-zoom{display:none!important}
-.leaflet-control-attribution{font-size:9px!important;opacity:.45;background:rgba(255,255,255,.8)!important;padding:2px 6px!important;border-radius:6px 0 0 0!important}
+.leaflet-control-attribution{font-size:9px!important;opacity:.4;background:rgba(255,255,255,.85)!important;padding:2px 6px!important;border-radius:6px 0 0 0!important}
 
-/* MARKERS */
-.tm{display:flex;align-items:center;justify-content:center;cursor:pointer}
-.tmd{width:38px;height:38px;border-radius:50% 50% 50% 5px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2.5px solid #fff;transform:rotate(-45deg);transition:transform .2s}
-.tmd span{transform:rotate(45deg);display:block;line-height:1}
-.tmd.minibus{background:var(--p);box-shadow:0 4px 14px rgba(8,145,178,.5)}
-.tmd.bajaj{background:var(--amb);box-shadow:0 4px 14px rgba(245,158,11,.5)}
-.tmd.ride{background:var(--ind);box-shadow:0 4px 14px rgba(99,102,241,.5)}
-.tmd.route{background:#fff;border:2.5px solid var(--p);box-shadow:0 3px 12px rgba(8,145,178,.35)}
-.tmd.route span{transform:rotate(45deg) scale(.85);display:block}
-.tm:active .tmd{transform:rotate(-45deg) scale(1.22)}
+/* ── STATION MARKERS ── */
+.stn-pin{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.stn-dot{width:40px;height:40px;border-radius:50% 50% 50% 5px;display:flex;align-items:center;justify-content:center;font-size:17px;border:3px solid #fff;transform:rotate(-45deg);transition:transform .2s}
+.stn-dot span{transform:rotate(45deg);display:block;line-height:1}
+.stn-dot.minibus{background:var(--p);box-shadow:0 4px 14px rgba(8,145,178,.55)}
+.stn-dot.bajaj{background:var(--amb);box-shadow:0 4px 14px rgba(245,158,11,.55)}
+.stn-dot.ride{background:var(--ind);box-shadow:0 4px 14px rgba(99,102,241,.55)}
+.stn-pin:active .stn-dot{transform:rotate(-45deg) scale(1.2)}
 
-/* Bus stop pin — small marker for route endpoints */
-.bs-pin{
-  width:28px;height:28px;
-  background:#fff;border-radius:50% 50% 50% 4px;
-  border:2px solid var(--p);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;
-  box-shadow:0 2px 8px rgba(8,145,178,.4);
-  transform:rotate(-45deg);cursor:pointer;
-  transition:transform .15s;
-}
-.bs-pin span{transform:rotate(45deg);display:block;line-height:1}
-.bs-pin:active{transform:rotate(-45deg) scale(1.2)}
+/* ── ROUTE FROM MARKERS ── */
+.rt-pin{width:30px;height:30px;background:var(--sf);border:2.5px solid var(--p);border-radius:50% 50% 50% 4px;display:flex;align-items:center;justify-content:center;font-size:14px;transform:rotate(-45deg);cursor:pointer;box-shadow:0 3px 10px rgba(8,145,178,.4);transition:transform .2s}
+.rt-pin span{transform:rotate(45deg);display:block;line-height:1}
+.rt-pin:active{transform:rotate(-45deg) scale(1.2)}
 
-/* Stop routes popup panel */
-#stopPanel{
-  position:absolute;bottom:0;left:0;right:0;z-index:320;
-  background:var(--sf);border-radius:24px 24px 0 0;
-  border-top:3px solid var(--p);
-  box-shadow:0 -6px 30px rgba(8,145,178,.18);
-  transform:translateY(100%);transition:transform .38s cubic-bezier(.32,.72,0,1);
-  max-height:55vh;display:flex;flex-direction:column;
-}
-#stopPanel.on{transform:translateY(0)}
-.sp-hdr{padding:18px 18px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.sp-place{font-size:17px;font-weight:700;color:var(--tx)}
-.sp-sub-txt{font-size:12px;color:var(--tx3);margin-top:2px}
-.sp-close{width:34px;height:34px;border-radius:10px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);flex-shrink:0}
-.sp-close svg{width:15px;height:15px}
-.sp-routes{overflow-y:auto;padding:12px 16px 28px;display:flex;flex-direction:column;gap:8px;-webkit-overflow-scrolling:touch}
-.sp-routes::-webkit-scrollbar{display:none}
-.sp-route-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:var(--r);border:1.5px solid var(--bd);cursor:pointer;transition:all .18s}
-.sp-route-row:active{background:#FEF3C7;border-color:var(--amb)}
-.sp-route-ico{width:38px;height:38px;background:#FFFBEB;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:1px solid rgba(245,158,11,.2)}
-.sp-route-info{flex:1;min-width:0}
-.sp-route-name{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sp-route-sub{font-size:11px;color:var(--tx3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sp-route-code{font-size:10px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 7px;flex-shrink:0}
-.sp-go{width:34px;height:34px;border-radius:10px;background:var(--amb);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(245,158,11,.4)}
-.sp-go:active{transform:scale(.87)}
-.sp-go svg{width:14px;height:14px}
+/* ── USER DOT ── */
+.u-dot{width:16px;height:16px;background:#3B82F6;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);animation:uPulse 2s ease-out infinite}
+@keyframes uPulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.55)}70%{box-shadow:0 0 0 12px rgba(59,130,246,0)}100%{box-shadow:0 0 0 0 rgba(59,130,246,0)}}
 
+/* ── LANG TOGGLE ── */
+#langBar{position:absolute;top:14px;right:14px;z-index:420;display:flex;background:var(--sf);border:1.5px solid var(--bd);border-radius:24px;padding:4px;gap:2px;box-shadow:var(--shx)}
+.lb{padding:6px 12px;border-radius:18px;border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;color:var(--tx3);background:transparent}
+.lb.on{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.3)}
 
-.u-dot{width:18px;height:18px;background:#3B82F6;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.3);animation:uPulse 2.2s ease-out infinite}
-@keyframes uPulse{0%{box-shadow:0 0 0 0 rgba(59,130,246,.6),0 2px 8px rgba(0,0,0,.3)}70%{box-shadow:0 0 0 14px rgba(59,130,246,0),0 2px 8px rgba(0,0,0,.3)}100%{box-shadow:0 0 0 0 rgba(59,130,246,0),0 2px 8px rgba(0,0,0,.3)}}
-
-/* LANGUAGE TOGGLE */
-#langBar{position:absolute;top:14px;right:14px;z-index:420;display:flex;align-items:center;background:var(--sf);border:1.5px solid var(--bd);border-radius:24px;padding:4px;gap:2px;box-shadow:var(--shl)}
-.lb{padding:6px 13px;border-radius:20px;border:none;font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .22s;color:var(--tx3);background:transparent}
-.lb.on{background:var(--p);color:#fff;box-shadow:0 2px 8px rgba(8,145,178,.35)}
-
-/* SEARCH BAR */
+/* ── TOP BAR ── */
 #topbar{position:absolute;top:0;left:0;right:0;z-index:410;padding:14px 14px 0;pointer-events:none}
-.sbar{display:flex;align-items:center;gap:9px;background:var(--sf);border-radius:16px;padding:12px 14px;box-shadow:var(--shl);border:1.5px solid var(--bd);pointer-events:all;transition:border-color .2s,box-shadow .2s;margin-right:90px}
-.sbar:focus-within{border-color:var(--pl);box-shadow:var(--shl),0 0 0 3px rgba(6,182,212,.12)}
+.sbar{display:flex;align-items:center;gap:8px;background:var(--sf);border-radius:16px;padding:12px 14px;box-shadow:var(--shx);border:1.5px solid var(--bd);pointer-events:all;transition:border-color .2s;margin-right:90px}
+.sbar:focus-within{border-color:var(--pl);box-shadow:var(--shx),0 0 0 3px rgba(6,182,212,.1)}
 .sbar-icon{width:18px;height:18px;color:var(--p);flex-shrink:0}
 .sbar input{flex:1;border:none;outline:none;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;color:var(--tx);background:transparent;min-width:0}
 .sbar input::placeholder{color:var(--tx3);font-weight:400}
 .ico-btn{width:32px;height:32px;border-radius:9px;border:none;background:var(--pp);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--p);transition:all .15s;flex-shrink:0}
-.ico-btn:active{transform:scale(.87)}
+.ico-btn:active{transform:scale(.88)}
 .ico-btn svg{width:15px;height:15px}
-#clrBtn{display:none}
-#clrBtn.show{display:flex}
+#clrBtn{display:none}#clrBtn.show{display:flex}
 
-/* CHIPS */
-.chips{display:flex;gap:7px;padding:9px 0 0;overflow-x:auto;scrollbar-width:none;pointer-events:all;-webkit-overflow-scrolling:touch}
+/* Filter chips */
+.chips{display:flex;gap:7px;padding:9px 0 0;overflow-x:auto;scrollbar-width:none;pointer-events:all}
 .chips::-webkit-scrollbar{display:none}
-.chip{display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:24px;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bd);flex-shrink:0;background:var(--sf);color:var(--tx2);box-shadow:var(--sh);transition:all .2s}
+.chip{display:flex;align-items:center;gap:5px;padding:7px 13px;border-radius:22px;font-size:12.5px;font-weight:600;white-space:nowrap;cursor:pointer;border:1.5px solid var(--bd);flex-shrink:0;background:var(--sf);color:var(--tx2);box-shadow:var(--sh);transition:all .18s}
 .chip.on{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 3px 12px rgba(8,145,178,.35)}
 .chip:active{transform:scale(.93)}
 
-/* FAB */
-#fab{position:absolute;right:16px;bottom:220px;z-index:410;width:52px;height:52px;border-radius:16px;background:var(--sf);border:1.5px solid var(--bd);box-shadow:var(--shl);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--p);transition:all .2s}
+/* ── FAB ── */
+#fab{position:absolute;right:16px;z-index:410;width:52px;height:52px;border-radius:16px;background:var(--sf);border:1.5px solid var(--bd);box-shadow:var(--shx);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--p);transition:all .2s;bottom:220px}
 #fab:active{transform:scale(.9);background:var(--pp);border-color:var(--p)}
 #fab svg{width:22px;height:22px}
 #fab.spinning{animation:spin 1s linear infinite}
 
-/* PANEL */
-#panel{position:absolute;bottom:0;left:0;right:0;z-index:300;background:var(--sf);border-radius:24px 24px 0 0;box-shadow:0 -4px 32px rgba(0,0,0,.1),0 -1px 0 var(--bd);transition:transform .38s cubic-bezier(.32,.72,0,1);max-height:74vh;display:flex;flex-direction:column}
-#panel.collapsed{transform:translateY(calc(100% - 90px))}
+/* ── BOTTOM PANEL ── */
+#panel{position:absolute;bottom:0;left:0;right:0;z-index:300;background:var(--sf);border-radius:24px 24px 0 0;box-shadow:0 -4px 28px rgba(0,0,0,.1);transition:transform .36s cubic-bezier(.32,.72,0,1);max-height:74vh;display:flex;flex-direction:column}
+#panel.collapsed{transform:translateY(calc(100% - 88px))}
 .ph-row{display:flex;align-items:center;justify-content:center;padding:12px 0 0;cursor:pointer;flex-shrink:0}
 .ph{width:36px;height:4px;background:var(--bd2);border-radius:2px}
-.p-tabs{display:flex;gap:6px;padding:10px 16px 0;flex-shrink:0}
-.p-tab{flex:1;padding:8px 0;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px}
+.p-tabs{display:flex;gap:5px;padding:10px 16px 0;flex-shrink:0}
+.p-tab{flex:1;padding:8px;border-radius:12px;border:1.5px solid var(--bd);background:var(--bg);color:var(--tx2);font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;gap:5px}
 .p-tab.on{background:var(--p);color:#fff;border-color:var(--p);box-shadow:0 2px 8px rgba(8,145,178,.3)}
-.p-tab:active{transform:scale(.96)}
 .p-head{padding:10px 18px 0;flex-shrink:0}
 .p-tr{display:flex;align-items:center;justify-content:space-between}
 .p-title{font-size:17px;font-weight:700;color:var(--tx)}
-.p-count{font-size:12px;font-weight:700;padding:3px 11px;background:var(--pp);color:var(--p);border-radius:20px;border:1px solid var(--pb)}
-.slist{overflow-y:auto;padding:10px 16px 14px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch;flex:1}
+.p-count{font-size:12px;font-weight:700;padding:3px 10px;background:var(--pp);color:var(--p);border-radius:20px;border:1px solid var(--pb)}
+.slist{overflow-y:auto;padding:10px 16px 16px;display:flex;flex-direction:column;gap:9px;flex:1}
 .slist::-webkit-scrollbar{display:none}
 
-/* STATION CARD */
-.s-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--bg);border-radius:var(--r);border:1.5px solid var(--bd);cursor:pointer;transition:all .2s;animation:fadeUp .3s ease both}
+/* ── STATION CARD ── */
+.s-card{display:flex;align-items:center;gap:12px;padding:13px;background:var(--bg);border-radius:16px;border:1.5px solid var(--bd);cursor:pointer;transition:all .18s;animation:fadeUp .3s ease both}
 .s-card:active{transform:scale(.97);background:var(--pp);border-color:var(--pl)}
-.s-ico{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.s-ico{width:46px;height:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
 .s-ico.minibus{background:var(--pp);border:1.5px solid rgba(8,145,178,.15)}
 .s-ico.bajaj{background:#FFFBEB;border:1.5px solid rgba(245,158,11,.15)}
 .s-ico.ride{background:#EEF2FF;border:1.5px solid rgba(99,102,241,.15)}
-.s-ico.route{background:var(--pp);border:1.5px solid rgba(8,145,178,.2)}
 .s-info{flex:1;min-width:0}
 .s-name{font-size:15px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-meta{font-size:12px;color:var(--tx3);margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.s-meta{font-size:12px;color:var(--tx3);margin-top:3px}
 .s-badge{font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;flex-shrink:0}
 .s-badge.minibus{background:var(--pp);color:var(--pd);border:1px solid rgba(8,145,178,.2)}
 .s-badge.bajaj{background:#FEF3C7;color:#92400E;border:1px solid rgba(245,158,11,.2)}
 .s-badge.ride{background:#EEF2FF;color:#4338CA;border:1px solid rgba(99,102,241,.2)}
-.s-badge.route{background:var(--pp);color:var(--pd);border:1px solid rgba(8,145,178,.2)}
-.go-btn{width:40px;height:40px;border-radius:12px;background:var(--p);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:all .15s;flex-shrink:0;box-shadow:0 3px 10px rgba(8,145,178,.4)}
-.go-btn:active{transform:scale(.87);background:var(--pd)}
-.go-btn svg{width:15px;height:15px}
+.go-btn{width:38px;height:38px;border-radius:11px;background:var(--p);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 3px 10px rgba(8,145,178,.4);transition:all .15s}
+.go-btn:active{transform:scale(.87)}
+.go-btn svg{width:14px;height:14px}
 
-/* ROUTE CARD in list */
-.r-card{display:flex;align-items:center;gap:12px;padding:13px;background:var(--bg);border-radius:var(--r);border:1.5px solid var(--bd);cursor:pointer;transition:all .2s;animation:fadeUp .25s ease both}
-.r-card:active{transform:scale(.97);background:var(--pp);border-color:var(--pl)}
-.r-ico{width:44px;height:44px;border-radius:12px;flex-shrink:0;background:var(--pp);border:1.5px solid rgba(8,145,178,.15);display:flex;align-items:center;justify-content:center;font-size:18px}
+/* ── ROUTE CARD ── */
+.r-card{display:flex;align-items:center;gap:11px;padding:13px;background:var(--bg);border-radius:16px;border:1.5px solid var(--bd);cursor:pointer;transition:all .18s;animation:fadeUp .25s ease both}
+.r-card:active{transform:scale(.97);background:#FFFBEB;border-color:var(--amb)}
+.r-ico{width:44px;height:44px;border-radius:12px;background:#FFFBEB;border:1.5px solid rgba(245,158,11,.18);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .r-info{flex:1;min-width:0}
 .r-name{font-size:14px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.r-route{display:flex;align-items:center;gap:5px;margin-top:4px;font-size:12px;color:var(--tx3)}
-.r-route .arrow{color:var(--p);font-weight:700}
-.r-code{display:inline-block;font-size:10px;font-weight:700;color:var(--p);background:var(--pp);border:1px solid rgba(8,145,178,.2);border-radius:6px;padding:2px 7px;margin-top:4px}
-.map-btn{width:36px;height:36px;border-radius:10px;background:var(--p);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(8,145,178,.35);transition:all .15s}
-.map-btn:active{transform:scale(.87);background:var(--pd)}
-.map-btn svg{width:15px;height:15px}
+.r-sub{font-size:12px;color:var(--tx3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.r-code{font-size:10px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 7px;flex-shrink:0}
+.r-show-btn{width:36px;height:36px;border-radius:10px;background:var(--amb);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(245,158,11,.4);transition:all .15s}
+.r-show-btn:active{transform:scale(.87)}
+.r-show-btn svg{width:14px;height:14px}
 
-/* SEARCH RESULTS */
-#srBox{position:absolute;top:0;left:0;right:0;z-index:408;background:var(--sf);border-radius:0 0 22px 22px;box-shadow:var(--shl);max-height:62vh;overflow-y:auto;transform:translateY(-100%);transition:transform .32s cubic-bezier(.32,.72,0,1);padding-top:82px;border:1.5px solid var(--bd);border-top:none}
+/* ── SEARCH RESULTS ── */
+#srBox{position:absolute;top:0;left:0;right:0;z-index:408;background:var(--sf);border-radius:0 0 20px 20px;box-shadow:var(--shx);max-height:60vh;overflow-y:auto;transform:translateY(-100%);transition:transform .3s cubic-bezier(.32,.72,0,1);padding-top:80px;border:1.5px solid var(--bd);border-top:none}
 #srBox.open{transform:translateY(0)}
-.sr-item{display:flex;align-items:center;gap:12px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s}
-.sr-item:last-child{border-bottom:none}
-.sr-item:active{background:var(--pp)}
+.sr-row{display:flex;align-items:center;gap:11px;padding:13px 18px;cursor:pointer;border-bottom:1px solid var(--bd);transition:background .15s}
+.sr-row:last-child{border-bottom:none}
+.sr-row:active{background:var(--pp)}
 .sr-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-.sr-ico.minibus,.sr-ico.route{background:var(--pp)}
-.sr-ico.bajaj{background:#FFFBEB}
-.sr-ico.ride{background:#EEF2FF}
+.sr-ico.s{background:var(--pp)}.sr-ico.b{background:#FFFBEB}.sr-ico.r{background:#EEF2FF}.sr-ico.rt{background:#FFFBEB}
 .sr-name{font-size:14px;font-weight:600;color:var(--tx)}
-.sr-sub{font-size:12px;color:var(--tx3);margin-top:2px}
-.sr-section{padding:8px 18px 4px;font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;background:var(--bg)}
+.sr-sub{font-size:12px;color:var(--tx3);margin-top:1px}
+.sr-sep{padding:7px 18px 4px;font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;background:var(--bg)}
 
-/* ROUTE DETAIL PANEL */
-#routeDetail{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
-#routeDetail.open{transform:translateY(0)}
-.rd-hdr{background:linear-gradient(145deg,var(--pd) 0%,var(--p) 50%,var(--pl) 100%);padding:58px 20px 30px;position:relative;color:#fff}
-.rd-back{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;backdrop-filter:blur(8px);transition:all .15s}
-.rd-back:active{background:rgba(255,255,255,.32)}
-.rd-back svg{width:20px;height:20px}
-.rd-badge{display:inline-block;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;margin-bottom:12px}
-.rd-title{font-size:13px;opacity:.8;font-weight:500;margin-bottom:6px}
-.rd-route-display{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
-.rd-place{font-size:20px;font-weight:800;line-height:1.2}
-.rd-arrow{font-size:18px;opacity:.7}
-.rd-stats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--bd)}
-.rd-stat{background:var(--sf);padding:16px 14px;text-align:center}
-.rd-sv{font-size:19px;font-weight:800;color:var(--p)}
-.rd-sl{font-size:11px;color:var(--tx3);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.4px}
-.rd-sec{padding:20px 18px 0}
-.rd-sec-h{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.rd-stop-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bd)}
-.rd-stop-row:last-child{border-bottom:none}
-.rd-stop-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.rd-stop-dot.start{background:var(--p)}
-.rd-stop-dot.end{background:var(--amb)}
-.rd-stop-name{font-size:14px;font-weight:600;color:var(--tx)}
-.rd-stop-label{font-size:11px;color:var(--tx3);margin-top:2px}
-.show-map-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:calc(100% - 36px);margin:20px 18px 0;padding:18px;background:linear-gradient(135deg,var(--pd) 0%,var(--pl) 100%);border:none;border-radius:17px;color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(8,145,178,.45);transition:transform .15s,box-shadow .15s}
-.show-map-btn:active{transform:scale(.97);box-shadow:0 2px 8px rgba(8,145,178,.3)}
-.show-map-btn svg{width:20px;height:20px}
+/* ── ROUTE LINE BAR (shows when a route is drawn) ── */
+#routeBar{position:absolute;bottom:0;left:0;right:0;z-index:310;background:var(--sf);border-radius:20px 20px 0 0;border-top:3px solid var(--amb);padding:16px 18px 28px;box-shadow:0 -4px 20px rgba(245,158,11,.2);transform:translateY(100%);transition:transform .36s cubic-bezier(.32,.72,0,1)}
+#routeBar.on{transform:translateY(0)}
+.rb-inner{display:flex;align-items:flex-start;gap:12px}
+.rb-info{flex:1;min-width:0}
+.rb-badge{font-size:11px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:2px 9px;display:inline-block;margin-bottom:6px}
+.rb-name{font-size:15px;font-weight:700;color:var(--tx);line-height:1.3}
+.rb-stops{display:flex;align-items:center;gap:8px;margin-top:9px}
+.rb-stop{flex:1;min-width:0}
+.rb-stop-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px}
+.rb-stop-name{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb-arr{color:var(--amb);font-size:20px;font-weight:800;flex-shrink:0}
+.rb-close{width:38px;height:38px;border-radius:11px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);flex-shrink:0;transition:all .15s}
+.rb-close:active{background:var(--bd)}
+.rb-close svg{width:15px;height:15px}
 
-/* STATION DETAIL */
-#detail{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* ── STOP PANEL (tap a bus stop pin → shows routes from that stop) ── */
+#stopPanel{position:absolute;bottom:0;left:0;right:0;z-index:320;background:var(--sf);border-radius:24px 24px 0 0;border-top:3px solid var(--p);box-shadow:0 -6px 28px rgba(8,145,178,.15);transform:translateY(100%);transition:transform .38s cubic-bezier(.32,.72,0,1);max-height:56vh;display:flex;flex-direction:column}
+#stopPanel.on{transform:translateY(0)}
+.sph{padding:16px 18px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sph-info{flex:1}
+.sph-name{font-size:17px;font-weight:700;color:var(--tx)}
+.sph-sub{font-size:12px;color:var(--tx3);margin-top:2px}
+.sph-close{width:34px;height:34px;border-radius:10px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);flex-shrink:0}
+.sph-close svg{width:14px;height:14px}
+.sp-list{overflow-y:auto;padding:12px 16px 28px;display:flex;flex-direction:column;gap:8px}
+.sp-list::-webkit-scrollbar{display:none}
+.sp-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:14px;border:1.5px solid var(--bd);cursor:pointer;transition:all .18s}
+.sp-row:active{background:#FFFBEB;border-color:var(--amb)}
+.sp-row-ico{width:38px;height:38px;border-radius:10px;background:#FFFBEB;border:1px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.sp-row-info{flex:1;min-width:0}
+.sp-row-name{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-row-dest{font-size:11px;color:var(--tx3);margin-top:2px}
+.sp-row-code{font-size:10px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 7px;flex-shrink:0}
+.sp-show-btn{width:34px;height:34px;border-radius:10px;background:var(--amb);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(245,158,11,.35);transition:all .15s}
+.sp-show-btn:active{transform:scale(.87)}
+.sp-show-btn svg{width:13px;height:13px}
+
+/* ── STATION DETAIL ── */
+#detail{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);overflow-y:auto}
 #detail.open{transform:translateY(0)}
-.d-hdr{background:linear-gradient(145deg,var(--pd) 0%,var(--p) 50%,var(--pl) 100%);padding:58px 20px 30px;position:relative;color:#fff}
-.d-back,.d-fav{position:absolute;top:16px;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;backdrop-filter:blur(8px);transition:all .15s}
-.d-back:active,.d-fav:active{background:rgba(255,255,255,.32)}
-.d-back{left:16px}
-.d-back svg{width:20px;height:20px}
-.d-fav{right:16px}
-.d-fav svg{width:19px;height:19px}
+.d-hdr{background:linear-gradient(140deg,var(--pd),var(--p) 50%,var(--pl));padding:56px 20px 28px;position:relative;color:#fff}
+.d-back,.d-fav{position:absolute;top:16px;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:all .15s}
+.d-back{left:16px}.d-back svg{width:20px;height:20px}
+.d-fav{right:16px}.d-fav svg{width:19px;height:19px}
 .d-fav.on{color:#FCD34D;border-color:rgba(252,211,77,.4);background:rgba(252,211,77,.15)}
-.d-ico{width:68px;height:68px;background:rgba(255,255,255,.2);border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:14px;border:1.5px solid rgba(255,255,255,.3)}
-.d-name{font-size:24px;font-weight:800;line-height:1.2}
-.d-addr{font-size:13px;opacity:.85;margin-top:5px}
-.d-type{display:inline-flex;align-items:center;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 14px;font-size:12px;font-weight:700;margin-top:11px}
+.d-ico{width:64px;height:64px;background:rgba(255,255,255,.2);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:30px;margin-bottom:13px;border:1.5px solid rgba(255,255,255,.3)}
+.d-name{font-size:22px;font-weight:800}
+.d-addr{font-size:13px;opacity:.85;margin-top:4px}
+.d-type{display:inline-flex;align-items:center;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.3);border-radius:20px;padding:4px 13px;font-size:12px;font-weight:700;margin-top:10px}
 .d-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--bd)}
-.d-stat{background:var(--sf);padding:18px 10px;text-align:center}
-.d-sv{font-size:20px;font-weight:800;color:var(--p)}
-.d-sl{font-size:11px;color:var(--tx3);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.4px}
-.d-sec{padding:22px 18px 0}
-.d-sec-h{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.svc-pill{padding:7px 14px;background:var(--bg);border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:500;color:var(--tx2)}
+.d-stat{background:var(--sf);padding:17px 10px;text-align:center}
+.d-sv{font-size:19px;font-weight:800;color:var(--p)}
+.d-sl{font-size:11px;color:var(--tx3);margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.d-sec{padding:20px 18px 0}
+.d-sec-h{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px}
+.svc-pills{display:flex;flex-wrap:wrap;gap:8px}
+.svc-pill{padding:6px 13px;background:var(--bg);border:1.5px solid var(--bd);border-radius:20px;font-size:13px;font-weight:500;color:var(--tx2)}
 .hr-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--bd);font-size:14px}
 .hr-row:last-child{border-bottom:none}
-.hr-day{font-weight:600;min-width:90px;color:var(--tx)}
+.hr-day{font-weight:600;min-width:88px;color:var(--tx)}
 .hr-open{color:var(--grn);font-weight:600}
 .hr-closed{color:var(--red);font-weight:500}
-.nav-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:calc(100% - 36px);margin:22px 18px 0;padding:18px;background:linear-gradient(135deg,var(--pd) 0%,var(--pl) 100%);border:none;border-radius:17px;color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(8,145,178,.45);transition:transform .15s}
+.nav-btn{display:flex;align-items:center;justify-content:center;gap:9px;width:calc(100% - 36px);margin:20px 18px 0;padding:17px;background:linear-gradient(135deg,var(--pd),var(--pl));border:none;border-radius:16px;color:#fff;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;cursor:pointer;box-shadow:0 5px 18px rgba(8,145,178,.4);transition:transform .15s}
 .nav-btn:active{transform:scale(.97)}
-.nav-btn svg{width:20px;height:20px}
-.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 36px);margin:10px 18px 36px;padding:15px;background:var(--sf);border:1.5px solid var(--bd);border-radius:14px;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s}
+.nav-btn svg{width:19px;height:19px}
+.share-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:calc(100% - 36px);margin:10px 18px 34px;padding:14px;background:var(--sf);border:1.5px solid var(--bd);border-radius:14px;color:var(--tx2);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:all .18s}
 .share-btn:active{background:var(--pp);border-color:var(--pl);color:var(--p)}
-.share-btn svg{width:16px;height:16px;color:var(--p)}
-.svc-pills{display:flex;flex-wrap:wrap;gap:8px}
+.share-btn svg{width:15px;height:15px;color:var(--p)}
 
-/* NAV BAR */
-#navBar{position:absolute;bottom:0;left:0;right:0;z-index:350;background:linear-gradient(135deg,var(--pd) 0%,var(--p) 100%);border-radius:24px 24px 0 0;padding:18px 18px 32px;box-shadow:0 -6px 28px rgba(8,145,178,.3);color:#fff;transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1)}
+/* ── WALK NAV BAR ── */
+#navBar{position:absolute;bottom:0;left:0;right:0;z-index:350;background:linear-gradient(135deg,var(--pd),var(--p));border-radius:22px 22px 0 0;padding:17px 18px 30px;box-shadow:0 -5px 22px rgba(8,145,178,.28);color:#fff;transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1)}
 #navBar.on{transform:translateY(0)}
 .nb-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.nb-info{flex:1;min-width:0}
 .nb-dest{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.nb-meta{font-size:13px;opacity:.9;margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-.nb-dot{opacity:.5}
-.nb-stop{display:flex;align-items:center;gap:6px;padding:11px 16px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);border-radius:13px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;backdrop-filter:blur(8px);transition:background .18s}
-.nb-stop:active{background:rgba(255,255,255,.32)}
+.nb-meta{font-size:13px;opacity:.9;margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.nb-stop{display:flex;align-items:center;gap:5px;padding:10px 15px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.3);border-radius:12px;color:#fff;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;transition:background .18s}
+.nb-stop:active{background:rgba(255,255,255,.3)}
 .nb-stop svg{width:14px;height:14px}
-.nb-load{display:none;align-items:center;gap:9px;margin-top:12px;font-size:13px;opacity:.9}
+.nb-load{display:none;align-items:center;gap:8px;margin-top:10px;font-size:13px;opacity:.88}
 .nb-load.on{display:flex}
 .nb-spin{width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 
-/* ABOUT */
-#about{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateX(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);overflow-y:auto;-webkit-overflow-scrolling:touch}
+/* ── ABOUT ── */
+#about{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateX(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);overflow-y:auto}
 #about.open{transform:translateX(0)}
-.ab-hdr{background:linear-gradient(145deg,var(--pd) 0%,var(--pl) 100%);padding:62px 24px 40px;text-align:center;color:#fff;position:relative}
-.ab-back{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:13px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;transition:all .15s}
-.ab-back:active{background:rgba(255,255,255,.3)}
-.ab-back svg{width:20px;height:20px}
-.ab-logo{width:130px;height:130px;background:rgba(255,255,255,.18);border-radius:34px;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.28);box-shadow:0 8px 32px rgba(0,0,0,.2)}
-.ab-logo img{width:104px;height:104px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.2))}
-.ab-title{font-size:30px;font-weight:900;letter-spacing:-.4px}
-.ab-ver{font-size:13px;opacity:.75;margin-top:4px}
-.ab-body{padding:20px 18px 44px}
-.ab-card{background:var(--sf);border-radius:var(--r);border:1.5px solid var(--bd);padding:18px;margin-bottom:12px;box-shadow:var(--sh)}
-.ab-ct{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px}
+.ab-hdr{background:linear-gradient(140deg,var(--pd),var(--pl));padding:58px 24px 36px;text-align:center;color:#fff;position:relative}
+.ab-back{position:absolute;top:16px;left:16px;width:40px;height:40px;border-radius:12px;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff}
+.ab-back svg{width:19px;height:19px}
+.ab-logo{width:120px;height:120px;background:rgba(255,255,255,.18);border-radius:30px;margin:0 auto 16px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.25);box-shadow:0 8px 28px rgba(0,0,0,.18)}
+.ab-logo img{width:96px;height:96px;object-fit:contain}
+.ab-title{font-size:28px;font-weight:900;letter-spacing:-.4px}
+.ab-ver{font-size:13px;opacity:.72;margin-top:3px}
+.ab-body{padding:18px 18px 40px}
+.ab-card{background:var(--sf);border-radius:16px;border:1.5px solid var(--bd);padding:16px;margin-bottom:11px;box-shadow:var(--sh)}
+.ab-ct{font-size:11px;font-weight:700;color:var(--p);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
 .ab-card p{font-size:14px;color:var(--tx2);line-height:1.7}
-.sg{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.st{background:var(--bg);border-radius:var(--rs);padding:14px;text-align:center;border:1.5px solid var(--bd)}
-.st-n{font-size:22px;font-weight:800;color:var(--p)}
-.st-l{font-size:11px;color:var(--tx3);margin-top:2px;font-weight:500}
+.sg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.st{background:var(--bg);border-radius:10px;padding:13px;text-align:center;border:1.5px solid var(--bd)}
+.st-n{font-size:21px;font-weight:800;color:var(--p)}
+.st-l{font-size:11px;color:var(--tx3);margin-top:2px}
 .f-list{list-style:none}
-.f-list li{display:flex;align-items:flex-start;gap:9px;padding:9px 0;font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd)}
+.f-list li{display:flex;align-items:flex-start;gap:9px;padding:8px 0;font-size:14px;color:var(--tx2);border-bottom:1px solid var(--bd)}
 .f-list li:last-child{border-bottom:none}
-.f-list li::before{content:'✓';color:var(--p);font-weight:800;flex-shrink:0;margin-top:1px}
-.built{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0}
+.f-list li::before{content:'✓';color:var(--p);font-weight:800;flex-shrink:0}
+.built{text-align:center;font-size:13px;color:var(--tx3);padding:8px 0}
 .built strong{color:var(--p)}
 
-/* MENU */
-#mOverlay{position:absolute;inset:0;z-index:450;background:rgba(15,23,42,.45);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(6px)}
+/* ── MENU ── */
+#mOverlay{position:absolute;inset:0;z-index:450;background:rgba(15,23,42,.45);opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(5px)}
 #mOverlay.on{opacity:1;pointer-events:all}
-#mDrawer{position:absolute;top:0;left:0;bottom:0;width:285px;z-index:460;background:var(--sf);border-right:1.5px solid var(--bd);transform:translateX(-100%);transition:transform .36s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;box-shadow:6px 0 40px rgba(0,0,0,.15)}
+#mDrawer{position:absolute;top:0;left:0;bottom:0;width:282px;z-index:460;background:var(--sf);border-right:1.5px solid var(--bd);transform:translateX(-100%);transition:transform .34s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;box-shadow:6px 0 36px rgba(0,0,0,.14)}
 #mDrawer.on{transform:translateX(0)}
-.md-hdr{background:linear-gradient(145deg,var(--pd) 0%,var(--pl) 100%);padding:54px 20px 26px;color:#fff}
-.md-lr{display:flex;align-items:center;gap:13px}
-.md-logo{width:62px;height:62px;background:rgba(255,255,255,.18);border-radius:18px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.25);flex-shrink:0}
-.md-logo img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(0 2px 8px rgba(0,0,0,.2))}
-.md-title{font-size:22px;font-weight:900;letter-spacing:-.3px}
-.md-tag{font-size:12px;opacity:.78;margin-top:5px}
-.md-menu{padding:14px 10px;flex:1;overflow-y:auto}
-.md-item{display:flex;align-items:center;gap:13px;padding:14px 12px;border-radius:13px;cursor:pointer;color:var(--tx2);font-size:15px;font-weight:500;transition:all .15s}
+.md-hdr{background:linear-gradient(140deg,var(--pd),var(--pl));padding:52px 20px 24px;color:#fff}
+.md-lr{display:flex;align-items:center;gap:12px}
+.md-logo{width:58px;height:58px;background:rgba(255,255,255,.18);border-radius:16px;display:flex;align-items:center;justify-content:center;border:2px solid rgba(255,255,255,.25);flex-shrink:0}
+.md-logo img{width:46px;height:46px;object-fit:contain}
+.md-title{font-size:21px;font-weight:900}
+.md-tag{font-size:12px;opacity:.76;margin-top:5px}
+.md-menu{padding:12px 10px;flex:1;overflow-y:auto}
+.md-item{display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;cursor:pointer;color:var(--tx2);font-size:15px;font-weight:500;transition:all .15s}
 .md-item:active,.md-item.on{background:var(--pp);color:var(--p)}
 .md-item svg{width:20px;height:20px;color:var(--p);flex-shrink:0;opacity:.85}
-.md-sep{height:1px;background:var(--bd);margin:6px 0}
-.md-foot{padding:16px;font-size:12px;color:var(--tx3);text-align:center;border-top:1px solid var(--bd)}
+.md-sep{height:1px;background:var(--bd);margin:5px 0}
+.md-foot{padding:14px;font-size:12px;color:var(--tx3);text-align:center;border-top:1px solid var(--bd)}
 
-/* EMPTY */
-.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px;text-align:center;gap:8px}
-.empty svg{width:46px;height:46px;color:var(--tx3);opacity:.35}
+/* ── EMPTY / TOAST ── */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center;gap:7px}
+.empty svg{width:44px;height:44px;color:var(--tx3);opacity:.35}
 .empty p{font-size:14px;color:var(--tx3)}
-
-/* TOAST */
-#toast{position:absolute;bottom:215px;left:50%;z-index:800;transform:translateX(-50%) translateY(18px);background:var(--tx);color:#fff;padding:12px 20px;border-radius:26px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;box-shadow:var(--shl)}
+#toast{position:absolute;bottom:210px;left:50%;z-index:900;transform:translateX(-50%) translateY(16px);background:var(--tx);color:#fff;padding:11px 18px;border-radius:24px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;box-shadow:var(--shx)}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* AD */
-.panel-ad-wrap{margin:0 16px 12px;flex-shrink:0}
-.panel-ad-inner{display:flex;align-items:center;gap:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(8,145,178,.07),rgba(6,182,212,.05));border:1.5px solid rgba(8,145,178,.18);border-radius:14px;text-decoration:none;transition:all .18s}
-.panel-ad-inner:active{background:var(--pp)}
+/* ── AD BANNER ── */
+.ad-banner-wrap{margin:0 16px 14px;flex-shrink:0}
+.ad-banner{display:flex;align-items:center;gap:11px;padding:12px 13px;background:linear-gradient(135deg,rgba(8,145,178,.07),rgba(6,182,212,.04));border:1.5px solid rgba(8,145,178,.18);border-radius:13px;text-decoration:none;transition:all .18s}
+.ad-banner:active{background:var(--pp)}
 
-/* KEYFRAMES */
-@keyframes pop{from{transform:scale(.25);opacity:0}to{transform:scale(1);opacity:1}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+/* ── ANIMATIONS ── */
+@keyframes pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.35;transform:scale(1)}50%{opacity:1;transform:scale(1.38)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
 
+<!-- SPLASH -->
 <div id="splash">
-  <div class="sp-logo"><img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png" alt="Taxi Tera" onerror="this.style.display='none'"></div>
+  <div class="sp-logo">
+    <img src="https://raw.githubusercontent.com/Azgames724/Taxi-tera/main/image_c10d67a2-removebg-preview%20(1)%20(1).png" alt="Taxi Tera" onerror="this.style.display='none'">
+  </div>
   <div class="sp-title">Taxi Tera</div>
   <div class="sp-sub" id="spSub">Find rides across Ethiopia — fast</div>
   <div class="sp-dots"><span></span><span></span><span></span></div>
 </div>
 
+<!-- APP -->
 <div id="app">
   <div id="map"></div>
 
+  <!-- Lang toggle -->
   <div id="langBar">
     <button class="lb on" id="btnEN" onclick="setLang('en')">EN</button>
     <button class="lb"    id="btnAM" onclick="setLang('am')">አማ</button>
   </div>
 
+  <!-- Search results -->
   <div id="srBox"></div>
 
+  <!-- Top bar -->
   <div id="topbar">
     <div class="sbar">
       <button class="ico-btn" onclick="openMenu()">
@@ -367,67 +335,76 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       </button>
     </div>
     <div class="chips">
-      <div class="chip on" data-f="all"      onclick="setFilter('all')">     <span>🗺️</span><span class="ct" data-k="all">All</span></div>
-      <div class="chip"   data-f="minibus"   onclick="setFilter('minibus')"> <span>🚌</span><span class="ct" data-k="minibus">Minibus</span></div>
-      <div class="chip"   data-f="bajaj"     onclick="setFilter('bajaj')">   <span>🛺</span><span class="ct" data-k="bajaj">Bajaj</span></div>
-      <div class="chip"   data-f="ride"      onclick="setFilter('ride')">    <span>🚗</span><span class="ct" data-k="ride">Ride</span></div>
-      <div class="chip"   data-f="routes"    onclick="setFilter('routes')">  <span>🚌</span><span class="ct" data-k="routes">Routes</span></div>
-      <div class="chip"   data-f="favorites" onclick="setFilter('favorites')"><span>⭐</span><span class="ct" data-k="saved">Saved</span></div>
+      <div class="chip on" data-f="all"       onclick="setFilter('all')">      <span>🗺️</span><span class="ct" data-k="all">All</span></div>
+      <div class="chip"    data-f="minibus"   onclick="setFilter('minibus')">  <span>🚌</span><span class="ct" data-k="minibus">Minibus</span></div>
+      <div class="chip"    data-f="bajaj"     onclick="setFilter('bajaj')">    <span>🛺</span><span class="ct" data-k="bajaj">Bajaj</span></div>
+      <div class="chip"    data-f="ride"      onclick="setFilter('ride')">     <span>🚗</span><span class="ct" data-k="ride">Ride</span></div>
+      <div class="chip"    data-f="favorites" onclick="setFilter('favorites')"><span>⭐</span><span class="ct" data-k="saved">Saved</span></div>
     </div>
   </div>
 
+  <!-- FAB -->
   <button id="fab" onclick="locateMe()">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><circle cx="12" cy="12" r="7" stroke-dasharray="3 2"/></svg>
   </button>
 
+  <!-- Bottom panel -->
   <div id="panel" class="collapsed">
     <div class="ph-row" onclick="togglePanel()"><div class="ph"></div></div>
+    <div class="p-tabs">
+      <button class="p-tab on" id="tabSt" onclick="switchTab('stations')">🚉 <span class="ct" data-k="stations">Stations</span></button>
+      <button class="p-tab"    id="tabRt" onclick="switchTab('routes')">🚌 <span class="ct" data-k="routes">Routes</span> <span style="font-size:10px;background:rgba(8,145,178,.12);color:var(--p);padding:1px 5px;border-radius:5px;font-weight:700;margin-left:2px">263</span></button>
+    </div>
     <div class="p-head">
       <div class="p-tr">
         <div class="p-title" id="pTitle">Nearby Stations</div>
-        <div class="p-count" id="pCount">0 found</div>
+        <div class="p-count" id="pCount">0</div>
       </div>
     </div>
     <div class="slist" id="sList"></div>
-    <div class="panel-ad-wrap">
-      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30" target="_blank" rel="noopener" class="panel-ad-inner">
-        <span style="font-size:24px;flex-shrink:0">🚖</span>
+    <div class="slist" id="rList" style="display:none"></div>
+    <div class="ad-banner-wrap">
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30" target="_blank" rel="noopener" class="ad-banner">
+        <span style="font-size:22px;flex-shrink:0">🚖</span>
         <div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:700;color:#0F172A">Taxi Tera Partners</div><div style="font-size:11px;color:#64748B;margin-top:1px">Tap to explore ride deals</div></div>
-        <span style="font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 8px;border-radius:7px;flex-shrink:0">Ad</span>
+        <span style="font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:2px 7px;border-radius:6px;flex-shrink:0">Ad</span>
       </a>
     </div>
   </div>
 
-  <!-- ROUTE DETAIL PAGE -->
-  <div id="routeDetail">
-    <div class="rd-hdr">
-      <button class="rd-back" onclick="closeRouteDetail()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-      </button>
-      <div class="rd-badge" id="rdCode">TX001</div>
-      <div class="rd-title">Minibus Route</div>
-      <div class="rd-route-display">
-        <div class="rd-place" id="rdFrom">—</div>
-        <div class="rd-arrow">↔</div>
-        <div class="rd-place" id="rdTo">—</div>
+  <!-- Route line bar -->
+  <div id="routeBar">
+    <div class="rb-inner">
+      <div class="rb-info">
+        <div class="rb-badge" id="rbCode">—</div>
+        <div class="rb-name" id="rbName">—</div>
+        <div class="rb-stops">
+          <div class="rb-stop"><div class="rb-stop-lbl">From</div><div class="rb-stop-name" id="rbFrom">—</div></div>
+          <div class="rb-arr">→</div>
+          <div class="rb-stop"><div class="rb-stop-lbl">To</div><div class="rb-stop-name" id="rbTo">—</div></div>
+        </div>
       </div>
+      <button class="rb-close" onclick="clearRoute()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
-    <div class="rd-stats">
-      <div class="rd-stat"><div class="rd-sv" id="rdDist">—</div><div class="rd-sl">Route Length</div></div>
-      <div class="rd-stat"><div class="rd-sv">🚌</div><div class="rd-sl">Minibus</div></div>
-    </div>
-    <div class="rd-sec">
-      <div class="rd-sec-h">Stops</div>
-      <div id="rdStops"></div>
-    </div>
-    <button class="show-map-btn" onclick="showRouteOnMap()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      Show on Map
-    </button>
-    <div style="height:32px"></div>
   </div>
 
-  <!-- STATION DETAIL -->
+  <!-- Stop panel (tap a bus marker → shows routes from that stop) -->
+  <div id="stopPanel">
+    <div class="sph">
+      <div class="sph-info">
+        <div class="sph-name" id="sphName">—</div>
+        <div class="sph-sub"  id="sphSub">—</div>
+      </div>
+      <button class="sph-close" onclick="closeStopPanel()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="sp-list" id="spList"></div>
+  </div>
+
+  <!-- Station detail -->
   <div id="detail">
     <div class="d-hdr">
       <button class="d-back" onclick="closeDetail()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -438,36 +415,38 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="d-type" id="dType"></div>
     </div>
     <div class="d-stats">
-      <div class="d-stat"><div class="d-sv" id="dDist">—</div><div class="d-sl" id="lDist">Distance</div></div>
-      <div class="d-stat"><div class="d-sv" id="dWalk">—</div><div class="d-sl" id="lWalk">Walk time</div></div>
-      <div class="d-stat"><div class="d-sv" id="dRate">—</div><div class="d-sl" id="lRate">Rating</div></div>
+      <div class="d-stat"><div class="d-sv" id="dDist">—</div><div class="d-sl">Distance</div></div>
+      <div class="d-stat"><div class="d-sv" id="dWalk">—</div><div class="d-sl">Walk time</div></div>
+      <div class="d-stat"><div class="d-sv" id="dRate">—</div><div class="d-sl">Rating</div></div>
     </div>
-    <div class="d-sec"><div class="d-sec-h" id="lSvcs">Services Available</div><div class="svc-pills" id="dSvcs"></div></div>
-    <div class="d-sec" style="margin-top:18px"><div class="d-sec-h" id="lHours">Operating Hours</div><div id="dHours"></div></div>
+    <div class="d-sec"><div class="d-sec-h">Services</div><div class="svc-pills" id="dSvcs"></div></div>
+    <div class="d-sec" style="margin-top:18px"><div class="d-sec-h">Operating Hours</div><div id="dHours"></div></div>
     <button class="nav-btn" onclick="startNav()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      <span id="lNav">Navigate on Map</span>
+      Navigate on Map
     </button>
     <button class="share-btn" onclick="shareStation()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      <span id="lShare">Share station</span>
+      Share station
     </button>
   </div>
 
+  <!-- Walk nav bar -->
   <div id="navBar">
     <div class="nb-row">
-      <div class="nb-info">
+      <div style="flex:1;min-width:0">
         <div class="nb-dest" id="nbDest">—</div>
-        <div class="nb-meta"><span id="nbDist">—</span><span class="nb-dot">·</span><span id="nbTime">—</span><span class="nb-dot">·</span><span id="lWalk2">🚶 Walking</span></div>
+        <div class="nb-meta"><span id="nbDist">—</span><span style="opacity:.5">·</span><span id="nbTime">—</span><span style="opacity:.5">·</span><span>🚶 Walking</span></div>
       </div>
       <button class="nb-stop" onclick="stopNav()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        <span id="lStop">Stop</span>
+        Stop
       </button>
     </div>
-    <div class="nb-load" id="nbLoad"><div class="nb-spin"></div><span id="lRoute">Getting walking route…</span></div>
+    <div class="nb-load" id="nbLoad"><div class="nb-spin"></div><span>Getting walking route…</span></div>
   </div>
 
+  <!-- About -->
   <div id="about">
     <div class="ab-hdr">
       <button class="ab-back" onclick="closeAbout()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
@@ -476,13 +455,14 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="ab-ver">v1.0.0 · Prototype</div>
     </div>
     <div class="ab-body">
-      <div class="ab-card"><div class="ab-ct">About</div><p>Taxi Tera helps people across Ethiopia find nearby taxi stations, minibus routes, bajaj stops, and ride-hailing pickup points — with in-app walking navigation.</p></div>
+      <div class="ab-card"><div class="ab-ct">About</div><p>Taxi Tera helps people across Ethiopia find nearby taxi stations, minibus routes, bajaj stops, and ride-hailing pickup points — with in-app walking navigation and 263 official minibus routes.</p></div>
       <div class="ab-card"><div class="ab-ct">Stats</div><div class="sg"><div class="st"><div class="st-n">263</div><div class="st-l">Routes</div></div><div class="st"><div class="st-n">12+</div><div class="st-l">Stations</div></div><div class="st"><div class="st-n">3</div><div class="st-l">Types</div></div><div class="st"><div class="st-n">Free</div><div class="st-l">Always</div></div></div></div>
-      <div class="ab-card"><div class="ab-ct">Features</div><ul class="f-list"><li>GPS nearby detection</li><li>263 official GTFS minibus routes on map</li><li>Tap any route to see from↔to on map</li><li>Filter by Minibus, Bajaj, Ride-hailing</li><li>In-app walking navigation</li><li>Save favourite stations</li><li>Amharic & English</li></ul></div>
+      <div class="ab-card"><div class="ab-ct">Features</div><ul class="f-list"><li>GPS nearby detection</li><li>263 official minibus start locations on map</li><li>Tap any stop → see all routes from there</li><li>Tap a route → draws it on the map</li><li>In-app walking navigation</li><li>Save favourite stations</li><li>Amharic &amp; English</li></ul></div>
       <div class="built">Built with ❤️ in Ethiopia · <strong>Tejo Studio</strong></div>
     </div>
   </div>
 
+  <!-- Menu -->
   <div id="mOverlay" onclick="closeMenu()"></div>
   <div id="mDrawer">
     <div class="md-hdr">
@@ -499,184 +479,27 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="md-sep"></div>
       <div class="md-item" onclick="closeMenu();setLang(lang==='en'?'am':'en')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span id="lLang">Switch to አማርኛ</span></div>
       <div class="md-sep"></div>
-      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30" target="_blank" rel="noopener" onclick="closeMenu()" style="display:flex;align-items:center;gap:13px;padding:14px 12px;border-radius:13px;text-decoration:none;background:rgba(8,145,178,.06);border:1.5px solid rgba(8,145,178,.15);margin:0 2px;transition:background .15s">
-        <span style="font-size:20px;flex-shrink:0">🚖</span>
-        <div><div style="font-size:14px;font-weight:600;color:#0F172A">Ride Deals</div><div style="font-size:11px;color:#64748B;margin-top:1px">Sponsored · Tap to explore</div></div>
-        <span style="margin-left:auto;font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:3px 8px;border-radius:6px;flex-shrink:0">Ad</span>
+      <a href="https://www.profitablecpmratenetwork.com/vrp3vyi3kk?key=09d04ed460bf3753012ee4c2a0c55f30" target="_blank" rel="noopener" onclick="closeMenu()" style="display:flex;align-items:center;gap:12px;padding:13px 12px;border-radius:12px;text-decoration:none;background:rgba(8,145,178,.06);border:1.5px solid rgba(8,145,178,.14);margin:0 2px;transition:background .15s">
+        <span style="font-size:19px;flex-shrink:0">🚖</span>
+        <div><div style="font-size:14px;font-weight:600;color:#0F172A">Ride Deals</div><div style="font-size:11px;color:#64748B;margin-top:1px">Sponsored</div></div>
+        <span style="margin-left:auto;font-size:10px;font-weight:700;color:#94A3B8;background:#F1F5F9;border:1px solid #E2E8F0;padding:2px 7px;border-radius:6px;flex-shrink:0">Ad</span>
       </a>
     </div>
     <div class="md-foot">v1.0.0 · Tejo Studio</div>
-  </div>
-
-  <!-- Stop Routes Panel -->
-  <div id="stopPanel">
-    <div class="sp-hdr">
-      <div>
-        <div class="sp-place" id="spPlace">—</div>
-        <div class="sp-sub-txt" id="spSubTxt">—</div>
-      </div>
-      <button class="sp-close" onclick="closeStopPanel()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
-    </div>
-    <div class="sp-routes" id="spRoutes"></div>
   </div>
 
   <div id="toast"></div>
 </div>
 
 <script>
-'use strict';
-// ═══ TRANSLATIONS ═══
-const TR={
-  en:{spSub:'Find rides across Ethiopia — fast',ph:'Search stations or routes…',all:'All',minibus:'Minibus',bajaj:'Bajaj',ride:'Ride',routes:'Routes',saved:'Saved',nearTitle:'Nearby Stations',routeTitle:'All Routes',found:'found',dist:'Distance',walk:'Walk time',rating:'Rating',svcs:'Services',hrs:'Operating Hours',nav:'Navigate on Map',share:'Share station',walk2:'🚶 Walking',stop:'Stop',route:'Getting walking route…',tagline:'Your ride guide in Ethiopia',langSwitch:'Switch to አማርኛ',locOk:'📍 Location updated',locFail:'📍 Showing Addis Ababa',navStop:'🛑 Navigation stopped',approx:'⚠️ Showing approximate route',copied:'📋 Copied!',favAdd:'⭐ Station saved!',favRm:'💔 Removed from saved',today:'Today',noSt:'No results found',closed:'Closed',open24:'Open 24 hrs'},
-  am:{spSub:'በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት',ph:'ጣቢያ ወይም መስመር ፈልግ…',all:'ሁሉም',minibus:'ሚኒባስ',bajaj:'ባጃጅ',ride:'ሪድ',routes:'መስመሮች',saved:'የተቀመጡ',nearTitle:'ቅርብ ጣቢያዎች',routeTitle:'ሁሉም መስመሮች',found:'ተገኝቷል',dist:'ርቀት',walk:'የእግር ጊዜ',rating:'ደረጃ',svcs:'አገልግሎቶች',hrs:'የሥራ ሰዓት',nav:'በካርታ ላይ ለማሄድ',share:'ጣቢያ አጋራ',walk2:'🚶 በእግር',stop:'አቁም',route:'መስመር እየፈለገ…',tagline:'የእርስዎ ታክሲ መመሪያ',langSwitch:'Switch to English',locOk:'📍 አካባቢ ተዘምኗል',locFail:'📍 አዲስ አበባ ማዕከል',navStop:'🛑 ማሰሻ ቆሟል',approx:'⚠️ ግምታዊ መስመር',copied:'📋 ተቀድቷል!',favAdd:'⭐ ጣቢያ ተቀምጧል!',favRm:'💔 ከተቀመጡ ተወግዷል',today:'ዛሬ',noSt:'ምንም አልተገኘም',closed:'ተዘግቷል',open24:'24 ሰዓት ክፍት'}
+// ════════════ TRANSLATIONS ════════════
+var TR = {
+  en:{spSub:'Find rides across Ethiopia — fast',ph:'Search stations or routes…',all:'All',minibus:'Minibus',bajaj:'Bajaj',ride:'Ride',saved:'Saved',stations:'Stations',routes:'Routes',nearTitle:'Nearby Stations',found:'found',tagline:'Your ride guide in Ethiopia',langSwitch:'Switch to አማርኛ',locOk:'📍 Location updated',locFail:'📍 Showing Addis Ababa',navStop:'🛑 Navigation stopped',approx:'⚠️ Showing approximate route',copied:'📋 Copied!',favAdd:'⭐ Saved!',favRm:'💔 Removed',today:'Today',noSt:'No stations found',noMatch:'No results found',closed:'Closed',open24:'Open 24 hrs'},
+  am:{spSub:'በኢትዮጵያ ታክሲ ፈልጉ — በፍጥነት',ph:'ጣቢያ ወይም መስመር ፈልግ…',all:'ሁሉም',minibus:'ሚኒባስ',bajaj:'ባጃጅ',ride:'ሪድ',saved:'የተቀመጡ',stations:'ጣቢያዎች',routes:'መስመሮች',nearTitle:'ቅርብ ጣቢያዎች',found:'ተገኝቷል',tagline:'የእርስዎ ታክሲ መመሪያ',langSwitch:'Switch to English',locOk:'📍 አካባቢ ተዘምኗል',locFail:'📍 አዲስ አበባ ማዕከል',navStop:'🛑 ማሰሻ ቆሟል',approx:'⚠️ ግምታዊ መስመር',copied:'📋 ተቀድቷል!',favAdd:'⭐ ተቀምጧል!',favRm:'💔 ተወግዷል',today:'ዛሬ',noSt:'ጣቢያ አልተገኘም',noMatch:'ምንም አልተገኘም',closed:'ተዘግቷል',open24:'24 ሰዓት ክፍት'}
 };
 
-// ═══ PLACE COORDINATES — all locations in the route database ═══
-const LOCS={
-  '18 Mazoria':       [9.0180,38.7190],
-  '22 Mazoria':       [9.0000,38.7950],
-  '4 Kilo':           [9.0381,38.7634],
-  '4 Kilo (Children Theatre)':[9.0381,38.7634],
-  '6 Kilo':           [9.0450,38.7640],
-  'Aba Kiros':        [9.0310,38.8150],
-  'Abem Mebrat':      [9.0100,38.8280],
-  'Abenet':           [9.0210,38.7200],
-  'Abuare Roundabout':[9.0300,38.7680],
-  'Abune Petros':     [9.0420,38.7310],
-  'Addisu Gebeya':    [9.0420,38.7380],
-  'Adey Abeba':       [8.9700,38.7650],
-  'Agona Cinema':     [9.0310,38.7810],
-  'Akaki CBE':        [8.9080,38.7980],
-  'Akaki Gebeya':     [8.9150,38.8000],
-  'Alem Bank':        [9.0000,38.7280],
-  'Alem Gena':        [8.9580,38.7080],
-  'Amanuel Church':   [9.0175,38.7555],
-  'Amanuel total':    [9.0190,38.7560],
-  'Ambasader':        [9.0280,38.7490],
-  'Arada':            [9.0350,38.7520],
-  'Asco':             [9.0450,38.7250],
-  'Asko':             [9.0450,38.7250],
-  'Atena Tera':       [9.0265,38.7355],
-  'Atenaa Tera':      [9.0265,38.7355],
-  'Autobis Tera':     [9.0200,38.7345],
-  'Autobus Tera':     [9.0200,38.7345],
-  'Ayat':             [9.0310,38.8120],
-  'Ayat Chefe Condominium':[9.0250,38.8200],
-  'Ayer Tena':        [8.9490,38.7490],
-  'Balderas':         [9.0275,38.7465],
-  'Betel':            [8.9950,38.7150],
-  'Bole Arabsa':      [9.0210,38.8220],
-  'Bole Bridge':      [9.0050,38.7900],
-  'Bole Medhanialem': [9.0060,38.7950],
-  'Bole Mekael':      [9.0080,38.7870],
-  'Bole Mickael':     [9.0080,38.7870],
-  'Bole Roundabout':  [9.0050,38.7850],
-  'Bulbula':          [8.9820,38.8100],
-  'Buna Ena Shay':    [9.0310,38.7580],
-  'Cinema Ras':       [9.0188,38.7625],
-  'Coca Cola':        [9.0210,38.7400],
-  'Derartu':          [8.9820,38.8000],
-  'Eritrea Hotel':    [9.0360,38.7440],
-  'Ertirea Hotel':    [9.0360,38.7440],
-  'Ferensay':         [9.0360,38.7640],
-  'Gelan Condominium':[8.9200,38.8220],
-  'German Square':    [8.9700,38.7400],
-  'Germen Square':    [8.9700,38.7400],
-  'Gofa':             [8.9880,38.7300],
-  'Gofa Gebriel':     [8.9890,38.7310],
-  'Gojam Berenda':    [9.0390,38.7310],
-  'Goro':             [9.0100,38.8130],
-  'Haile Garment':    [8.9810,38.7510],
-  'Hana Mariam':      [8.9310,38.7710],
-  'Jemmo 1':          [8.9800,38.7410],
-  'Jemmo Mickael':    [8.9790,38.7400],
-  'Jemo':             [8.9800,38.7410],
-  'Kality Maseltegna':[8.9550,38.7830],
-  'Kality Menaheria': [8.9600,38.7850],
-  'Kality Total':     [8.9620,38.7820],
-  'Kara':             [9.0480,38.7650],
-  'Kara Kore':        [9.0050,38.7100],
-  'Kazanchis':        [9.0265,38.7680],
-  'Kechenie':         [9.0410,38.7490],
-  'Kela':             [9.0410,38.7320],
-  'Kera':             [9.0010,38.7700],
-  'Kidane Mihret':    [9.0500,38.7490],
-  'Kotebe':           [9.0460,38.7820],
-  'Kotebe Gebriel':   [9.0465,38.7825],
-  'Lafto':            [8.9820,38.7620],
-  'Lamberet MenaherIa':[8.9910,38.7750],
-  'Lamberet Menaheria':[8.9910,38.7750],
-  'Legehar':          [9.0210,38.7430],
-  'Leghar':           [9.0210,38.7430],
-  'Lomi Meda':        [9.0310,38.7330],
-  'Lukanda':          [9.0340,38.7260],
-  'Luwkanda':         [9.0340,38.7260],
-  'Mariam Condominium':[8.9760,38.8010],
-  'Mebrathile':       [8.9710,38.7450],
-  'Medhanalem':       [9.0175,38.7505],
-  'Megenagna':        [9.0272,38.7678],
-  'Megenagna (Marathon Motors)':[9.0272,38.7678],
-  'Mekanisa':         [9.0010,38.7455],
-  'Mekanisa Abo':     [9.0010,38.7455],
-  'Menlik Hospital':  [9.0370,38.7450],
-  'Merab Hotel':      [9.0120,38.7215],
-  'Meraba Hotel':     [9.0120,38.7215],
-  'Merkato':          [9.0337,38.7365],
-  'Mesalemia':        [9.0255,38.7420],
-  'Mexico':           [9.0177,38.7497],
-  'Mexico Shebelle Hotel':[9.0090,38.7270],
-  'Mulugeta Building':[9.0070,38.7880],
-  'Olympia':          [9.0280,38.7810],
-  'Piassa':           [9.0350,38.7520],
-  'Piassa Arada':     [9.0350,38.7520],
-  'piassa':           [9.0350,38.7520],
-  'Raguel Church':    [9.0610,38.7690],
-  'Riventy':          [9.0110,38.7960],
-  'Rufael':           [9.0450,38.7550],
-  'Safari':           [9.0519,38.8043],
-  'Safari (Summit)':  [9.0519,38.8043],
-  'Saint Georgis':    [9.0265,38.7510],
-  'Saris':            [8.9743,38.7813],
-  'Saris Abo':        [8.9760,38.7840],
-  'Sebategna':        [9.0305,38.7210],
-  'Sefera':           [8.9400,38.8100],
-  'Sefera Square':    [8.9420,38.8120],
-  'Selam Building':   [8.9870,38.7800],
-  'Selefia Mosque':   [9.0050,38.7290],
-  'Shegole':          [9.0275,38.7435],
-  'Shiromeda':        [9.0510,38.7580],
-  'Shola':            [9.0310,38.7745],
-  'Shola Gebeya':     [9.0310,38.7745],
-  'St. George Total': [9.0265,38.7510],
-  'Stadium':          [9.0220,38.7523],
-  'Summit':           [9.0519,38.8043],
-  'Summit Condominiums':[9.0519,38.8043],
-  'Tafo Square':      [9.0195,38.8050],
-  'Tekle Haimanot':   [9.0245,38.7455],
-  'Tero Mosque':      [9.0300,38.7385],
-  'Tikur Anbesa':     [9.0382,38.7622],
-  'Torhayloch':       [9.0110,38.7200],
-  'Total 3 Kuter Mazoria':[9.0180,38.7700],
-  'Total 3 kuter Mazoria':[9.0180,38.7700],
-  'Tourist Hotel':    [9.0268,38.7498],
-  'Tulu Dimtu':       [9.0105,38.8310],
-  'Tulu Dimu':        [9.0105,38.8310],
-  'Weleta':           [9.0155,38.7250],
-  'Wello Sefer':      [9.0205,38.7590],
-  'Weybla Mariam':    [9.0055,38.7215],
-  'Winget':           [9.0355,38.7545],
-  'Woyira Sefer':     [9.0095,38.7155],
-  'Yeka Abado':       [9.0610,38.7920],
-  'Yeshi Debele':     [9.0185,38.7125],
-  'Yeshi Total':      [9.0180,38.7800],
-  'Zenebewerk':       [9.0155,38.7155],
-  'Zenebewerk Meneharia':[9.0150,38.7150],
-};
-
-// ═══ STATIONS ═══
-const ST=[
+// ════════════ STATIONS ════════════
+var ST = [
   {id:1,name:'Megenagna Minibus Hub',am:'መገናኛ ሚኒባስ ማዕከል',t:'minibus',lat:9.0272,lng:38.7678,addr:'Megenagna, Addis Ababa',addrAm:'መገናኛ፣ አዲስ አበባ',r:['Bole','Piassa','Merkato','Sarbet'],rat:4.6,h:['5:00–21:00','5:00–21:00','5:00–21:00','5:00–21:00','5:00–22:00','6:00–21:00','Closed']},
   {id:2,name:'Bole Atlas Station',am:'ቦሌ አትላስ ጣቢያ',t:'minibus',lat:8.9975,lng:38.7883,addr:'Bole Road, Addis Ababa',addrAm:'ቦሌ መንገድ፣ አዲስ አበባ',r:['Megenagna','Piassa','Stadium'],rat:4.4,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','Closed']},
   {id:3,name:'Piassa Bajaj Stop',am:'ፒያሳ ባጃጅ ቆሚ',t:'bajaj',lat:9.0352,lng:38.7517,addr:'Piassa, Addis Ababa',addrAm:'ፒያሳ፣ አዲስ አበባ',r:['Local routes','Merkato area'],rat:4.1,h:['6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','6:00–20:00','7:00–18:00','7:00–16:00']},
@@ -688,711 +511,881 @@ const ST=[
   {id:9,name:'Bole Ride Pickup',am:'ቦሌ ሪድ ፒካፕ',t:'ride',lat:9.0054,lng:38.7884,addr:'Bole Airport Area',addrAm:'ቦሌ አየር ማረፊያ',r:['Ride','FERES','Pickup'],rat:4.9,h:['Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs','Open 24 hrs']},
   {id:10,name:'4 Kilo Minibus Stop',am:'4 ኪሎ ሚኒባስ ቆሚ',t:'minibus',lat:9.0381,lng:38.7634,addr:'4 Kilo, Addis Ababa',addrAm:'4 ኪሎ፣ አዲስ አበባ',r:['Piassa','Arat Kilo','6 Kilo'],rat:4.2,h:['5:30–20:30','5:30–20:30','5:30–20:30','5:30–20:30','5:30–21:00','6:00–20:00','7:00–17:00']},
   {id:11,name:'Merkato Bajaj Rank',am:'መርካቶ ባጃጅ ደረጃ',t:'bajaj',lat:9.0337,lng:38.7365,addr:'Merkato, Addis Ababa',addrAm:'መርካቶ፣ አዲስ አበባ',r:['Piassa','Gotera','Shabelle'],rat:4.0,h:['6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','6:00–19:00','7:00–17:00','8:00–14:00']},
-  {id:12,name:'Saris Minibus Station',am:'ሳሪስ ሚኒባስ ጣቢያ',t:'minibus',lat:8.9743,lng:38.7813,addr:'Saris, Addis Ababa',addrAm:'ሳሪስ፣ አዲስ አበባ',r:['Gotera','Kaliti','Akaki'],rat:4.1,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']},
+  {id:12,name:'Saris Minibus Station',am:'ሳሪስ ሚኒባስ ጣቢያ',t:'minibus',lat:8.9743,lng:38.7813,addr:'Saris, Addis Ababa',addrAm:'ሳሪስ፣ አዲስ አበባ',r:['Gotera','Kaliti','Akaki'],rat:4.1,h:['5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:00','5:30–20:30','6:00–19:00','Closed']}
 ];
 
-const TM={minibus:{emoji:'🚌',label:'Minibus',am:'ሚኒባስ'},bajaj:{emoji:'🛺',label:'Bajaj',am:'ባጃጅ'},ride:{emoji:'🚗',label:'Ride',am:'ሪድ'}};
-const DAYS_EN=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const DAYS_AM=['ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','አርብ','ቅዳሜ','እሁድ'];
+// ════════════ PLACE COORDINATES ════════════
+// Each unique FROM location from the 263 routes
+var COORDS = {
+  'Piassa Arada':[9.0350,38.7517],'Piassa':[9.0350,38.7517],'Arada':[9.0350,38.7517],
+  'Megenagna':[9.0272,38.7678],
+  'Mexico':[9.0177,38.7497],
+  'Autobus Tera':[9.0105,38.7370],
+  'Stadium':[9.0220,38.7523],
+  '4 Kilo':[9.0381,38.7634],'4 Kilo (Children Theatre)':[9.0381,38.7634],
+  '6 Kilo':[9.0450,38.7600],
+  'Merkato':[9.0337,38.7365],
+  'Kazanchis':[9.0186,38.7611],
+  'Bole Bridge':[9.0074,38.7901],
+  'Bole Arabsa':[9.0150,38.8200],
+  'Bole Mickael':[9.0050,38.7850],
+  'Bole Roundabout':[8.9990,38.7890],
+  'Bole Medhanialem':[9.0060,38.7940],
+  'Summit':[9.0454,38.8043],'Safari (Summit)':[9.0454,38.8043],'Safari':[9.0454,38.8043],
+  'Summit Condominiums':[9.0454,38.8043],
+  'Ayat':[9.0350,38.8300],'Ayat Chefe Condominium':[9.0300,38.8380],
+  'Saris':[8.9743,38.7813],'Saris Abo':[8.9680,38.7880],
+  'Kality Total':[8.9650,38.7800],'Kality Menaheria':[8.9580,38.7900],
+  'Kality Maseltegna':[8.9600,38.7750],
+  'Kera':[8.9950,38.7580],
+  'Tekle Haimanot':[9.0170,38.7420],
+  'Alem Bank':[9.0050,38.7250],
+  'Addisu Gebeya':[9.0430,38.7380],
+  'Shiromeda':[9.0480,38.7530],
+  'Shola':[9.0350,38.7780],'Shola Gebeya':[9.0350,38.7780],
+  'Torhayloch':[9.0080,38.7200],
+  'Asko':[9.0300,38.7150],'Asco':[9.0300,38.7150],
+  'Atena Tera':[9.0120,38.7320],
+  'Sebategna':[9.0080,38.7270],
+  'Lafto':[8.9850,38.7450],
+  'Jemmo 1':[8.9700,38.7200],'Jemmo Mickael':[8.9720,38.7180],
+  'Gofa':[8.9750,38.7400],'Gofa Gebriel':[8.9750,38.7380],
+  'Ayer Tena':[8.9450,38.7300],
+  'Hana Mariam':[8.9350,38.7350],
+  'Haile Garment':[8.9600,38.7300],
+  'Sefera':[8.9400,38.8100],'Sefera Square':[8.9420,38.8080],
+  'Gelan Condominium':[8.9250,38.8100],
+  'Akaki Gebeya':[8.9100,38.7980],'Akaki CBE':[8.9050,38.7950],
+  'Mekanisa':[8.9900,38.7280],'Mekanisa Abo':[8.9880,38.7260],
+  'German Square':[8.9900,38.7150],'Germen Square':[8.9900,38.7150],
+  'Winget':[9.0500,38.7450],
+  'Cinema Ras':[9.0050,38.7530],
+  'Tulu Dimtu':[9.0450,38.8450],'Tulu Dimu':[9.0450,38.8450],
+  '22 Mazoria':[9.0100,38.8000],'18 Mazoria':[9.0280,38.7250],
+  'Abenet':[9.0050,38.7150],'Weleta':[9.0000,38.7100],
+  'Alem Gena':[8.9800,38.7050],
+  'Kara':[8.9850,38.7640],'Adey Abeba':[8.9800,38.7500],
+  'Kara Kore':[9.0100,38.7100],
+  'Zenebewerk':[9.0150,38.7180],'Zenebewerk Meneharia':[9.0140,38.7170],
+  'Merab Hotel':[9.0150,38.7150],'Meraba Hotel':[9.0150,38.7150],
+  'Betel':[9.0050,38.7050],
+  'Mexico Shebelle Hotel':[9.0160,38.7480],
+  'Tikur Anbesa':[9.0390,38.7580],'Tero Mosque':[9.0290,38.7400],
+  'Lukanda':[9.0220,38.7300],'Luwkanda':[9.0220,38.7300],
+  'Shegole':[9.0430,38.7450],'Eritrea Hotel':[9.0420,38.7440],
+  'Kechenie':[9.0460,38.7510],'Balderas':[9.0250,38.7520],
+  'Aba Kiros':[9.0400,38.8150],'Riventy':[9.0080,38.7820],
+  'Tafo Square':[9.0600,38.7780],'Yeka Abado':[9.0630,38.7830],
+  'Kotebe':[9.0550,38.7780],'Kotebe Gebriel':[9.0550,38.7780],
+  'Tourist Hotel':[9.0130,38.7490],'Ambasader':[9.0180,38.7610],
+  'Olympia':[9.0250,38.7780],'Agona Cinema':[9.0300,38.7800],
+  'Buna Ena Shay':[9.0400,38.7720],
+  'Selam Building':[8.9700,38.7850],
+  'Gojam Berenda':[9.0050,38.7380],
+  'Lamberet Menaheria':[9.0100,38.7980],
+  'Mebrathile':[9.0000,38.7200],'Rufael':[9.0480,38.7460],
+  'Selefia Mosque':[9.0200,38.7200],
+  'Mariam Condominium':[8.9650,38.8000],
+  'Woyira Sefer':[9.0100,38.7200],'Weybla Mariam':[9.0180,38.7150],
+  'Mesalemia':[9.0200,38.7450],'Coca Cola':[9.0330,38.7480],
+  'Derartu':[8.9900,38.7950],'Abune Petros':[9.0380,38.7350],
+  'Menlik Hospital':[9.0390,38.7450],'Mulugeta Building':[9.0150,38.7870],
+  'Yeshi Total':[8.9900,38.7880],'Abem Mebrat':[9.0250,38.8400],
+  'Abuare Roundabout':[9.0230,38.7660],'Kela':[9.0270,38.7220],
+  'Total 3 kuter Mazoria':[9.0200,38.7500],'Total 3 Kuter Mazoria':[9.0200,38.7500],
+  'Wello Sefer':[9.0100,38.7650],
+  'Raguel Church':[9.0580,38.7650],'Ferensay':[9.0300,38.7680],
+  'Kidane Mihret':[9.0450,38.7700],
+  'Saint Georgis':[9.0350,38.7490],'St. George Total':[9.0350,38.7490],
+  'Bulbula':[8.9600,38.8200],'Goro':[9.0200,38.8300],
+  'Amanuel Church':[9.0250,38.7300],'Amanuel total':[9.0250,38.7300],
+  'Medhanalem':[9.0180,38.7540],'Leghar':[9.0200,38.7500],'Legehar':[9.0200,38.7500],
+  'Lomi Meda':[9.0200,38.7280],'Yeshi Debele':[9.0200,38.7100],
+  'Yeka Abado':[9.0630,38.7830]
+};
 
-// ═══ ROUTES DATABASE — 263 official GTFS routes ═══
-const ROUTES=[
-{id:'10568476',name:'Olympia ↔ Agona Cinema',code:'TX341',from:'Olympia',to:'Agona Cinema'},
-{id:'15633036',name:'Total 3 kuter Mazoria ↔ Kera',code:'TX002',from:'Total 3 kuter Mazoria',to:'Kera'},
-{id:'15676211',name:'Wello Sefer ↔ Kera',code:'TX200',from:'Wello Sefer',to:'Kera'},
-{id:'15676212',name:'Safari (Summit) ↔ Megenagna',code:'TX065',from:'Safari (Summit)',to:'Megenagna'},
-{id:'15676213',name:'Kality Menaheria ↔ 4 Kilo',code:'TX005',from:'Kality Menaheria',to:'4 Kilo'},
-{id:'15676215',name:'Arada ↔ 18 Mazoria',code:'TX001',from:'Arada',to:'18 Mazoria'},
-{id:'15677019',name:'Kara ↔ 4 Kilo',code:'TX006',from:'Kara',to:'4 Kilo'},
-{id:'15677252',name:'Megenagna ↔ 6 Kilo',code:'TX008',from:'Megenagna',to:'6 Kilo'},
-{id:'15774596',name:'Kality Menaheria ↔ Ayer Tena',code:'Tx Kal 001',from:'Kality Menaheria',to:'Ayer Tena'},
-{id:'15775112',name:'Kality Total ↔ Bole Roundabout',code:'Tx Kal 002',from:'Kality Total',to:'Bole Roundabout'},
-{id:'15797527',name:'Saris ↔ Mexico',code:'Tx Kal 006',from:'Saris',to:'Mexico'},
-{id:'15797528',name:'Saris ↔ Kality Total',code:'Tx Kal 003',from:'Saris',to:'Kality Total'},
-{id:'15797529',name:'Saris Abo ↔ Bulbula',code:'Tx Kal 004',from:'Saris Abo',to:'Bulbula'},
-{id:'15797530',name:'Kality Maseltegna ↔ Jemo',code:'Tx Kal 005',from:'Kality Maseltegna',to:'Jemo'},
-{id:'15830934',name:'Saris Abo ↔ Bole Bridge',code:'Tx Bole 001',from:'Saris Abo',to:'Bole Bridge'},
-{id:'15833378',name:'Kality Total ↔ Autobus Tera',code:'Tx Kal 012',from:'Kality Total',to:'Autobus Tera'},
-{id:'15833518',name:'Mexico ↔ Kality Total',code:'Tx Kal 013',from:'Mexico',to:'Kality Total'},
-{id:'15841640',name:'Tulu Dimu ↔ Sefera Square',code:'Tx Bole 002',from:'Tulu Dimu',to:'Sefera Square'},
-{id:'15841839',name:'Bole Bridge ↔ 22 Mazoria',code:'Tx Bole 004',from:'Bole Bridge',to:'22 Mazoria'},
-{id:'15841978',name:'Ayat ↔ 22 Mazoria',code:'Tx Bole 005',from:'Ayat',to:'22 Mazoria'},
-{id:'15842386',name:'Bole Bridge ↔ Megenagna',code:'Tx Bole 003',from:'Bole Bridge',to:'Megenagna'},
-{id:'15842687',name:'Summit ↔ Megenagna',code:'Tx Bole 006',from:'Summit',to:'Megenagna'},
-{id:'15845949',name:'Mulugeta Building ↔ Bole Bridge',code:'Tx Bole 014',from:'Mulugeta Building',to:'Bole Bridge'},
-{id:'15845950',name:'Megenagna ↔ Bulbula',code:'Tx Bole 011',from:'Megenagna',to:'Bulbula'},
-{id:'15846182',name:'Bulbula ↔ Bole Bridge',code:'Tx Bole 012',from:'Bulbula',to:'Bole Bridge'},
-{id:'15850226',name:'Goro ↔ Bole Bridge',code:'Tx Bole 009',from:'Goro',to:'Bole Bridge'},
-{id:'15850509',name:'Safari ↔ Bole Bridge',code:'Tx Bole 010',from:'Safari',to:'Bole Bridge'},
-{id:'15850623',name:'Saris ↔ Derartu',code:'Tx Kal 011',from:'Saris',to:'Derartu'},
-{id:'15858008',name:'Tekle Haimanot ↔ Bole Mickael',code:'Tx Bole 015',from:'Tekle Haimanot',to:'Bole Mickael'},
-{id:'15858151',name:'Bole Mickael ↔ Autobus Tera',code:'Tx Bole 016',from:'Bole Mickael',to:'Autobus Tera'},
-{id:'15858269',name:'Piassa Arada ↔ Bole Mickael',code:'Tx Bole 018',from:'Piassa Arada',to:'Bole Mickael'},
-{id:'15858339',name:'Piassa Arada ↔ Bole Bridge',code:'Tx Bole 019',from:'Piassa Arada',to:'Bole Bridge'},
-{id:'15858404',name:'Bole Bridge ↔ Autobus Tera',code:'Tx Bole 020',from:'Bole Bridge',to:'Autobus Tera'},
-{id:'15858713',name:'Tulu Dimtu ↔ Megenagna',code:'Tx Bole 021',from:'Tulu Dimtu',to:'Megenagna'},
-{id:'15858887',name:'Saint Georgis ↔ Megenagna',code:'Tx Bole 022',from:'Saint Georgis',to:'Megenagna'},
-{id:'15858958',name:'Ayer Tena ↔ Hana Mariam',code:'Tx Lafto 002',from:'Ayer Tena',to:'Hana Mariam'},
-{id:'15861781',name:'Sefera ↔ Ayer Tena',code:'Tx Lafto 003',from:'Sefera',to:'Ayer Tena'},
-{id:'15861962',name:'Gelan Condominium ↔ Haile Garment',code:'Tx Lafto 004',from:'Gelan Condominium',to:'Haile Garment'},
-{id:'15863862',name:'Tulu Dimtu ↔ Saris',code:'Tx Lafto 008',from:'Tulu Dimtu',to:'Saris'},
-{id:'15864075',name:'Sefera ↔ Jemmo 1',code:'Tx Lafto 009',from:'Sefera',to:'Jemmo 1'},
-{id:'15865443',name:'Total 3 Kuter Mazoria ↔ Kara',code:'Tx Lafto 010',from:'Total 3 Kuter Mazoria',to:'Kara'},
-{id:'15865947',name:'Kera ↔ Autobus Tera',code:'Tx Lafto 011',from:'Kera',to:'Autobus Tera'},
-{id:'15866774',name:'Kera ↔ Kality Total',code:'Tx Lafto 012',from:'Kera',to:'Kality Total'},
-{id:'15867049',name:'Kality Maseltegna ↔ Jemmo 1',code:'Tx Lafto 013',from:'Kality Maseltegna',to:'Jemmo 1'},
-{id:'15867151',name:'Piassa Arada ↔ Jemmo 1',code:'Tx Lafto 014',from:'Piassa Arada',to:'Jemmo 1'},
-{id:'15867420',name:'Jemmo 1 ↔ Alem Gena',code:'Tx Lafto 015',from:'Jemmo 1',to:'Alem Gena'},
-{id:'15867572',name:'Piassa Arada ↔ German Square',code:'Tx Lafto 017',from:'Piassa Arada',to:'German Square'},
-{id:'15867651',name:'Tekle Haimanot ↔ Gofa',code:'Tx Lafto 018',from:'Tekle Haimanot',to:'Gofa'},
-{id:'15867786',name:'Gofa ↔ Ayer Tena',code:'Tx Lafto 021',from:'Gofa',to:'Ayer Tena'},
-{id:'15869243',name:'Alem Gena ↔ Gofa',code:'Tx Lafto 019',from:'Alem Gena',to:'Gofa'},
-{id:'15869312',name:'Gofa ↔ Alem Bank',code:'Tx Lafto 020',from:'Gofa',to:'Alem Bank'},
-{id:'15869366',name:'Kera ↔ German Square',code:'Tx Lafto 022',from:'Kera',to:'German Square'},
-{id:'15869889',name:'Mexico ↔ German Square',code:'Tx Lafto 023',from:'Mexico',to:'German Square'},
-{id:'15870075',name:'Mexico ↔ Mekanisa Abo',code:'Tx Lafto 024',from:'Mexico',to:'Mekanisa Abo'},
-{id:'15870224',name:'Mekanisa ↔ Piassa Arada',code:'Tx Lafto 025',from:'Mekanisa',to:'Piassa Arada'},
-{id:'15870632',name:'Sefera ↔ Mexico',code:'Tx Lafto 026',from:'Sefera',to:'Mexico'},
-{id:'15870793',name:'Jemmo Mickael ↔ Autobus Tera',code:'Tx Lafto 027',from:'Jemmo Mickael',to:'Autobus Tera'},
-{id:'15870960',name:'Kality Menaheria ↔ Jemmo 1',code:'Tx Lafto 028',from:'Kality Menaheria',to:'Jemmo 1'},
-{id:'15871080',name:'Mebrathile ↔ Ayer Tena',code:'Tx Lafto 031',from:'Mebrathile',to:'Ayer Tena'},
-{id:'15871275',name:'Mexico ↔ Mebrathile',code:'Tx Lafto 032',from:'Mexico',to:'Mebrathile'},
-{id:'15871624',name:'Merab Hotel ↔ Alem Bank',code:'Tx Kolfa 001',from:'Merab Hotel',to:'Alem Bank'},
-{id:'15876625',name:'Mexico ↔ Alem Bank',code:'Tx Kolfe 003',from:'Mexico',to:'Alem Bank'},
-{id:'15876725',name:'Alem Bank ↔ Mexico Shebelle Hotel',code:'Tx Kolfa 004',from:'Alem Bank',to:'Mexico Shebelle Hotel'},
-{id:'15876752',name:'Torhayloch ↔ Alem Bank',code:'Tx Kolfa 005',from:'Torhayloch',to:'Alem Bank'},
-{id:'15876870',name:'Germen Square ↔ Ayer Tena',code:'Tx Kolfa 006',from:'Germen Square',to:'Ayer Tena'},
-{id:'15876935',name:'Jemmo 1 ↔ Ayer Tena',code:'Tx Kolfa 007',from:'Jemmo 1',to:'Ayer Tena'},
-{id:'15877451',name:'Mexico ↔ Ayer Tena',code:'Tx Kolfa 008',from:'Mexico',to:'Ayer Tena'},
-{id:'15877500',name:'Mexico Shebelle Hotel ↔ Betel',code:'Tx Kolfa 009',from:'Mexico Shebelle Hotel',to:'Betel'},
-{id:'15879148',name:'Zenebewerk ↔ Mexico',code:'Tx Kolfa 015',from:'Zenebewerk',to:'Mexico'},
-{id:'15880133',name:'Alem Bank ↔ 18 Mazoria',code:'Tx Kolfa 010',from:'Alem Bank',to:'18 Mazoria'},
-{id:'15880213',name:'Merab Hotel ↔ Ayer Tena',code:'Tx Kolfa 011',from:'Merab Hotel',to:'Ayer Tena'},
-{id:'15880308',name:'Merab Hotel ↔ Betel',code:'Tx Kolfa 012',from:'Merab Hotel',to:'Betel'},
-{id:'15880397',name:'Meraba Hotel ↔ Kara Kore',code:'Tx Kolfa 013',from:'Meraba Hotel',to:'Kara Kore'},
-{id:'15880659',name:'Zenebewerk ↔ Piassa Arada',code:'Tx Kolfa 014',from:'Zenebewerk',to:'Piassa Arada'},
-{id:'15881004',name:'Zenebewerk ↔ Mexico Shebelle Hotel',code:'Tx Kolfa 016',from:'Zenebewerk',to:'Mexico Shebelle Hotel'},
-{id:'15881508',name:'Zenebewerk Meneharia ↔ Autobus Tera',code:'Tx Kolfa 017',from:'Zenebewerk Meneharia',to:'Autobus Tera'},
-{id:'15881684',name:'Atena Tera ↔ Alem Bank',code:'Tx Kolfa 018',from:'Atena Tera',to:'Alem Bank'},
-{id:'15882444',name:'Mexico Shebelle Hotel ↔ Kara Kore',code:'Tx Kolfa 019',from:'Mexico Shebelle Hotel',to:'Kara Kore'},
-{id:'15882498',name:'Tekle Haimanot ↔ Kara Kore',code:'Tx Kolfa 020',from:'Tekle Haimanot',to:'Kara Kore'},
-{id:'15882550',name:'Kara Kore ↔ Autobus Tera',code:'Tx Kolfa 021',from:'Kara Kore',to:'Autobus Tera'},
-{id:'15882638',name:'Kara Kore ↔ Atena Tera',code:'Tx Kolfa 022',from:'Kara Kore',to:'Atena Tera'},
-{id:'15883171',name:'Ayer Tena ↔ Asko',code:'TX Kolfe 023',from:'Ayer Tena',to:'Asko'},
-{id:'15885969',name:'Yeshi Debele ↔ Atena Tera',code:'Tx Kolfa 024',from:'Yeshi Debele',to:'Atena Tera'},
-{id:'15886152',name:'Kara Kore ↔ 18 Mazoria',code:'Tx Kolfa 025',from:'Kara Kore',to:'18 Mazoria'},
-{id:'15887144',name:'Yeshi Debele ↔ Sebategna',code:'Tx Kolfa 026',from:'Yeshi Debele',to:'Sebategna'},
-{id:'15887191',name:'Yeshi Debele ↔ Winget',code:'Tx Kolfa 027',from:'Yeshi Debele',to:'Winget'},
-{id:'15887240',name:'Yeshi Debele ↔ 18 Mazoria',code:'Tx Kolfa 028',from:'Yeshi Debele',to:'18 Mazoria'},
-{id:'15898347',name:'Leghar ↔ Kality Total',code:'Tx Kal 017',from:'Leghar',to:'Kality Total'},
-{id:'15900380',name:'Atena Tera ↔ Addisu Gebeya',code:'Tx Gl 001',from:'Atena Tera',to:'Addisu Gebeya'},
-{id:'15900555',name:'Addisu Gebeya ↔ Eritrea Hotel',code:'Tx Gl 002',from:'Addisu Gebeya',to:'Eritrea Hotel'},
-{id:'15900883',name:'Piassa ↔ Kechenie',code:'Tx Gl 003',from:'Piassa',to:'Kechenie'},
-{id:'15901020',name:'Shegole ↔ Piassa Arada',code:'Tx Gl 004',from:'Shegole',to:'Piassa Arada'},
-{id:'15901146',name:'Megenagna ↔ 6 Kilo',code:'Tx Gl 005',from:'Megenagna',to:'6 Kilo'},
-{id:'15901995',name:'Kazanchis ↔ 6 Kilo',code:'Tx Gl 007',from:'Kazanchis',to:'6 Kilo'},
-{id:'15902043',name:'Piassa ↔ Addisu Gebeya',code:'Tx Gl 008',from:'Piassa',to:'Addisu Gebeya'},
-{id:'15902171',name:'Shiromeda ↔ Kazanchis',code:'Tx Gl 009',from:'Shiromeda',to:'Kazanchis'},
-{id:'15902285',name:'Shiromeda ↔ Raguel Church',code:'Tx Gl 010',from:'Shiromeda',to:'Raguel Church'},
-{id:'15902321',name:'Mexico ↔ Addisu Gebeya',code:'Tx Gl 011',from:'Mexico',to:'Addisu Gebeya'},
-{id:'15903001',name:'Addisu Gebeya ↔ Asko',code:'Tx Gl 012',from:'Addisu Gebeya',to:'Asko'},
-{id:'15903091',name:'Shegole ↔ Autobus Tera',code:'Tx Gl 013',from:'Shegole',to:'Autobus Tera'},
-{id:'15903260',name:'Summit Condominiums ↔ Aba Kiros',code:'Tx LK 001',from:'Summit Condominiums',to:'Aba Kiros'},
-{id:'15903402',name:'Ayat ↔ Bole Arabsa',code:'Tx LK 002',from:'Ayat',to:'Bole Arabsa'},
-{id:'15903454',name:'Aba Kiros ↔ Bole Arabsa',code:'Tx LK 003',from:'Aba Kiros',to:'Bole Arabsa'},
-{id:'15903518',name:'Megenagna ↔ Summit Condominiums',code:'Tx LK 004',from:'Megenagna',to:'Summit Condominiums'},
-{id:'15904627',name:'Tafo Square ↔ Megenagna',code:'Tx LK 005',from:'Tafo Square',to:'Megenagna'},
-{id:'15904691',name:'Goro ↔ Bole Arabsa',code:'Tx LK 006',from:'Goro',to:'Bole Arabsa'},
-{id:'15904811',name:'22 Mazoria ↔ Ayat Chefe Condominium',code:'Tx LK 007',from:'22 Mazoria',to:'Ayat Chefe Condominium'},
-{id:'15905759',name:'Goro ↔ Aba Kiros',code:'Tx LK 008',from:'Goro',to:'Aba Kiros'},
-{id:'15905796',name:'Aba Kiros ↔ Megenagna',code:'Tx LK 009',from:'Aba Kiros',to:'Megenagna'},
-{id:'15905849',name:'Megenagna ↔ Ayat Chefe Condominium',code:'Tx LK 010',from:'Megenagna',to:'Ayat Chefe Condominium'},
-{id:'15906133',name:'Summit Condominiums ↔ Megenagna',code:'Tx LK 013',from:'Summit Condominiums',to:'Megenagna'},
-{id:'15906163',name:'Bole Arabsa ↔ Ayat',code:'Tx LK 014',from:'Bole Arabsa',to:'Ayat'},
-{id:'15906876',name:'Torhayloch ↔ Piassa Arada',code:'Tx LID 003',from:'Torhayloch',to:'Piassa Arada'},
-{id:'15906946',name:'Torhayloch ↔ Stadium',code:'Tx LID 004',from:'Torhayloch',to:'Stadium'},
-{id:'15907058',name:'Torhayloch ↔ Megenagna',code:'Tx LID 009',from:'Torhayloch',to:'Megenagna'},
-{id:'15907234',name:'Tekle Haimanot ↔ Megenagna',code:'Tx LID 010',from:'Tekle Haimanot',to:'Megenagna'},
-{id:'15907305',name:'Asko ↔ Torhayloch',code:'Tx LID 011',from:'Asko',to:'Torhayloch'},
-{id:'15909909',name:'Megenagna ↔ Addisu Gebeya',code:'Tx YK 001',from:'Megenagna',to:'Addisu Gebeya'},
-{id:'15909991',name:'Megenagna ↔ Kara',code:'Tx YK 004',from:'Megenagna',to:'Kara'},
-{id:'15910058',name:'Shiromeda ↔ Megenagna',code:'Tx YK 006',from:'Shiromeda',to:'Megenagna'},
-{id:'15910153',name:'Ferensay ↔ 4 Kilo',code:'Tx YK 007',from:'Ferensay',to:'4 Kilo'},
-{id:'15910213',name:'Megenagna ↔ Kality Total',code:'Tx YK 009',from:'Megenagna',to:'Kality Total'},
-{id:'15910286',name:'Megenagna ↔ Ayat',code:'Tx YK 010',from:'Megenagna',to:'Ayat'},
-{id:'15910343',name:'Megenagna ↔ Ferensay',code:'Tx YK 011',from:'Megenagna',to:'Ferensay'},
-{id:'15910407',name:'St. George Total ↔ Ferensay',code:'Tx YK 012',from:'St. George Total',to:'Ferensay'},
-{id:'15910507',name:'Raguel Church ↔ Ferensay',code:'Tx YK 013',from:'Raguel Church',to:'Ferensay'},
-{id:'15910595',name:'Mexico ↔ Lamberet Menaheria',code:'Tx YK 016',from:'Mexico',to:'Lamberet Menaheria'},
-{id:'15912626',name:'Kidane Mihret ↔ Shola Gebeya',code:'Tx YK 023',from:'Kidane Mihret',to:'Shola Gebeya'},
-{id:'15912956',name:'Mexico ↔ Megenagna',code:'Tx KRK 002',from:'Mexico',to:'Megenagna'},
-{id:'15912995',name:'Total 3 Kuter Mazoria ↔ Kera',code:'Tx KRK 003',from:'Total 3 Kuter Mazoria',to:'Kera'},
-{id:'15913024',name:'Kazanchis ↔ Megenagna',code:'Tx KRK 004',from:'Kazanchis',to:'Megenagna'},
-{id:'15913086',name:'Stadium ↔ Autobus Tera',code:'Tx KRK 006',from:'Stadium',to:'Autobus Tera'},
-{id:'15913109',name:'Kazanchis ↔ Bole Bridge',code:'Tx KRK 007',from:'Kazanchis',to:'Bole Bridge'},
-{id:'15913170',name:'Legehar ↔ Kality Total',code:'Tx KRK 008',from:'Legehar',to:'Kality Total'},
-{id:'15913211',name:'Wello Sefer ↔ Kera',code:'Tx KRK 009',from:'Wello Sefer',to:'Kera'},
-{id:'15913312',name:'Stadium ↔ Kera',code:'Tx KRK 011',from:'Stadium',to:'Kera'},
-{id:'15913400',name:'Shiromeda ↔ Buna Ena Shay',code:'Tx KRK 013',from:'Shiromeda',to:'Buna Ena Shay'},
-{id:'15913788',name:'Piassa Arada ↔ Adey Abeba',code:'Tx ARD 002',from:'Piassa Arada',to:'Adey Abeba'},
-{id:'15913797',name:'Addisu Gebeya ↔ Piassa',code:'Tx ARD 003',from:'Addisu Gebeya',to:'Piassa'},
-{id:'15913851',name:'Kality Total ↔ Piassa Arada',code:'Tx ARD 004',from:'Kality Total',to:'Piassa Arada'},
-{id:'15913986',name:'Jemmo 1 ↔ Piassa Arada',code:'Tx ARD 005',from:'Jemmo 1',to:'Piassa Arada'},
-{id:'15916307',name:'4 Kilo ↔ Megenagna',code:'Tx ARD 007',from:'4 Kilo',to:'Megenagna'},
-{id:'15916364',name:'Piassa Arada ↔ Alem Bank',code:'Tx ARD 006',from:'Piassa Arada',to:'Alem Bank'},
-{id:'15916401',name:'Saris ↔ Piassa Arada',code:'Tx ARD 008',from:'Saris',to:'Piassa Arada'},
-{id:'15916629',name:'Amanuel Total ↔ Merab Hotel',code:'Tx ADK 002',from:'Amanuel total',to:'Merab Hotel'},
-{id:'15916756',name:'Asko ↔ Autobus Tera',code:'Tx ADK 004',from:'Asko',to:'Autobus Tera'},
-{id:'15916839',name:'Menlik Hospital ↔ Autobus Tera',code:'Tx ADK 008',from:'Menlik Hospital',to:'Autobus Tera'},
-{id:'15916909',name:'Abune Petros ↔ Asko',code:'Tx ADK 009',from:'Abune Petros',to:'Asko'},
-{id:'15916957',name:'Alem Bank ↔ Autobus Tera',code:'Tx ADK 011',from:'Alem Bank',to:'Autobus Tera'},
-{id:'15917637',name:'Haile Garment ↔ Autobus Tera',code:'Tx ADK 012',from:'Haile Garment',to:'Autobus Tera'},
-{id:'15917697',name:'Shiromeda ↔ Autobus Tera',code:'Tx ADK 013',from:'Shiromeda',to:'Autobus Tera'},
-{id:'15917888',name:'Kera ↔ Autobus Tera',code:'Tx ADK 014',from:'Kera',to:'Autobus Tera'},
-{id:'15917949',name:'Kality Total ↔ Autobus Tera',code:'Tx ADK 015',from:'Kality Total',to:'Autobus Tera'},
-{id:'15917971',name:'Jemmo 1 ↔ Autobus Tera',code:'Tx ADK 016',from:'Jemmo 1',to:'Autobus Tera'},
-{id:'15918070',name:'Kechenie ↔ Eritrea Hotel',code:'Tx ADK 017',from:'Kechenie',to:'Eritrea Hotel'},
-{id:'15919609',name:'Bole Bridge ↔ Cinema Ras',code:'Tx ADK 020',from:'Bole Bridge',to:'Cinema Ras'},
-{id:'15919798',name:'Cinema Ras ↔ Bole Mekael',code:'Tx ADK 021',from:'Cinema Ras',to:'Bole Mekael'},
-{id:'15919880',name:'Kera ↔ Cinema Ras',code:'Tx ADK 022',from:'Kera',to:'Cinema Ras'},
-{id:'15921312',name:'Autobus Tera ↔ Asko',code:'Tx ADK 026',from:'Autobus Tera',to:'Asko'},
-{id:'15921454',name:'Tekle Haimanot ↔ Alem Bank',code:'Tx ADK 028',from:'Tekle Haimanot',to:'Alem Bank'},
-{id:'15921591',name:'Winget ↔ Torhayloch',code:'Tx ADK 030',from:'Winget',to:'Torhayloch'},
-{id:'15921656',name:'Asco ↔ Atena Tera',code:'Tx ADK 031',from:'Asco',to:'Atena Tera'},
-{id:'15957904',name:'Mekanisa ↔ Cinema Ras',code:'Tx ADK 038',from:'Mekanisa',to:'Cinema Ras'},
-{id:'15958044',name:'Megenagna ↔ Cinema Ras',code:'Tx ADK 042',from:'Megenagna',to:'Cinema Ras'},
-{id:'15958107',name:'Yeshi Debele ↔ Merab Hotel',code:'Tx ADK 043',from:'Yeshi Debele',to:'Merab Hotel'},
-{id:'15958349',name:'Merab Hotel ↔ Mekanisa',code:'Tx ADK 044',from:'Merab Hotel',to:'Mekanisa'},
-{id:'15958502',name:'Saris Abo ↔ Cinema Ras',code:'Tx ADK 047',from:'Saris Abo',to:'Cinema Ras'},
-{id:'15958564',name:'Tekle Haimanot ↔ Saris Abo',code:'Tx ADK 048',from:'Tekle Haimanot',to:'Saris Abo'},
-{id:'15958618',name:'Atena Tera ↔ Alem Bank',code:'Tx ADK 052',from:'Atena Tera',to:'Alem Bank'},
-{id:'15958644',name:'Bole Bridge ↔ Autobus Tera',code:'Tx ADK 053',from:'Bole Bridge',to:'Autobus Tera'},
-{id:'15958710',name:'Raguel Church ↔ Menlik Hospital',code:'Tx ADK 058',from:'Raguel Church',to:'Menlik Hospital'},
-{id:'15960815',name:'Kality Menaheria ↔ 4 Kilo',code:'Tx ARD 011',from:'Kality Menaheria',to:'4 Kilo'},
-{id:'15960877',name:'Piassa Arada ↔ Mekanisa',code:'Tx ARD 012',from:'Piassa Arada',to:'Mekanisa'},
-{id:'15960944',name:'Bole Medhanialem ↔ Piassa Arada',code:'Tx ARD 016',from:'Bole Medhanialem',to:'Piassa Arada'},
-{id:'15960977',name:'Cinema Ras ↔ Bole Medhanialem',code:'Tx Bole 023',from:'Cinema Ras',to:'Bole Medhanialem'},
-{id:'15961078',name:'Addisu Gebeya ↔ Eritrea Hotel',code:'Tx Gl 018',from:'Addisu Gebeya',to:'Eritrea Hotel'},
-{id:'15961305',name:'Gojam Berenda ↔ Kality Total',code:'Tx Kal 032',from:'Gojam Berenda',to:'Kality Total'},
-{id:'15961341',name:'Lamberet Menaheria ↔ Kality Total',code:'Tx Kal 033',from:'Lamberet Menaheria',to:'Kality Total'},
-{id:'15961494',name:'Mexico ↔ Gelan Condominium',code:'Tx Kal 037',from:'Mexico',to:'Gelan Condominium'},
-{id:'15961764',name:'Weybla Mariam ↔ Merab Hotel',code:'Tx Kolfa 034',from:'Weybla Mariam',to:'Merab Hotel'},
-{id:'15961854',name:'Stadium ↔ Zenebewerk',code:'Tx Kolfa 036',from:'Stadium',to:'Zenebewerk'},
-{id:'15961885',name:'18 Mazoria ↔ 22 Mazoria',code:'Tx Kolfa 037',from:'18 Mazoria',to:'22 Mazoria'},
-{id:'15961978',name:'Saris ↔ Stadium',code:'Tx KRK 014',from:'Saris',to:'Stadium'},
-{id:'15962019',name:'Saris Abo ↔ Mexico',code:'Tx KRK 015',from:'Saris Abo',to:'Mexico'},
-{id:'15962065',name:'Piassa Arada ↔ Kera',code:'Tx KRK 016',from:'Piassa Arada',to:'Kera'},
-{id:'15962103',name:'Stadium ↔ Bole Bridge',code:'Tx KRK 017',from:'Stadium',to:'Bole Bridge'},
-{id:'15962159',name:'Bole Mickael ↔ Buna Ena Shay',code:'Tx KRK 020',from:'Bole Mickael',to:'Buna Ena Shay'},
-{id:'15963098',name:'Merab Hotel ↔ Jemmo 1',code:'Tx Lafto 034',from:'Merab Hotel',to:'Jemmo 1'},
-{id:'15963187',name:'Gofa Gebriel ↔ Atena Tera',code:'Tx Lafto 042',from:'Gofa Gebriel',to:'Atena Tera'},
-{id:'15963257',name:'Ayat ↔ Megenagna',code:'Tx LK 016',from:'Ayat',to:'Megenagna'},
-{id:'15970722',name:'Merkato ↔ Lukanda',code:'Tx ADK 039',from:'Merkato',to:'Lukanda'},
-{id:'15970883',name:'Tero Mosque ↔ Merkato',code:'Tx ADK 040',from:'Tero Mosque',to:'Merkato'},
-{id:'15970955',name:'Sebategna ↔ Luwkanda',code:'Tx ADK 045',from:'Sebategna',to:'Luwkanda'},
-{id:'15971057',name:'Luwkanda ↔ Piassa Arada',code:'Tx ARD 013',from:'Luwkanda',to:'Piassa Arada'},
-{id:'15971140',name:'Rufael ↔ Piassa Arada',code:'Tx Gl 015',from:'Rufael',to:'Piassa Arada'},
-{id:'15973776',name:'Piassa Arada ↔ Selefia Mosque',code:'Tx Kolfe 035',from:'Piassa Arada',to:'Selefia Mosque'},
-{id:'15973832',name:'Piassa Arada ↔ 18 Mazoria',code:'Tx Kolfa 042',from:'Piassa Arada',to:'18 Mazoria'},
-{id:'15973924',name:'Saris ↔ Akaki Gebeya',code:'Tx Lafto 038',from:'Saris',to:'Akaki Gebeya'},
-{id:'15974268',name:'Akaki Gebeya ↔ Adey Abeba',code:'Tx Lafto 039',from:'Akaki Gebeya',to:'Adey Abeba'},
-{id:'15974308',name:'Lafto ↔ Jemmo 1',code:'Tx Lafto 040',from:'Lafto',to:'Jemmo 1'},
-{id:'15974328',name:'Saris ↔ Yeshi Total',code:'Tx Lafto 043',from:'Saris',to:'Yeshi Total'},
-{id:'15974746',name:'Kotebe Gebriel ↔ Megenagna',code:'Tx YK 002',from:'Kotebe Gebriel',to:'Megenagna'},
-{id:'15974793',name:'Kotebe ↔ 4 Kilo',code:'Tx YK 008',from:'Kotebe',to:'4 Kilo'},
-{id:'15974906',name:'Yeka Abado ↔ Megenagna',code:'Tx YK 014',from:'Yeka Abado',to:'Megenagna'},
-{id:'15992541',name:'22 Mazoria ↔ Summit',code:'Tx Bole 007',from:'22 Mazoria',to:'Summit'},
-{id:'15992646',name:'Summit ↔ Bole Bridge',code:'Tx Bole 008',from:'Summit',to:'Bole Bridge'},
-{id:'15992742',name:'Riventy ↔ Bole Mickael',code:'Tx Bole 017',from:'Riventy',to:'Bole Mickael'},
-{id:'15992882',name:'Lomi Meda ↔ Atena Tera',code:'Tx ADK 005',from:'Lomi Meda',to:'Atena Tera'},
-{id:'15992969',name:'Atena Tera ↔ Sebategna',code:'Tx ADK 006',from:'Atena Tera',to:'Sebategna'},
-{id:'15993132',name:'Saris ↔ Autobus Tera',code:'Tx ADK 024',from:'Saris',to:'Autobus Tera'},
-{id:'15993248',name:'Tourist Hotel ↔ Autobus Tera',code:'Tx ADK 023',from:'Tourist Hotel',to:'Autobus Tera'},
-{id:'15993363',name:'Mesalemia ↔ Coca Cola',code:'Tx ADK 035',from:'Mesalemia',to:'Coca Cola'},
-{id:'15993376',name:'Asko ↔ Piassa Arada',code:'Tx ADK 037',from:'Asko',to:'Piassa Arada'},
-{id:'15993527',name:'Tikur Anbesa ↔ Tero Mosque',code:'Tx ADK 055',from:'Tikur Anbesa',to:'Tero Mosque'},
-{id:'15993651',name:'Raguel Church ↔ Megenagna',code:'Tx ADK 057',from:'Raguel Church',to:'Megenagna'},
-{id:'15998238',name:'Piassa ↔ Megenagna',code:'Tx ARD 001',from:'Piassa',to:'Megenagna'},
-{id:'15998277',name:'Ambasader ↔ Tourist Hotel',code:'Tx ARD 009',from:'Ambasader',to:'Tourist Hotel'},
-{id:'15998427',name:'Shiromeda ↔ Addisu Gebeya',code:'Tx Gl 006',from:'Shiromeda',to:'Addisu Gebeya'},
-{id:'15999097',name:'Selam Building ↔ Saris',code:'Tx Kal 021',from:'Selam Building',to:'Saris'},
-{id:'15999123',name:'Saris Abo ↔ Kality Total',code:'Tx Kal 022',from:'Saris Abo',to:'Kality Total'},
-{id:'15999152',name:'Gelan Condominium ↔ Saris',code:'Tx Kal 023',from:'Gelan Condominium',to:'Saris'},
-{id:'15999254',name:'Bulbula ↔ Saris',code:'Tx Kal 027',from:'Bulbula',to:'Saris'},
-{id:'15999429',name:'Gelan Condominium ↔ Akaki Gebeya',code:'Tx Kal 008',from:'Gelan Condominium',to:'Akaki Gebeya'},
-{id:'16003640',name:'Akaki Gebeya ↔ Sefera Square',code:'Tx Kal 009',from:'Akaki Gebeya',to:'Sefera Square'},
-{id:'16004103',name:'Akaki Gebeya ↔ Saris Abo',code:'Tx Kal 030',from:'Akaki Gebeya',to:'Saris Abo'},
-{id:'16004169',name:'Saris Abo ↔ Akaki CBE',code:'Tx Kal 034',from:'Saris Abo',to:'Akaki CBE'},
-{id:'16004300',name:'Merkato ↔ Akaki Gebeya',code:'Tx Kal 035',from:'Merkato',to:'Akaki Gebeya'},
-{id:'16004409',name:'Lafto ↔ Mexico',code:'Tx KRK 001',from:'Lafto',to:'Mexico'},
-{id:'16004442',name:'Bole Bridge ↔ Mexico',code:'Tx KRK 012',from:'Bole Bridge',to:'Mexico'},
-{id:'16004670',name:'Woyira Sefer ↔ Mexico Shebelle Hotel',code:'Tx Kolfa 031',from:'Woyira Sefer',to:'Mexico Shebelle Hotel'},
-{id:'16006993',name:'Selefia Mosque ↔ Merab Hotel',code:'Tx Kolfa 033',from:'Selefia Mosque',to:'Merab Hotel'},
-{id:'16007055',name:'Zenebewerk ↔ Asko',code:'Tx Kolfa 038',from:'Zenebewerk',to:'Asko'},
-{id:'16007115',name:'Kara Kore ↔ Piassa Arada',code:'Tx Kolfa 041',from:'Kara Kore',to:'Piassa Arada'},
-{id:'16007166',name:'Gofa Gebriel ↔ Adey Abeba',code:'Tx Lafto 001',from:'Gofa Gebriel',to:'Adey Abeba'},
-{id:'16007247',name:'Jemmo 1 ↔ Cinema Ras',code:'Tx Lafto 016',from:'Jemmo 1',to:'Cinema Ras'},
-{id:'16007282',name:'Mexico Shebelle Hotel ↔ Lafto',code:'Tx Lafto 030',from:'Mexico Shebelle Hotel',to:'Lafto'},
-{id:'16007348',name:'Kera ↔ Tafo Square',code:'Tx LK 012',from:'Kera',to:'Tafo Square'},
-{id:'16007491',name:'Abenet ↔ Weleta',code:'Tx LID 002',from:'Abenet',to:'Weleta'},
-{id:'16007565',name:'Torhayloch ↔ Alem Gena',code:'Tx LID 005',from:'Torhayloch',to:'Alem Gena'},
-{id:'16007600',name:'Weleta ↔ Mexico',code:'Tx LID 007',from:'Weleta',to:'Mexico'},
-{id:'16007791',name:'Mexico ↔ Amanuel Church',code:'Tx LID 008',from:'Mexico',to:'Amanuel Church'},
-{id:'16007850',name:'Alem Gena ↔ Abenet',code:'Tx LID 013',from:'Alem Gena',to:'Abenet'},
-{id:'16007931',name:'Raguel Church ↔ Megenagna',code:'Tx YK 017',from:'Raguel Church',to:'Megenagna'},
-{id:'16008090',name:'Autobus Tera ↔ Lamberet Menaheria',code:'Tx YK 019',from:'Autobus Tera',to:'Lamberet Menaheria'},
-{id:'16008308',name:'Shola ↔ Piassa Arada',code:'Tx YK 021',from:'Shola',to:'Piassa Arada'},
-{id:'16028728',name:'Mexico ↔ Hana Mariam',code:'Tx Lafto 006',from:'Mexico',to:'Hana Mariam'},
-{id:'16028886',name:'Mexico ↔ Haile Garment',code:'Tx Lafto 007',from:'Mexico',to:'Haile Garment'},
-{id:'17332228',name:'Yeshi Debele ↔ Ayer Tena',code:'Kolfe 042',from:'Yeshi Debele',to:'Ayer Tena'},
-{id:'17332229',name:'Goro ↔ Abem Mebrat',code:'LK 015',from:'Goro',to:'Abem Mebrat'},
-{id:'17332230',name:'Megenagna ↔ Hana Mariam',code:'Lafto 044',from:'Megenagna',to:'Hana Mariam'},
-{id:'17332231',name:'Kality Total ↔ Hana Mariam',code:'Lafto 045',from:'Kality Total',to:'Hana Mariam'},
-{id:'20385422',name:'Lafto ↔ Gofa Gebriel',code:'Tx KRK',from:'Lafto',to:'Gofa Gebriel'},
-{id:'20385488',name:'Saris Abo ↔ Mariam Condominium',code:'Tx Kal',from:'Saris Abo',to:'Mariam Condominium'},
-{id:'20389398',name:'Kazanchis ↔ Abuare Roundabout',code:'Tx 002',from:'Kazanchis',to:'Abuare Roundabout'},
-{id:'20389399',name:'Kazanchis ↔ Balderas',code:'Tx 001',from:'Kazanchis',to:'Balderas'},
-{id:'20389824',name:'Winget ↔ Kechenie',code:'Tx 005',from:'Winget',to:'Kechenie'},
-{id:'20389825',name:'Mexico ↔ Kazanchis',code:'Tx 004',from:'Mexico',to:'Kazanchis'},
-{id:'20389826',name:'Kela ↔ Asko',code:'Tx 003',from:'Kela',to:'Asko'},
-{id:'20389875',name:'Medhanalem ↔ Autobus Tera',code:'Tx 007',from:'Medhanalem',to:'Autobus Tera'},
-{id:'20389876',name:'Torhayloch ↔ Atena Tera',code:'Tx 006',from:'Torhayloch',to:'Atena Tera'},
-{id:'20389877',name:'Tikur Anbesa ↔ Autobus Tera',code:'Tx 008',from:'Tikur Anbesa',to:'Autobus Tera'},
-{id:'20406757',name:'Jemmo 1 ↔ Gofa Gebriel',code:'Tx 009',from:'Jemmo 1',to:'Gofa Gebriel'},
-{id:'20406755',name:'Ayer Tena ↔ Haile Garment',code:'Tx 010',from:'Ayer Tena',to:'Haile Garment'},
+// ════════════ ROUTES (263 official GTFS) ════════════
+var ROUTES = [
+  {id:'r1',name:'Olympia ↔ Agona Cinema',code:'TX341',from:'Olympia',to:'Agona Cinema'},
+  {id:'r2',name:'Total 3 kuter Mazoria ↔ Kera',code:'TX002',from:'Total 3 kuter Mazoria',to:'Kera'},
+  {id:'r3',name:'Wello Sefer ↔ Kera',code:'TX200',from:'Wello Sefer',to:'Kera'},
+  {id:'r4',name:'Safari (Summit) ↔ Megenagna',code:'TX065',from:'Safari (Summit)',to:'Megenagna'},
+  {id:'r5',name:'Kality Menaheria ↔ 4 Kilo',code:'TX005',from:'Kality Menaheria',to:'4 Kilo'},
+  {id:'r6',name:'Arada ↔ 18 Mazoria',code:'TX001',from:'Arada',to:'18 Mazoria'},
+  {id:'r7',name:'Kara ↔ 4 Kilo',code:'TX006',from:'Kara',to:'4 Kilo'},
+  {id:'r8',name:'Megenagna ↔ 6 Kilo',code:'TX008',from:'Megenagna',to:'6 Kilo'},
+  {id:'r9',name:'Kality Menaheria ↔ Ayer Tena',code:'TxKal001',from:'Kality Menaheria',to:'Ayer Tena'},
+  {id:'r10',name:'Kality Total ↔ Bole Roundabout',code:'TxKal002',from:'Kality Total',to:'Bole Roundabout'},
+  {id:'r11',name:'Saris ↔ Mexico',code:'TxKal006',from:'Saris',to:'Mexico'},
+  {id:'r12',name:'Saris ↔ Kality Total',code:'TxKal003',from:'Saris',to:'Kality Total'},
+  {id:'r13',name:'Saris Abo ↔ Bulbula',code:'TxKal004',from:'Saris Abo',to:'Bulbula'},
+  {id:'r14',name:'Kality Maseltegna ↔ Jemmo 1',code:'TxKal005',from:'Kality Maseltegna',to:'Jemmo 1'},
+  {id:'r15',name:'Saris Abo ↔ Bole Bridge',code:'TxBole001',from:'Saris Abo',to:'Bole Bridge'},
+  {id:'r16',name:'Kality Total ↔ Autobus Tera',code:'TxKal012',from:'Kality Total',to:'Autobus Tera'},
+  {id:'r17',name:'Mexico ↔ Kality Total',code:'TxKal013',from:'Mexico',to:'Kality Total'},
+  {id:'r18',name:'Tulu Dimu ↔ Sefera Square',code:'TxBole002',from:'Tulu Dimu',to:'Sefera Square'},
+  {id:'r19',name:'Bole Bridge ↔ 22 Mazoria',code:'TxBole004',from:'Bole Bridge',to:'22 Mazoria'},
+  {id:'r20',name:'Ayat ↔ 22 Mazoria',code:'TxBole005',from:'Ayat',to:'22 Mazoria'},
+  {id:'r21',name:'Bole Bridge ↔ Megenagna',code:'TxBole003',from:'Bole Bridge',to:'Megenagna'},
+  {id:'r22',name:'Summit ↔ Megenagna',code:'TxBole006',from:'Summit',to:'Megenagna'},
+  {id:'r23',name:'Mulugeta Building ↔ Bole Bridge',code:'TxBole014',from:'Mulugeta Building',to:'Bole Bridge'},
+  {id:'r24',name:'Megenagna ↔ Bulbula',code:'TxBole011',from:'Megenagna',to:'Bulbula'},
+  {id:'r25',name:'Bulbula ↔ Bole Bridge',code:'TxBole012',from:'Bulbula',to:'Bole Bridge'},
+  {id:'r26',name:'Goro ↔ Bole Bridge',code:'TxBole009',from:'Goro',to:'Bole Bridge'},
+  {id:'r27',name:'Safari ↔ Bole Bridge',code:'TxBole010',from:'Safari',to:'Bole Bridge'},
+  {id:'r28',name:'Saris ↔ Derartu',code:'TxKal011',from:'Saris',to:'Derartu'},
+  {id:'r29',name:'Tekle Haimanot ↔ Bole Mickael',code:'TxBole015',from:'Tekle Haimanot',to:'Bole Mickael'},
+  {id:'r30',name:'Bole Mickael ↔ Autobus Tera',code:'TxBole016',from:'Bole Mickael',to:'Autobus Tera'},
+  {id:'r31',name:'Piassa Arada ↔ Bole Mickael',code:'TxBole018',from:'Piassa Arada',to:'Bole Mickael'},
+  {id:'r32',name:'Piassa Arada ↔ Bole Bridge',code:'TxBole019',from:'Piassa Arada',to:'Bole Bridge'},
+  {id:'r33',name:'Bole Bridge ↔ Autobus Tera',code:'TxBole020',from:'Bole Bridge',to:'Autobus Tera'},
+  {id:'r34',name:'Tulu Dimtu ↔ Megenagna',code:'TxBole021',from:'Tulu Dimtu',to:'Megenagna'},
+  {id:'r35',name:'Saint Georgis ↔ Megenagna',code:'TxBole022',from:'Saint Georgis',to:'Megenagna'},
+  {id:'r36',name:'Ayer Tena ↔ Hana Mariam',code:'TxLafto002',from:'Ayer Tena',to:'Hana Mariam'},
+  {id:'r37',name:'Sefera ↔ Ayer Tena',code:'TxLafto003',from:'Sefera',to:'Ayer Tena'},
+  {id:'r38',name:'Gelan Condominium ↔ Haile Garment',code:'TxLafto004',from:'Gelan Condominium',to:'Haile Garment'},
+  {id:'r39',name:'Tulu Dimtu ↔ Saris',code:'TxLafto008',from:'Tulu Dimtu',to:'Saris'},
+  {id:'r40',name:'Sefera ↔ Jemmo 1',code:'TxLafto009',from:'Sefera',to:'Jemmo 1'},
+  {id:'r41',name:'Total 3 Kuter Mazoria ↔ Kara',code:'TxLafto010',from:'Total 3 Kuter Mazoria',to:'Kara'},
+  {id:'r42',name:'Kera ↔ Autobus Tera',code:'TxLafto011',from:'Kera',to:'Autobus Tera'},
+  {id:'r43',name:'Kera ↔ Kality Total',code:'TxLafto012',from:'Kera',to:'Kality Total'},
+  {id:'r44',name:'Kality Maseltegna ↔ Jemmo 1',code:'TxLafto013',from:'Kality Maseltegna',to:'Jemmo 1'},
+  {id:'r45',name:'Piassa Arada ↔ Jemmo 1',code:'TxLafto014',from:'Piassa Arada',to:'Jemmo 1'},
+  {id:'r46',name:'Jemmo 1 ↔ Alem Gena',code:'TxLafto015',from:'Jemmo 1',to:'Alem Gena'},
+  {id:'r47',name:'Piassa Arada ↔ German Square',code:'TxLafto017',from:'Piassa Arada',to:'German Square'},
+  {id:'r48',name:'Tekle Haimanot ↔ Gofa',code:'TxLafto018',from:'Tekle Haimanot',to:'Gofa'},
+  {id:'r49',name:'Gofa ↔ Ayer Tena',code:'TxLafto021',from:'Gofa',to:'Ayer Tena'},
+  {id:'r50',name:'Alem Gena ↔ Gofa',code:'TxLafto019',from:'Alem Gena',to:'Gofa'},
+  {id:'r51',name:'Gofa ↔ Alem Bank',code:'TxLafto020',from:'Gofa',to:'Alem Bank'},
+  {id:'r52',name:'Kera ↔ German Square',code:'TxLafto022',from:'Kera',to:'German Square'},
+  {id:'r53',name:'Mexico ↔ German Square',code:'TxLafto023',from:'Mexico',to:'German Square'},
+  {id:'r54',name:'Mexico ↔ Mekanisa Abo',code:'TxLafto024',from:'Mexico',to:'Mekanisa Abo'},
+  {id:'r55',name:'Mekanisa ↔ Piassa Arada',code:'TxLafto025',from:'Mekanisa',to:'Piassa Arada'},
+  {id:'r56',name:'Sefera ↔ Mexico',code:'TxLafto026',from:'Sefera',to:'Mexico'},
+  {id:'r57',name:'Jemmo Mickael ↔ Autobus Tera',code:'TxLafto027',from:'Jemmo Mickael',to:'Autobus Tera'},
+  {id:'r58',name:'Kality Menaheria ↔ Jemmo 1',code:'TxLafto028',from:'Kality Menaheria',to:'Jemmo 1'},
+  {id:'r59',name:'Mebrathile ↔ Ayer Tena',code:'TxLafto031',from:'Mebrathile',to:'Ayer Tena'},
+  {id:'r60',name:'Mexico ↔ Mebrathile',code:'TxLafto032',from:'Mexico',to:'Mebrathile'},
+  {id:'r61',name:'Merab Hotel ↔ Alem Bank',code:'TxKolfa001',from:'Merab Hotel',to:'Alem Bank'},
+  {id:'r62',name:'Mexico ↔ Alem Bank',code:'TxKolfe003',from:'Mexico',to:'Alem Bank'},
+  {id:'r63',name:'Alem Bank ↔ Mexico Shebelle Hotel',code:'TxKolfa004',from:'Alem Bank',to:'Mexico Shebelle Hotel'},
+  {id:'r64',name:'Torhayloch ↔ Alem Bank',code:'TxKolfa005',from:'Torhayloch',to:'Alem Bank'},
+  {id:'r65',name:'Germen Square ↔ Ayer Tena',code:'TxKolfa006',from:'Germen Square',to:'Ayer Tena'},
+  {id:'r66',name:'Jemmo 1 ↔ Ayer Tena',code:'TxKolfa007',from:'Jemmo 1',to:'Ayer Tena'},
+  {id:'r67',name:'Mexico ↔ Ayer Tena',code:'TxKolfa008',from:'Mexico',to:'Ayer Tena'},
+  {id:'r68',name:'Mexico Shebelle Hotel ↔ Betel',code:'TxKolfa009',from:'Mexico Shebelle Hotel',to:'Betel'},
+  {id:'r69',name:'Zenebewerk ↔ Mexico',code:'TxKolfa015',from:'Zenebewerk',to:'Mexico'},
+  {id:'r70',name:'Alem Bank ↔ 18 Mazoria',code:'TxKolfa010',from:'Alem Bank',to:'18 Mazoria'},
+  {id:'r71',name:'Merab Hotel ↔ Ayer Tena',code:'TxKolfa011',from:'Merab Hotel',to:'Ayer Tena'},
+  {id:'r72',name:'Merab Hotel ↔ Betel',code:'TxKolfa012',from:'Merab Hotel',to:'Betel'},
+  {id:'r73',name:'Meraba Hotel ↔ Kara Kore',code:'TxKolfa013',from:'Meraba Hotel',to:'Kara Kore'},
+  {id:'r74',name:'Zenebewerk ↔ Piassa Arada',code:'TxKolfa014',from:'Zenebewerk',to:'Piassa Arada'},
+  {id:'r75',name:'Zenebewerk ↔ Mexico Shebelle Hotel',code:'TxKolfa016',from:'Zenebewerk',to:'Mexico Shebelle Hotel'},
+  {id:'r76',name:'Zenebewerk Meneharia ↔ Autobus Tera',code:'TxKolfa017',from:'Zenebewerk Meneharia',to:'Autobus Tera'},
+  {id:'r77',name:'Atena Tera ↔ Alem Bank',code:'TxKolfa018',from:'Atena Tera',to:'Alem Bank'},
+  {id:'r78',name:'Mexico Shebelle Hotel ↔ Kara Kore',code:'TxKolfa019',from:'Mexico Shebelle Hotel',to:'Kara Kore'},
+  {id:'r79',name:'Tekle Haimanot ↔ Kara Kore',code:'TxKolfa020',from:'Tekle Haimanot',to:'Kara Kore'},
+  {id:'r80',name:'Kara Kore ↔ Autobus Tera',code:'TxKolfa021',from:'Kara Kore',to:'Autobus Tera'},
+  {id:'r81',name:'Kara Kore ↔ Atena Tera',code:'TxKolfa022',from:'Kara Kore',to:'Atena Tera'},
+  {id:'r82',name:'Ayer Tena ↔ Asko',code:'TxKolfe023',from:'Ayer Tena',to:'Asko'},
+  {id:'r83',name:'Yeshi Debele ↔ Atena Tera',code:'TxKolfa024',from:'Yeshi Debele',to:'Atena Tera'},
+  {id:'r84',name:'Kara Kore ↔ 18 Mazoria',code:'TxKolfa025',from:'Kara Kore',to:'18 Mazoria'},
+  {id:'r85',name:'Yeshi Debele ↔ Sebategna',code:'TxKolfa026',from:'Yeshi Debele',to:'Sebategna'},
+  {id:'r86',name:'Yeshi Debele ↔ Winget',code:'TxKolfa027',from:'Yeshi Debele',to:'Winget'},
+  {id:'r87',name:'Yeshi Debele ↔ 18 Mazoria',code:'TxKolfa028',from:'Yeshi Debele',to:'18 Mazoria'},
+  {id:'r88',name:'Leghar ↔ Kality Total',code:'TxKal017',from:'Leghar',to:'Kality Total'},
+  {id:'r89',name:'Atena Tera ↔ Addisu Gebeya',code:'TxGl001',from:'Atena Tera',to:'Addisu Gebeya'},
+  {id:'r90',name:'Addisu Gebeya ↔ Eritrea Hotel',code:'TxGl002',from:'Addisu Gebeya',to:'Eritrea Hotel'},
+  {id:'r91',name:'Piassa ↔ Kechenie',code:'TxGl003',from:'Piassa',to:'Kechenie'},
+  {id:'r92',name:'Shegole ↔ Piassa Arada',code:'TxGl004',from:'Shegole',to:'Piassa Arada'},
+  {id:'r93',name:'Megenagna ↔ 6 Kilo',code:'TxGl005',from:'Megenagna',to:'6 Kilo'},
+  {id:'r94',name:'Kazanchis ↔ 6 Kilo',code:'TxGl007',from:'Kazanchis',to:'6 Kilo'},
+  {id:'r95',name:'Piassa ↔ Addisu Gebeya',code:'TxGl008',from:'Piassa',to:'Addisu Gebeya'},
+  {id:'r96',name:'Shiromeda ↔ Kazanchis',code:'TxGl009',from:'Shiromeda',to:'Kazanchis'},
+  {id:'r97',name:'Shiromeda ↔ Raguel Church',code:'TxGl010',from:'Shiromeda',to:'Raguel Church'},
+  {id:'r98',name:'Mexico ↔ Addisu Gebeya',code:'TxGl011',from:'Mexico',to:'Addisu Gebeya'},
+  {id:'r99',name:'Addisu Gebeya ↔ Asko',code:'TxGl012',from:'Addisu Gebeya',to:'Asko'},
+  {id:'r100',name:'Shegole ↔ Autobus Tera',code:'TxGl013',from:'Shegole',to:'Autobus Tera'},
+  {id:'r101',name:'Summit Condominiums ↔ Aba Kiros',code:'TxLK001',from:'Summit Condominiums',to:'Aba Kiros'},
+  {id:'r102',name:'Ayat ↔ Bole Arabsa',code:'TxLK002',from:'Ayat',to:'Bole Arabsa'},
+  {id:'r103',name:'Aba Kiros ↔ Bole Arabsa',code:'TxLK003',from:'Aba Kiros',to:'Bole Arabsa'},
+  {id:'r104',name:'Megenagna ↔ Summit Condominiums',code:'TxLK004',from:'Megenagna',to:'Summit Condominiums'},
+  {id:'r105',name:'Tafo Square ↔ Megenagna',code:'TxLK005',from:'Tafo Square',to:'Megenagna'},
+  {id:'r106',name:'Goro ↔ Bole Arabsa',code:'TxLK006',from:'Goro',to:'Bole Arabsa'},
+  {id:'r107',name:'22 Mazoria ↔ Ayat Chefe Condominium',code:'TxLK007',from:'22 Mazoria',to:'Ayat Chefe Condominium'},
+  {id:'r108',name:'Goro ↔ Aba Kiros',code:'TxLK008',from:'Goro',to:'Aba Kiros'},
+  {id:'r109',name:'Aba Kiros ↔ Megenagna',code:'TxLK009',from:'Aba Kiros',to:'Megenagna'},
+  {id:'r110',name:'Megenagna ↔ Ayat Chefe Condominium',code:'TxLK010',from:'Megenagna',to:'Ayat Chefe Condominium'},
+  {id:'r111',name:'Summit Condominiums ↔ Megenagna',code:'TxLK013',from:'Summit Condominiums',to:'Megenagna'},
+  {id:'r112',name:'Bole Arabsa ↔ Ayat',code:'TxLK014',from:'Bole Arabsa',to:'Ayat'},
+  {id:'r113',name:'Torhayloch ↔ Piassa Arada',code:'TxLID003',from:'Torhayloch',to:'Piassa Arada'},
+  {id:'r114',name:'Torhayloch ↔ Stadium',code:'TxLID004',from:'Torhayloch',to:'Stadium'},
+  {id:'r115',name:'Torhayloch ↔ Megenagna',code:'TxLID009',from:'Torhayloch',to:'Megenagna'},
+  {id:'r116',name:'Tekle Haimanot ↔ Megenagna',code:'TxLID010',from:'Tekle Haimanot',to:'Megenagna'},
+  {id:'r117',name:'Asko ↔ Torhayloch',code:'TxLID011',from:'Asko',to:'Torhayloch'},
+  {id:'r118',name:'Megenagna ↔ Addisu Gebeya',code:'TxYK001',from:'Megenagna',to:'Addisu Gebeya'},
+  {id:'r119',name:'Megenagna ↔ Kara',code:'TxYK004',from:'Megenagna',to:'Kara'},
+  {id:'r120',name:'Shiromeda ↔ Megenagna',code:'TxYK006',from:'Shiromeda',to:'Megenagna'},
+  {id:'r121',name:'Ferensay ↔ 4 Kilo',code:'TxYK007',from:'Ferensay',to:'4 Kilo'},
+  {id:'r122',name:'Megenagna ↔ Kality Total',code:'TxYK009',from:'Megenagna',to:'Kality Total'},
+  {id:'r123',name:'Megenagna ↔ Ayat',code:'TxYK010',from:'Megenagna',to:'Ayat'},
+  {id:'r124',name:'Megenagna ↔ Ferensay',code:'TxYK011',from:'Megenagna',to:'Ferensay'},
+  {id:'r125',name:'St. George Total ↔ Ferensay',code:'TxYK012',from:'St. George Total',to:'Ferensay'},
+  {id:'r126',name:'Raguel Church ↔ Ferensay',code:'TxYK013',from:'Raguel Church',to:'Ferensay'},
+  {id:'r127',name:'Mexico ↔ Lamberet Menaheria',code:'TxYK016',from:'Mexico',to:'Lamberet Menaheria'},
+  {id:'r128',name:'Kidane Mihret ↔ Shola Gebeya',code:'TxYK023',from:'Kidane Mihret',to:'Shola Gebeya'},
+  {id:'r129',name:'Mexico ↔ Megenagna',code:'TxKRK002',from:'Mexico',to:'Megenagna'},
+  {id:'r130',name:'Total 3 Kuter Mazoria ↔ Kera',code:'TxKRK003',from:'Total 3 Kuter Mazoria',to:'Kera'},
+  {id:'r131',name:'Kazanchis ↔ Megenagna',code:'TxKRK004',from:'Kazanchis',to:'Megenagna'},
+  {id:'r132',name:'Stadium ↔ Autobus Tera',code:'TxKRK006',from:'Stadium',to:'Autobus Tera'},
+  {id:'r133',name:'Kazanchis ↔ Bole Bridge',code:'TxKRK007',from:'Kazanchis',to:'Bole Bridge'},
+  {id:'r134',name:'Legehar ↔ Kality Total',code:'TxKRK008',from:'Legehar',to:'Kality Total'},
+  {id:'r135',name:'Wello Sefer ↔ Kera',code:'TxKRK009',from:'Wello Sefer',to:'Kera'},
+  {id:'r136',name:'Stadium ↔ Kera',code:'TxKRK011',from:'Stadium',to:'Kera'},
+  {id:'r137',name:'Shiromeda ↔ Buna Ena Shay',code:'TxKRK013',from:'Shiromeda',to:'Buna Ena Shay'},
+  {id:'r138',name:'Piassa Arada ↔ Adey Abeba',code:'TxARD002',from:'Piassa Arada',to:'Adey Abeba'},
+  {id:'r139',name:'Addisu Gebeya ↔ Piassa',code:'TxARD003',from:'Addisu Gebeya',to:'Piassa'},
+  {id:'r140',name:'Kality Total ↔ Piassa Arada',code:'TxARD004',from:'Kality Total',to:'Piassa Arada'},
+  {id:'r141',name:'Jemmo 1 ↔ Piassa Arada',code:'TxARD005',from:'Jemmo 1',to:'Piassa Arada'},
+  {id:'r142',name:'4 Kilo ↔ Megenagna',code:'TxARD007',from:'4 Kilo',to:'Megenagna'},
+  {id:'r143',name:'Piassa Arada ↔ Alem Bank',code:'TxARD006',from:'Piassa Arada',to:'Alem Bank'},
+  {id:'r144',name:'Saris ↔ Piassa Arada',code:'TxARD008',from:'Saris',to:'Piassa Arada'},
+  {id:'r145',name:'Amanuel total ↔ Merab Hotel',code:'TxADK002',from:'Amanuel total',to:'Merab Hotel'},
+  {id:'r146',name:'Asko ↔ Autobus Tera',code:'TxADK004',from:'Asko',to:'Autobus Tera'},
+  {id:'r147',name:'Menlik Hospital ↔ Autobus Tera',code:'TxADK008',from:'Menlik Hospital',to:'Autobus Tera'},
+  {id:'r148',name:'Abune Petros ↔ Asko',code:'TxADK009',from:'Abune Petros',to:'Asko'},
+  {id:'r149',name:'Alem Bank ↔ Autobus Tera',code:'TxADK011',from:'Alem Bank',to:'Autobus Tera'},
+  {id:'r150',name:'Haile Garment ↔ Autobus Tera',code:'TxADK012',from:'Haile Garment',to:'Autobus Tera'},
+  {id:'r151',name:'Shiromeda ↔ Autobus Tera',code:'TxADK013',from:'Shiromeda',to:'Autobus Tera'},
+  {id:'r152',name:'Kera ↔ Autobus Tera',code:'TxADK014',from:'Kera',to:'Autobus Tera'},
+  {id:'r153',name:'Kality Total ↔ Autobus Tera',code:'TxADK015',from:'Kality Total',to:'Autobus Tera'},
+  {id:'r154',name:'Jemmo 1 ↔ Autobus Tera',code:'TxADK016',from:'Jemmo 1',to:'Autobus Tera'},
+  {id:'r155',name:'Kechenie ↔ Eritrea Hotel',code:'TxADK017',from:'Kechenie',to:'Eritrea Hotel'},
+  {id:'r156',name:'Bole Bridge ↔ Cinema Ras',code:'TxADK020',from:'Bole Bridge',to:'Cinema Ras'},
+  {id:'r157',name:'Cinema Ras ↔ Bole Mickael',code:'TxADK021',from:'Cinema Ras',to:'Bole Mickael'},
+  {id:'r158',name:'Kera ↔ Cinema Ras',code:'TxADK022',from:'Kera',to:'Cinema Ras'},
+  {id:'r159',name:'Autobus Tera ↔ Asko',code:'TxADK026',from:'Autobus Tera',to:'Asko'},
+  {id:'r160',name:'Tekle Haimanot ↔ Alem Bank',code:'TxADK028',from:'Tekle Haimanot',to:'Alem Bank'},
+  {id:'r161',name:'Winget ↔ Torhayloch',code:'TxADK030',from:'Winget',to:'Torhayloch'},
+  {id:'r162',name:'Asco ↔ Atena Tera',code:'TxADK031',from:'Asco',to:'Atena Tera'},
+  {id:'r163',name:'Mekanisa ↔ Cinema Ras',code:'TxADK038',from:'Mekanisa',to:'Cinema Ras'},
+  {id:'r164',name:'Megenagna ↔ Cinema Ras',code:'TxADK042',from:'Megenagna',to:'Cinema Ras'},
+  {id:'r165',name:'Yeshi Debele ↔ Merab Hotel',code:'TxADK043',from:'Yeshi Debele',to:'Merab Hotel'},
+  {id:'r166',name:'Merab Hotel ↔ Mekanisa',code:'TxADK044',from:'Merab Hotel',to:'Mekanisa'},
+  {id:'r167',name:'Saris Abo ↔ Cinema Ras',code:'TxADK047',from:'Saris Abo',to:'Cinema Ras'},
+  {id:'r168',name:'Tekle Haimanot ↔ Saris Abo',code:'TxADK048',from:'Tekle Haimanot',to:'Saris Abo'},
+  {id:'r169',name:'Atena Tera ↔ Alem Bank',code:'TxADK052',from:'Atena Tera',to:'Alem Bank'},
+  {id:'r170',name:'Bole Bridge ↔ Autobus Tera',code:'TxADK053',from:'Bole Bridge',to:'Autobus Tera'},
+  {id:'r171',name:'Raguel Church ↔ Menlik Hospital',code:'TxADK058',from:'Raguel Church',to:'Menlik Hospital'},
+  {id:'r172',name:'Kality Menaheria ↔ 4 Kilo',code:'TxARD011',from:'Kality Menaheria',to:'4 Kilo'},
+  {id:'r173',name:'Piassa Arada ↔ Mekanisa',code:'TxARD012',from:'Piassa Arada',to:'Mekanisa'},
+  {id:'r174',name:'Bole Medhanialem ↔ Piassa Arada',code:'TxARD016',from:'Bole Medhanialem',to:'Piassa Arada'},
+  {id:'r175',name:'Cinema Ras ↔ Bole Medhanialem',code:'TxBole023',from:'Cinema Ras',to:'Bole Medhanialem'},
+  {id:'r176',name:'Addisu Gebeya ↔ Eritrea Hotel',code:'TxGl018',from:'Addisu Gebeya',to:'Eritrea Hotel'},
+  {id:'r177',name:'Gojam Berenda ↔ Kality Total',code:'TxKal032',from:'Gojam Berenda',to:'Kality Total'},
+  {id:'r178',name:'Lamberet Menaheria ↔ Kality Total',code:'TxKal033',from:'Lamberet Menaheria',to:'Kality Total'},
+  {id:'r179',name:'Mexico ↔ Gelan Condominium',code:'TxKal037',from:'Mexico',to:'Gelan Condominium'},
+  {id:'r180',name:'Weybla Mariam ↔ Merab Hotel',code:'TxKolfa034',from:'Weybla Mariam',to:'Merab Hotel'},
+  {id:'r181',name:'Stadium ↔ Zenebewerk',code:'TxKolfa036',from:'Stadium',to:'Zenebewerk'},
+  {id:'r182',name:'18 Mazoria ↔ 22 Mazoria',code:'TxKolfa037',from:'18 Mazoria',to:'22 Mazoria'},
+  {id:'r183',name:'Saris ↔ Stadium',code:'TxKRK014',from:'Saris',to:'Stadium'},
+  {id:'r184',name:'Saris Abo ↔ Mexico',code:'TxKRK015',from:'Saris Abo',to:'Mexico'},
+  {id:'r185',name:'Piassa Arada ↔ Kera',code:'TxKRK016',from:'Piassa Arada',to:'Kera'},
+  {id:'r186',name:'Stadium ↔ Bole Bridge',code:'TxKRK017',from:'Stadium',to:'Bole Bridge'},
+  {id:'r187',name:'Bole Mickael ↔ Buna Ena Shay',code:'TxKRK020',from:'Bole Mickael',to:'Buna Ena Shay'},
+  {id:'r188',name:'Merab Hotel ↔ Jemmo 1',code:'TxLafto034',from:'Merab Hotel',to:'Jemmo 1'},
+  {id:'r189',name:'Gofa Gebriel ↔ Atena Tera',code:'TxLafto042',from:'Gofa Gebriel',to:'Atena Tera'},
+  {id:'r190',name:'Ayat ↔ Megenagna',code:'TxLK016',from:'Ayat',to:'Megenagna'},
+  {id:'r191',name:'Merkato ↔ Lukanda',code:'TxADK039',from:'Merkato',to:'Lukanda'},
+  {id:'r192',name:'Tero Mosque ↔ Merkato',code:'TxADK040',from:'Tero Mosque',to:'Merkato'},
+  {id:'r193',name:'Sebategna ↔ Luwkanda',code:'TxADK045',from:'Sebategna',to:'Luwkanda'},
+  {id:'r194',name:'Luwkanda ↔ Piassa Arada',code:'TxARD013',from:'Luwkanda',to:'Piassa Arada'},
+  {id:'r195',name:'Rufael ↔ Piassa Arada',code:'TxGl015',from:'Rufael',to:'Piassa Arada'},
+  {id:'r196',name:'Piassa Arada ↔ Selefia Mosque',code:'TxKolfe035',from:'Piassa Arada',to:'Selefia Mosque'},
+  {id:'r197',name:'Piassa Arada ↔ 18 Mazoria',code:'TxKolfa042',from:'Piassa Arada',to:'18 Mazoria'},
+  {id:'r198',name:'Saris ↔ Akaki Gebeya',code:'TxLafto038',from:'Saris',to:'Akaki Gebeya'},
+  {id:'r199',name:'Akaki Gebeya ↔ Adey Abeba',code:'TxLafto039',from:'Akaki Gebeya',to:'Adey Abeba'},
+  {id:'r200',name:'Lafto ↔ Jemmo 1',code:'TxLafto040',from:'Lafto',to:'Jemmo 1'},
+  {id:'r201',name:'Saris ↔ Yeshi Total',code:'TxLafto043',from:'Saris',to:'Yeshi Total'},
+  {id:'r202',name:'Kotebe Gebriel ↔ Megenagna',code:'TxYK002',from:'Kotebe Gebriel',to:'Megenagna'},
+  {id:'r203',name:'Kotebe ↔ 4 Kilo',code:'TxYK008',from:'Kotebe',to:'4 Kilo'},
+  {id:'r204',name:'Yeka Abado ↔ Megenagna',code:'TxYK014',from:'Yeka Abado',to:'Megenagna'},
+  {id:'r205',name:'22 Mazoria ↔ Summit',code:'TxBole007',from:'22 Mazoria',to:'Summit'},
+  {id:'r206',name:'Summit ↔ Bole Bridge',code:'TxBole008',from:'Summit',to:'Bole Bridge'},
+  {id:'r207',name:'Riventy ↔ Bole Mickael',code:'TxBole017',from:'Riventy',to:'Bole Mickael'},
+  {id:'r208',name:'Lomi Meda ↔ Atena Tera',code:'TxADK005',from:'Lomi Meda',to:'Atena Tera'},
+  {id:'r209',name:'Atena Tera ↔ Sebategna',code:'TxADK006',from:'Atena Tera',to:'Sebategna'},
+  {id:'r210',name:'Saris ↔ Autobus Tera',code:'TxADK024',from:'Saris',to:'Autobus Tera'},
+  {id:'r211',name:'Tourist Hotel ↔ Autobus Tera',code:'TxADK023',from:'Tourist Hotel',to:'Autobus Tera'},
+  {id:'r212',name:'Mesalemia ↔ Coca Cola',code:'TxADK035',from:'Mesalemia',to:'Coca Cola'},
+  {id:'r213',name:'Asko ↔ Piassa Arada',code:'TxADK037',from:'Asko',to:'Piassa Arada'},
+  {id:'r214',name:'Tikur Anbesa ↔ Tero Mosque',code:'TxADK055',from:'Tikur Anbesa',to:'Tero Mosque'},
+  {id:'r215',name:'Raguel Church ↔ Megenagna',code:'TxADK057',from:'Raguel Church',to:'Megenagna'},
+  {id:'r216',name:'Piassa ↔ Megenagna',code:'TxARD001',from:'Piassa',to:'Megenagna'},
+  {id:'r217',name:'Ambasader ↔ Tourist Hotel',code:'TxARD009',from:'Ambasader',to:'Tourist Hotel'},
+  {id:'r218',name:'Shiromeda ↔ Addisu Gebeya',code:'TxGl006',from:'Shiromeda',to:'Addisu Gebeya'},
+  {id:'r219',name:'Selam Building ↔ Saris',code:'TxKal021',from:'Selam Building',to:'Saris'},
+  {id:'r220',name:'Saris Abo ↔ Kality Total',code:'TxKal022',from:'Saris Abo',to:'Kality Total'},
+  {id:'r221',name:'Gelan Condominium ↔ Saris',code:'TxKal023',from:'Gelan Condominium',to:'Saris'},
+  {id:'r222',name:'Bulbula ↔ Saris',code:'TxKal027',from:'Bulbula',to:'Saris'},
+  {id:'r223',name:'Gelan Condominium ↔ Akaki Gebeya',code:'TxKal008',from:'Gelan Condominium',to:'Akaki Gebeya'},
+  {id:'r224',name:'Akaki Gebeya ↔ Sefera Square',code:'TxKal009',from:'Akaki Gebeya',to:'Sefera Square'},
+  {id:'r225',name:'Akaki Gebeya ↔ Saris Abo',code:'TxKal030',from:'Akaki Gebeya',to:'Saris Abo'},
+  {id:'r226',name:'Saris Abo ↔ Akaki CBE',code:'TxKal034',from:'Saris Abo',to:'Akaki CBE'},
+  {id:'r227',name:'Merkato ↔ Akaki Gebeya',code:'TxKal035',from:'Merkato',to:'Akaki Gebeya'},
+  {id:'r228',name:'Lafto ↔ Mexico',code:'TxKRK001',from:'Lafto',to:'Mexico'},
+  {id:'r229',name:'Bole Bridge ↔ Mexico',code:'TxKRK012',from:'Bole Bridge',to:'Mexico'},
+  {id:'r230',name:'Woyira Sefer ↔ Mexico Shebelle Hotel',code:'TxKolfa031',from:'Woyira Sefer',to:'Mexico Shebelle Hotel'},
+  {id:'r231',name:'Selefia Mosque ↔ Merab Hotel',code:'TxKolfa033',from:'Selefia Mosque',to:'Merab Hotel'},
+  {id:'r232',name:'Zenebewerk ↔ Asko',code:'TxKolfa038',from:'Zenebewerk',to:'Asko'},
+  {id:'r233',name:'Kara Kore ↔ Piassa Arada',code:'TxKolfa041',from:'Kara Kore',to:'Piassa Arada'},
+  {id:'r234',name:'Gofa Gebriel ↔ Adey Abeba',code:'TxLafto001',from:'Gofa Gebriel',to:'Adey Abeba'},
+  {id:'r235',name:'Jemmo 1 ↔ Cinema Ras',code:'TxLafto016',from:'Jemmo 1',to:'Cinema Ras'},
+  {id:'r236',name:'Mexico Shebelle Hotel ↔ Lafto',code:'TxLafto030',from:'Mexico Shebelle Hotel',to:'Lafto'},
+  {id:'r237',name:'Kera ↔ Tafo Square',code:'TxLK012',from:'Kera',to:'Tafo Square'},
+  {id:'r238',name:'Abenet ↔ Weleta',code:'TxLID002',from:'Abenet',to:'Weleta'},
+  {id:'r239',name:'Torhayloch ↔ Alem Gena',code:'TxLID005',from:'Torhayloch',to:'Alem Gena'},
+  {id:'r240',name:'Weleta ↔ Mexico',code:'TxLID007',from:'Weleta',to:'Mexico'},
+  {id:'r241',name:'Mexico ↔ Amanuel Church',code:'TxLID008',from:'Mexico',to:'Amanuel Church'},
+  {id:'r242',name:'Alem Gena ↔ Abenet',code:'TxLID013',from:'Alem Gena',to:'Abenet'},
+  {id:'r243',name:'Raguel Church ↔ Megenagna',code:'TxYK017',from:'Raguel Church',to:'Megenagna'},
+  {id:'r244',name:'Autobus Tera ↔ Lamberet Menaheria',code:'TxYK019',from:'Autobus Tera',to:'Lamberet Menaheria'},
+  {id:'r245',name:'Shola ↔ Piassa Arada',code:'TxYK021',from:'Shola',to:'Piassa Arada'},
+  {id:'r246',name:'Mexico ↔ Hana Mariam',code:'TxLafto006',from:'Mexico',to:'Hana Mariam'},
+  {id:'r247',name:'Mexico ↔ Haile Garment',code:'TxLafto007',from:'Mexico',to:'Haile Garment'},
+  {id:'r248',name:'Yeshi Debele ↔ Ayer Tena',code:'Kolfe042',from:'Yeshi Debele',to:'Ayer Tena'},
+  {id:'r249',name:'Goro ↔ Abem Mebrat',code:'LK015',from:'Goro',to:'Abem Mebrat'},
+  {id:'r250',name:'Megenagna ↔ Hana Mariam',code:'Lafto044',from:'Megenagna',to:'Hana Mariam'},
+  {id:'r251',name:'Kality Total ↔ Hana Mariam',code:'Lafto045',from:'Kality Total',to:'Hana Mariam'},
+  {id:'r252',name:'Lafto ↔ Gofa Gebriel',code:'TxKRK',from:'Lafto',to:'Gofa Gebriel'},
+  {id:'r253',name:'Saris Abo ↔ Mariam Condominium',code:'TxKal',from:'Saris Abo',to:'Mariam Condominium'},
+  {id:'r254',name:'Kazanchis ↔ Abuare Roundabout',code:'Tx002',from:'Kazanchis',to:'Abuare Roundabout'},
+  {id:'r255',name:'Kazanchis ↔ Balderas',code:'Tx001',from:'Kazanchis',to:'Balderas'},
+  {id:'r256',name:'Winget ↔ Kechenie',code:'Tx005',from:'Winget',to:'Kechenie'},
+  {id:'r257',name:'Mexico ↔ Kazanchis',code:'Tx004',from:'Mexico',to:'Kazanchis'},
+  {id:'r258',name:'Kela ↔ Asko',code:'Tx003',from:'Kela',to:'Asko'},
+  {id:'r259',name:'Medhanalem ↔ Autobus Tera',code:'Tx007',from:'Medhanalem',to:'Autobus Tera'},
+  {id:'r260',name:'Torhayloch ↔ Atena Tera',code:'Tx006',from:'Torhayloch',to:'Atena Tera'},
+  {id:'r261',name:'Tikur Anbesa ↔ Autobus Tera',code:'Tx008',from:'Tikur Anbesa',to:'Autobus Tera'},
+  {id:'r262',name:'Jemmo 1 ↔ Gofa Gebriel',code:'Tx009',from:'Jemmo 1',to:'Gofa Gebriel'},
+  {id:'r263',name:'Ayer Tena ↔ Haile Garment',code:'Tx010',from:'Ayer Tena',to:'Haile Garment'}
 ];
 
-// ═══ STATE ═══
-let map=null, uMarker=null, uLat=9.0222, uLng=38.7469;
-let filt='all', cur=null, curRoute=null, panelOpen=false;
-let lang=localStorage.getItem('ttLang')||'en';
-let favs=JSON.parse(localStorage.getItem('ttFavs')||'[]');
-let rLines=[], routeMapLines=[], routeMapDots=[];
+// ════════════ STATE ════════════
+var map = null, uMarker = null;
+var uLat = 9.0222, uLng = 38.7469;
+var filt = 'all', activeTab = 'stations';
+var cur = null, panelOpen = false;
+var lang = localStorage.getItem('ttLang') || 'en';
+var favs = JSON.parse(localStorage.getItem('ttFavs') || '[]');
+var walkLines = [], routeLines = [], routePins = [];
+var sTimer = null, rq = '';
 
-const t=k=>TR[lang][k]||k;
-const $=id=>document.getElementById(id);
-
-// ═══ BOOT ═══
-window.addEventListener('load',()=>{
-  applyLang();
-  // Short splash then init — ROUTE_MAP built after map loads
-  setTimeout(()=>{
-    $('splash').classList.add('hide');
-    setTimeout(()=>{
-      $('splash').style.display='none';
-      if(typeof L==='undefined'){showMapErr();return;}
-      // Build FROM-only lookup after splash gone
-      ROUTES.forEach(r=>{
-        if(!ROUTE_MAP[r.from]) ROUTE_MAP[r.from]=[];
-        ROUTE_MAP[r.from].push(r);
-      });
-      initMap(); getLocation();
-    },500);
-  },1800);
+// Build FROM lookup: place → routes that start there
+var FROM_MAP = {};
+ROUTES.forEach(function(r) {
+  if (!FROM_MAP[r.from]) FROM_MAP[r.from] = [];
+  FROM_MAP[r.from].push(r);
 });
 
-function showMapErr(){
-  $('map').innerHTML='<div class="empty" style="height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;color:var(--tx)">Map failed to load</p><p>Check your connection</p><button onclick="location.reload()" style="margin-top:8px;padding:13px 26px;background:var(--p);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(8,145,178,.4)">🔄 Reload</button></div>';
-  renderList(); panelOpen=false; togglePanel();
+var t = function(k) { return TR[lang][k] || k; };
+var $ = function(id) { return document.getElementById(id); };
+
+// ════════════ BOOT ════════════
+window.addEventListener('load', function() {
+  applyLang();
+  setTimeout(function() {
+    $('splash').classList.add('hide');
+    setTimeout(function() {
+      $('splash').style.display = 'none';
+      if (typeof L === 'undefined') {
+        showMapErr();
+        return;
+      }
+      initMap();
+      getLocation();
+    }, 500);
+  }, 1800);
+});
+
+function showMapErr() {
+  $('map').innerHTML = '<div class="empty" style="height:100%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p style="font-size:15px;font-weight:600;color:var(--tx)">Map failed to load</p><p>Check your connection</p><button onclick="location.reload()" style="margin-top:10px;padding:13px 24px;background:var(--p);color:#fff;border:none;border-radius:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">🔄 Reload</button></div>';
+  renderList();
+  panelOpen = false;
+  togglePanel();
 }
 
-// ═══ LANGUAGE ═══
-function setLang(l){
-  lang=l; localStorage.setItem('ttLang',l);
-  $('btnEN').classList.toggle('on',l==='en');
-  $('btnAM').classList.toggle('on',l==='am');
-  applyLang(); renderList();
-  if(cur)refreshDLabels();
-  showToast(l==='am'?'🇪🇹 አማርኛ ተቀናብሯል':'🇬🇧 English set');
-}
-function applyLang(){
-  const L=TR[lang];
-  const si=$('sInput'); if(si)si.placeholder=L.ph;
-  const ss=$('spSub');  if(ss)ss.textContent=L.spSub;
-  document.querySelectorAll('.ct').forEach(el=>{const k=el.dataset.k;if(L[k])el.textContent=L[k];});
-  const ids={lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route',lTagline:'tagline',lLang:'langSwitch'};
-  Object.entries(ids).forEach(([id,k])=>{const el=$(id);if(el&&L[k])el.textContent=L[k];});
+// ════════════ LANGUAGE ════════════
+function setLang(l) {
+  lang = l;
+  localStorage.setItem('ttLang', l);
+  $('btnEN').classList.toggle('on', l === 'en');
+  $('btnAM').classList.toggle('on', l === 'am');
+  applyLang();
+  renderList();
+  showToast(l === 'am' ? '🇪🇹 አማርኛ ተቀናብሯል' : '🇬🇧 English set');
 }
 
-// ═══ MAP INIT ═══
-function initMap(){
-  map=L.map('map',{zoomControl:false,attributionControl:true}).setView([uLat,uLng],13);
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',{
-    attribution:'© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains:'abcd',maxZoom:19
+function applyLang() {
+  var L = TR[lang];
+  var si = $('sInput'); if (si) si.placeholder = L.ph;
+  var ss = $('spSub'); if (ss) ss.textContent = L.spSub;
+  document.querySelectorAll('.ct').forEach(function(el) {
+    var k = el.getAttribute('data-k');
+    if (L[k]) el.textContent = L[k];
+  });
+  var lt = $('lTagline'); if (lt) lt.textContent = L.tagline;
+  var ll = $('lLang');    if (ll) ll.textContent = L.langSwitch;
+  var pt = $('pTitle');   if (pt) pt.textContent = L.nearTitle;
+}
+
+// ════════════ MAP INIT ════════════
+function initMap() {
+  map = L.map('map', { zoomControl: false, attributionControl: true })
+         .setView([uLat, uLng], 14);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    attribution: '© <a href="https://openstreetmap.org/copyright">OSM</a> © <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd', maxZoom: 19
   }).addTo(map);
-  const uIcon=L.divIcon({html:'<div class="u-dot"></div>',className:'',iconSize:[18,18],iconAnchor:[9,9]});
-  uMarker=L.marker([uLat,uLng],{icon:uIcon,zIndexOffset:1000}).addTo(map);
-  renderMarkers(); renderList();
-  setTimeout(()=>{panelOpen=false;togglePanel();},700);
+  var uIcon = L.divIcon({ html: '<div class="u-dot"></div>', className: '', iconSize: [16, 16], iconAnchor: [8, 8] });
+  uMarker = L.marker([uLat, uLng], { icon: uIcon, zIndexOffset: 1000 }).addTo(map);
+  renderMarkers();
+  renderList();
+  setTimeout(function() { panelOpen = false; togglePanel(); }, 700);
 }
 
-// ═══ GEOLOCATION ═══
-function getLocation(){
-  if(!navigator.geolocation){showToast(t('locFail'));return;}
-  navigator.geolocation.getCurrentPosition(pos=>{
-    uLat=pos.coords.latitude; uLng=pos.coords.longitude;
-    if(uMarker)uMarker.setLatLng([uLat,uLng]);
-    if(map)map.flyTo([uLat,uLng],14,{duration:1.4});
-    renderList(); renderMarkers(); showToast(t('locOk'));
-  },()=>showToast(t('locFail')));
-}
-function locateMe(){
-  const fab=$('fab'); fab.classList.add('spinning');
-  navigator.geolocation?.getCurrentPosition(pos=>{
-    uLat=pos.coords.latitude; uLng=pos.coords.longitude;
-    if(uMarker)uMarker.setLatLng([uLat,uLng]);
-    if(map)map.flyTo([uLat,uLng],14,{duration:1});
-    renderList(); renderMarkers(); fab.classList.remove('spinning'); showToast(t('locOk'));
-  },()=>{fab.classList.remove('spinning');showToast(t('locFail'));});
+// ════════════ GEOLOCATION ════════════
+function getLocation() {
+  if (!navigator.geolocation) { showToast(t('locFail')); return; }
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      uLat = pos.coords.latitude;
+      uLng = pos.coords.longitude;
+      if (uMarker) uMarker.setLatLng([uLat, uLng]);
+      if (map) map.flyTo([uLat, uLng], 15, { duration: 1.4 });
+      renderList();
+      renderMarkers();
+      showToast(t('locOk'));
+    },
+    function() { showToast(t('locFail')); }
+  );
 }
 
-// ═══ HELPERS ═══
-function hvs(a,b,c,d){const R=6371e3,f1=a*Math.PI/180,f2=c*Math.PI/180,df=(c-a)*Math.PI/180,dl=(d-b)*Math.PI/180,x=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-function fmtD(m){return m<1000?Math.round(m)+'m':((m/1000).toFixed(1))+'km';}
-function fmtW(m){const mn=Math.round(m/80);return mn<1?'<1 min':mn+' min';}
-function fmtT(s){const m=Math.round(s/60);if(m<1)return '<1 min';if(m<60)return m+' min';return Math.floor(m/60)+'h '+m%60+'m';}
+function locateMe() {
+  var f = $('fab');
+  f.classList.add('spinning');
+  navigator.geolocation.getCurrentPosition(
+    function(pos) {
+      uLat = pos.coords.latitude;
+      uLng = pos.coords.longitude;
+      if (uMarker) uMarker.setLatLng([uLat, uLng]);
+      if (map) map.flyTo([uLat, uLng], 15, { duration: 1 });
+      renderList(); renderMarkers();
+      f.classList.remove('spinning');
+      showToast(t('locOk'));
+    },
+    function() { f.classList.remove('spinning'); showToast(t('locFail')); }
+  );
+}
 
-// ═══ MARKERS ═══
-let ROUTE_MAP = {};
+// ════════════ HELPERS ════════════
+function hvs(a, b, c, d) {
+  var R = 6371e3, f1 = a * Math.PI / 180, f2 = c * Math.PI / 180,
+      df = (c - a) * Math.PI / 180, dl = (d - b) * Math.PI / 180,
+      x = Math.sin(df/2)*Math.sin(df/2) + Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)*Math.sin(dl/2);
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+}
+function fmtD(m) { return m < 1000 ? Math.round(m) + 'm' : (m/1000).toFixed(1) + 'km'; }
+function fmtW(m) { var mn = Math.round(m / 80); return mn < 1 ? '<1 min' : mn + ' min'; }
+function fmtT(s) { var m = Math.round(s / 60); if (m < 1) return '<1 min'; if (m < 60) return m + ' min'; return Math.floor(m/60) + 'h ' + m%60 + 'm'; }
+function gc(name) { return COORDS[name] || null; }
 
-function renderMarkers(){
-  if(!map)return;
-  map.eachLayer(l=>{if(l._tt)map.removeLayer(l);});
-  clearRouteMapLines();
+// ════════════ MARKERS ════════════
+var TM = {
+  minibus: { emoji: '🚌', label: 'Minibus', am: 'ሚኒባስ' },
+  bajaj:   { emoji: '🛺', label: 'Bajaj',   am: 'ባጃጅ' },
+  ride:    { emoji: '🚗', label: 'Ride',    am: 'ሪድ'  }
+};
 
-  // Route START markers — one per unique FROM location
-  if(filt==='all'||filt==='routes'){
-    Object.entries(ROUTE_MAP).forEach(([place,routes])=>{
-      const coord=LOCS[place];
-      if(!coord)return;
-      const icon=L.divIcon({
-        html:`<div class="bs-pin"><span>🚌</span></div>`,
-        className:'',iconSize:[28,28],iconAnchor:[14,28]
-      });
-      const m=L.marker(coord,{icon,zIndexOffset:100}).addTo(map);
-      m._tt=true;
-      m.on('click',()=>openStopRoutes(place,routes,coord));
+function renderMarkers() {
+  if (!map) return;
+  // Remove only our custom markers
+  map.eachLayer(function(l) { if (l._tt) map.removeLayer(l); });
+
+  // 1. Route FROM markers — small bus pins at each unique start location
+  Object.keys(FROM_MAP).forEach(function(place) {
+    var coord = gc(place);
+    if (!coord) return;
+    var routes = FROM_MAP[place];
+    var icon = L.divIcon({
+      html: '<div class="rt-pin"><span>🚌</span></div>',
+      className: '', iconSize: [30, 30], iconAnchor: [15, 30]
     });
-  }
+    var m = L.marker(coord, { icon: icon, zIndexOffset: 100 }).addTo(map);
+    m._tt = true;
+    // closure to capture place and routes
+    (function(p, rs) {
+      m.on('click', function() { openStopPanel(p, rs); });
+    })(place, routes);
+  });
 
-  // Station markers on top
-  if(filt!=='routes'){
-    getFiltered().forEach(s=>{
-      const icon=L.divIcon({
-        html:`<div class="tm"><div class="tmd ${s.t}"><span>${TM[s.t].emoji}</span></div></div>`,
-        className:'',iconSize:[38,38],iconAnchor:[19,38]
-      });
-      const m=L.marker([s.lat,s.lng],{icon,zIndexOffset:500}).addTo(map);
-      m._tt=true; m.on('click',()=>openDetail(s));
+  // 2. Station markers on top (larger, colored diamonds)
+  getFiltered().forEach(function(s) {
+    var icon = L.divIcon({
+      html: '<div class="stn-pin"><div class="stn-dot ' + s.t + '"><span>' + TM[s.t].emoji + '</span></div></div>',
+      className: '', iconSize: [40, 40], iconAnchor: [20, 40]
     });
+    var m = L.marker([s.lat, s.lng], { icon: icon, zIndexOffset: 500 }).addTo(map);
+    m._tt = true;
+    (function(station) {
+      m.on('click', function() { openDetail(station); });
+    })(s);
+  });
+}
+
+// ════════════ FILTER ════════════
+function getFiltered() {
+  var list = ST.slice();
+  if (filt === 'favorites') list = list.filter(function(s) { return favs.indexOf(s.id) >= 0; });
+  else if (filt !== 'all')  list = list.filter(function(s) { return s.t === filt; });
+  return list.sort(function(a, b) { return hvs(uLat, uLng, a.lat, a.lng) - hvs(uLat, uLng, b.lat, b.lng); });
+}
+
+function setFilter(f) {
+  filt = f;
+  document.querySelectorAll('.chip').forEach(function(c) { c.classList.remove('on'); });
+  var chip = document.querySelector('.chip[data-f="' + f + '"]');
+  if (chip) chip.classList.add('on');
+  renderMarkers();
+  renderList();
+  if (!panelOpen) togglePanel();
+}
+
+// ════════════ PANEL TABS ════════════
+function switchTab(tab) {
+  activeTab = tab;
+  $('tabSt').classList.toggle('on', tab === 'stations');
+  $('tabRt').classList.toggle('on', tab === 'routes');
+  $('sList').style.display = tab === 'stations' ? 'flex' : 'none';
+  $('rList').style.display = tab === 'routes'   ? 'flex' : 'none';
+  if (tab === 'routes') renderRouteList('');
+  else renderList();
+}
+
+// ════════════ STATION LIST ════════════
+var DAYS_EN = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var DAYS_AM = ['ሰኞ','ማክሰኞ','ረቡዕ','ሐሙስ','አርብ','ቅዳሜ','እሁድ'];
+
+function renderList() {
+  var list = getFiltered();
+  var el = $('sList');
+  $('pCount').textContent = list.length + ' ' + t('found');
+  $('pTitle').textContent = filt === 'favorites' ? t('saved') : t('nearTitle');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>' + t('noSt') + '</p></div>';
+    return;
   }
-}
-
-// ═══ ROUTE LINE ON MAP ═══
-function drawRouteOnMap(r){
-  clearRouteMapLines();
-  const fc=LOCS[r.from], tc=LOCS[r.to];
-  if(!fc||!tc){showToast('⚠️ Location not found');return;}
-
-  // Glow halo
-  const l0=L.polyline([fc,tc],{color:'rgba(8,145,178,.15)',weight:18,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(map);
-  // Main line
-  const l1=L.polyline([fc,tc],{color:'#0891B2',weight:5,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
-  // Dashed shimmer
-  const l2=L.polyline([fc,tc],{color:'#fff',weight:2,opacity:.5,dashArray:'8 12',lineCap:'round'}).addTo(map);
-
-  // From dot (cyan)
-  const fromDot=L.divIcon({html:'<div class="rdot"></div>',className:'',iconSize:[10,10],iconAnchor:[5,5]});
-  const d1=L.marker(fc,{icon:fromDot,zIndexOffset:900}).addTo(map);
-  // To dot (amber)
-  const toDot=L.divIcon({html:'<div class="rdot end"></div>',className:'',iconSize:[10,10],iconAnchor:[5,5]});
-  const d2=L.marker(tc,{icon:toDot,zIndexOffset:900}).addTo(map);
-
-  routeMapLines=[l0,l1,l2];
-  routeMapDots=[d1,d2];
-
-  // Zoom to fit route
-  map.fitBounds([fc,tc],{padding:[80,80],maxZoom:15});
-  // Show dist in panel
-  const distM=hvs(fc[0],fc[1],tc[0],tc[1]);
-  $('rdDist').textContent=fmtD(distM);
-}
-
-// ═══ STOP ROUTES PANEL ═══
-function openStopRoutes(place, routes, coord){
-  closeStopPanel();
-  if(panelOpen) togglePanel();
-
-  $('spPlace').textContent = place;
-  $('spSubTxt').textContent = routes.length + ' route' + (routes.length>1?'s':'') + ' from this stop';
-
-  $('spRoutes').innerHTML = routes.map(r=>{
-    const dest = r.from===place ? r.to : r.from;
-    return `<div class="sp-route-row" onclick="drawRouteFromStop('${r.id}')">
-      <div class="sp-route-ico">🚌</div>
-      <div class="sp-route-info">
-        <div class="sp-route-name">${r.name}</div>
-        <div class="sp-route-sub">→ ${dest}</div>
-      </div>
-      <div class="sp-route-code">${r.code}</div>
-      <button class="sp-go" onclick="event.stopPropagation();drawRouteFromStop('${r.id}')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      </button>
-    </div>`;
+  el.innerHTML = list.map(function(s, i) {
+    var d = hvs(uLat, uLng, s.lat, s.lng);
+    var nm = lang === 'am' ? s.am : s.name;
+    var lbl = lang === 'am' ? TM[s.t].am : TM[s.t].label;
+    return '<div class="s-card" style="animation-delay:' + (i * 0.04) + 's" onclick="openDetail(ST[' + (i) + '])">' +
+      '<div class="s-ico ' + s.t + '">' + TM[s.t].emoji + '</div>' +
+      '<div class="s-info"><div class="s-name">' + nm + '</div><div class="s-meta">📍 ' + fmtD(d) + '  🚶 ' + fmtW(d) + '  ⭐ ' + s.rat + '</div></div>' +
+      '<div class="s-badge ' + s.t + '">' + lbl + '</div>' +
+      '<button class="go-btn" onclick="event.stopPropagation();flyToStation(' + s.id + ')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button></div>';
   }).join('');
+  // Fix: openDetail by id not index
+  el.querySelectorAll('.s-card').forEach(function(card, i) {
+    var sid = list[i].id;
+    card.onclick = function() { openDetail(ST.find(function(s) { return s.id === sid; })); };
+  });
+}
 
-  // Pan map to this stop
-  if(map && coord) map.flyTo(coord, 15, {duration:.7});
+// ════════════ ROUTE LIST ════════════
+function renderRouteList(q) {
+  var el = $('rList');
+  var query = (q || '').toLowerCase();
+  var list = query
+    ? ROUTES.filter(function(r) { return r.name.toLowerCase().indexOf(query) >= 0 || r.code.toLowerCase().indexOf(query) >= 0 || r.from.toLowerCase().indexOf(query) >= 0 || r.to.toLowerCase().indexOf(query) >= 0; })
+    : ROUTES;
+  $('pTitle').textContent = '🚌 Minibus Routes';
+  $('pCount').textContent = list.length + ' routes';
+  if (!list.length) {
+    el.innerHTML = '<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>' + t('noMatch') + '</p></div>';
+    return;
+  }
+  el.innerHTML = list.slice(0, 150).map(function(r, i) {
+    return '<div class="r-card" style="animation-delay:' + (Math.min(i, 20) * 0.03) + 's" onclick="drawRoute(\'' + r.id + '\')">' +
+      '<div class="r-ico">🚌</div>' +
+      '<div class="r-info"><div class="r-name">' + r.name + '</div><div class="r-sub">' + r.from + ' → ' + r.to + '</div></div>' +
+      '<div class="r-code">' + r.code + '</div>' +
+      '<button class="r-show-btn" onclick="event.stopPropagation();drawRoute(\'' + r.id + '\')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button></div>';
+  }).join('');
+}
+
+// ════════════ PANEL TOGGLE ════════════
+function togglePanel() {
+  panelOpen = !panelOpen;
+  $('panel').classList.toggle('collapsed', !panelOpen);
+  $('fab').style.bottom = panelOpen ? '230px' : '110px';
+}
+
+// ════════════ STOP PANEL (tap route marker on map) ════════════
+function openStopPanel(place, routes) {
+  $('sphName').textContent = place;
+  $('sphSub').textContent  = routes.length + ' route' + (routes.length > 1 ? 's' : '') + ' from here';
+  $('spList').innerHTML = routes.map(function(r) {
+    return '<div class="sp-row" onclick="drawRoute(\'' + r.id + '\')">' +
+      '<div class="sp-row-ico">🚌</div>' +
+      '<div class="sp-row-info"><div class="sp-row-name">' + r.name + '</div><div class="sp-row-dest">→ ' + r.to + '</div></div>' +
+      '<div class="sp-row-code">' + r.code + '</div>' +
+      '<button class="sp-show-btn" onclick="event.stopPropagation();drawRoute(\'' + r.id + '\')">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button></div>';
+  }).join('');
+  if (panelOpen) togglePanel();
   $('stopPanel').classList.add('on');
+  var coord = gc(place);
+  if (map && coord) map.flyTo(coord, 15, { duration: 0.7 });
 }
 
-function closeStopPanel(){
+function closeStopPanel() {
   $('stopPanel').classList.remove('on');
-  clearRouteMapLines();
 }
 
-function drawRouteFromStop(routeId){
-  const r = ROUTES.find(x=>x.id===routeId);
-  if(!r) return;
-  curRoute = r;
-  drawRouteOnMap(r);
+// ════════════ DRAW ROUTE ON MAP ════════════
+function drawRoute(routeId) {
+  var r = ROUTES.find(function(x) { return x.id === routeId; });
+  if (!r) return;
+  closeStopPanel();
+  clearRoute();
+
+  var fromC = gc(r.from);
+  var toC   = gc(r.to);
+  if (!fromC && !toC) { showToast('📍 Location not mapped yet'); return; }
+
+  if (panelOpen) togglePanel();
+
+  // From marker
+  if (fromC) {
+    var fi = L.divIcon({
+      html: '<div style="width:36px;height:36px;background:var(--amb);border-radius:50% 50% 50% 5px;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 14px rgba(245,158,11,.6);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:16px">🚌</span></div>',
+      className: '', iconSize: [36, 36], iconAnchor: [18, 36]
+    });
+    var fm = L.marker(fromC, { icon: fi }).addTo(map);
+    fm.bindTooltip('<b>' + r.from + '</b>', { direction: 'top' });
+    routePins.push(fm);
+  }
+  // To marker
+  if (toC) {
+    var ti = L.divIcon({
+      html: '<div style="width:32px;height:32px;background:var(--red);border-radius:50%;border:3px solid #fff;box-shadow:0 4px 12px rgba(239,68,68,.55);display:flex;align-items:center;justify-content:center;font-size:14px">📍</div>',
+      className: '', iconSize: [32, 32], iconAnchor: [16, 16]
+    });
+    var tm = L.marker(toC, { icon: ti }).addTo(map);
+    tm.bindTooltip('<b>' + r.to + '</b>', { direction: 'top' });
+    routePins.push(tm);
+  }
+
+  // Draw line
+  if (fromC && toC) {
+    var pts = [fromC, toC];
+    var lg = L.polyline(pts, { color: 'rgba(245,158,11,.2)', weight: 16, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+    var ll = L.polyline(pts, { color: '#F59E0B', weight: 5, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+    var ld = L.polyline(pts, { color: '#fff', weight: 2, opacity: 0.5, dashArray: '8 11', lineCap: 'round' }).addTo(map);
+    routeLines = [lg, ll, ld];
+    map.fitBounds(pts, { padding: [70, 80], maxZoom: 15 });
+  } else {
+    map.flyTo(fromC || toC, 15, { duration: 0.8 });
+  }
+
+  // Show info bar
+  $('rbCode').textContent = r.code;
+  $('rbName').textContent = r.name;
+  $('rbFrom').textContent = r.from;
+  $('rbTo').textContent   = r.to;
+  $('routeBar').classList.add('on');
   showToast('🚌 ' + r.name);
 }
 
-
-  [...routeMapLines,...routeMapDots].forEach(l=>{if(map)map.removeLayer(l);});
-  routeMapLines=[]; routeMapDots=[];
+function clearRoute() {
+  routeLines.forEach(function(l) { if (map) map.removeLayer(l); });
+  routePins.forEach(function(m)  { if (map) map.removeLayer(m); });
+  routeLines = []; routePins = [];
+  $('routeBar').classList.remove('on');
 }
 
-function showRouteOnMap(){
-  if(!curRoute)return;
-  closeRouteDetail();
-  drawRouteOnMap(curRoute);
-  showToast('🚌 Route shown on map');
-  if(panelOpen)togglePanel();
-}
-
-// ═══ FILTER ═══
-function getFiltered(){
-  let list=[...ST];
-  if(filt==='favorites')list=list.filter(s=>favs.includes(s.id));
-  else if(filt==='routes')return [];
-  else if(filt!=='all')list=list.filter(s=>s.t===filt);
-  return list.sort((a,b)=>hvs(uLat,uLng,a.lat,a.lng)-hvs(uLat,uLng,b.lat,b.lng));
-}
-function setFilter(f){
-  filt=f;
-  clearRouteMapLines();
-  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
-  document.querySelector(`.chip[data-f="${f}"]`)?.classList.add('on');
-  renderMarkers(); renderList();
-  if(!panelOpen)togglePanel();
-}
-
-// ═══ LIST ═══
-function renderList(){
-  const el=$('sList');
-  if(filt==='routes'){
-    $('pTitle').textContent=t('routeTitle');
-    $('pCount').textContent=ROUTES.length+' '+t('found');
-    el.innerHTML=ROUTES.map((r,i)=>`
-      <div class="r-card" style="animation-delay:${Math.min(i,.2)*0.04}s" onclick="openRouteDetail(ROUTES[${i}])">
-        <div class="r-ico">🚌</div>
-        <div class="r-info">
-          <div class="r-name">${r.name}</div>
-          <div class="r-route">
-            <span>${r.from}</span>
-            <span class="arrow">↔</span>
-            <span>${r.to}</span>
-          </div>
-          <div class="r-code">${r.code}</div>
-        </div>
-        <button class="map-btn" onclick="event.stopPropagation();quickRouteMap(ROUTES[${i}])">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-        </button>
-      </div>`).join('');
-    return;
-  }
-  const list=getFiltered();
-  $('pCount').textContent=list.length+' '+t('found');
-  $('pTitle').textContent=filt==='favorites'?t('saved'):t('nearTitle');
-  if(!list.length){el.innerHTML='<div class="empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>'+t('noSt')+'</p></div>';return;}
-  el.innerHTML=list.map((s,i)=>{
-    const d=hvs(uLat,uLng,s.lat,s.lng),nm=lang==='am'?s.am:s.name,lbl=lang==='am'?TM[s.t].am:TM[s.t].label;
-    return `<div class="s-card" style="animation-delay:${i*.04}s" onclick="openDetail(ST.find(x=>x.id===${s.id}))">
-      <div class="s-ico ${s.t}">${TM[s.t].emoji}</div>
-      <div class="s-info"><div class="s-name">${nm}</div><div class="s-meta">📍 ${fmtD(d)}&emsp;🚶 ${fmtW(d)}&emsp;⭐ ${s.rat}</div></div>
-      <div class="s-badge ${s.t}">${lbl}</div>
-      <button class="go-btn" onclick="event.stopPropagation();quickNav(${s.id})">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
-      </button></div>`;
-  }).join('');
-}
-
-// ═══ PANEL ═══
-function togglePanel(){
-  panelOpen=!panelOpen;
-  $('panel').classList.toggle('collapsed',!panelOpen);
-  $('fab').style.bottom=panelOpen?'232px':'112px';
-}
-
-// ═══ ROUTE DETAIL ═══
-function openRouteDetail(r){
-  curRoute=r;
-  $('rdCode').textContent=r.code;
-  $('rdFrom').textContent=r.from;
-  $('rdTo').textContent=r.to;
-  const fc=LOCS[r.from],tc=LOCS[r.to];
-  const distM=fc&&tc?hvs(fc[0],fc[1],tc[0],tc[1]):null;
-  $('rdDist').textContent=distM?fmtD(distM):'—';
-  $('rdStops').innerHTML=`
-    <div class="rd-stop-row"><div class="rd-stop-dot start"></div><div><div class="rd-stop-name">${r.from}</div><div class="rd-stop-label">Start / Origin</div></div></div>
-    <div class="rd-stop-row"><div class="rd-stop-dot end"></div><div><div class="rd-stop-name">${r.to}</div><div class="rd-stop-label">End / Destination</div></div></div>`;
-  // Pan map to from location
-  if(fc&&map)map.flyTo(fc,15,{duration:.8});
-  $('routeDetail').classList.add('open');
-}
-function closeRouteDetail(){$('routeDetail').classList.remove('open');curRoute=null;}
-
-function quickRouteMap(r){
-  curRoute=r;
-  if(panelOpen)togglePanel();
-  drawRouteOnMap(r);
-  showToast(`🚌 ${r.name}`);
-}
-
-// ═══ STATION DETAIL ═══
-function openDetail(s){
-  if(!s)return; cur=s;
-  const d=hvs(uLat,uLng,s.lat,s.lng);
-  $('dIco').textContent=TM[s.t].emoji;
-  $('dName').textContent=lang==='am'?s.am:s.name;
-  $('dAddr').textContent=lang==='am'?s.addrAm:s.addr;
-  $('dType').textContent=lang==='am'?TM[s.t].am:TM[s.t].label;
-  $('dDist').textContent=fmtD(d);$('dWalk').textContent=fmtW(d);$('dRate').textContent=s.rat+'★';
-  refreshDLabels();
-  $('dSvcs').innerHTML=s.r.map(r=>`<div class="svc-pill" style="margin-bottom:4px">🔹 ${r}</div>`).join('');
-  const today=new Date().getDay(),di=today===0?6:today-1;
-  const days=lang==='am'?DAYS_AM:DAYS_EN;
-  $('dHours').innerHTML=s.h.map((h,i)=>{
-    const it=i===di,isClosed=h==='Closed',is24=h==='Open 24 hrs';
-    const label=isClosed?t('closed'):is24?t('open24'):h;
-    return `<div class="hr-row"><span class="hr-day"${it?' style="color:var(--p)"':''}>${days[i]}${it?` (${t('today')})`:''}</span><span class="${isClosed?'hr-closed':'hr-open'}">${label}</span></div>`;
+// ════════════ STATION DETAIL ════════════
+function openDetail(s) {
+  if (!s) return;
+  cur = s;
+  var d = hvs(uLat, uLng, s.lat, s.lng);
+  $('dIco').textContent  = TM[s.t].emoji;
+  $('dName').textContent = lang === 'am' ? s.am : s.name;
+  $('dAddr').textContent = lang === 'am' ? s.addrAm : s.addr;
+  $('dType').textContent = lang === 'am' ? TM[s.t].am : TM[s.t].label;
+  $('dDist').textContent = fmtD(d);
+  $('dWalk').textContent = fmtW(d);
+  $('dRate').textContent = s.rat + '★';
+  $('dSvcs').innerHTML   = s.r.map(function(r) { return '<div class="svc-pill">🔹 ' + r + '</div>'; }).join('');
+  var today = new Date().getDay(), di = today === 0 ? 6 : today - 1;
+  var days = lang === 'am' ? DAYS_AM : DAYS_EN;
+  $('dHours').innerHTML = s.h.map(function(h, i) {
+    var it = i === di, isClosed = h === 'Closed', is24 = h === 'Open 24 hrs';
+    var label = isClosed ? t('closed') : is24 ? t('open24') : h;
+    return '<div class="hr-row"><span class="hr-day"' + (it ? ' style="color:var(--p)"' : '') + '>' + days[i] + (it ? ' (' + t('today') + ')' : '') + '</span><span class="' + (isClosed ? 'hr-closed' : 'hr-open') + '">' + label + '</span></div>';
   }).join('');
   updateFavBtn();
-  if(map)map.flyTo([s.lat,s.lng],16,{duration:.8});
+  if (map) map.flyTo([s.lat, s.lng], 16, { duration: 0.8 });
   $('detail').classList.add('open');
 }
-function refreshDLabels(){
-  const ids={lDist:'dist',lWalk:'walk',lRate:'rating',lSvcs:'svcs',lHours:'hrs',lNav:'nav',lShare:'share',lWalk2:'walk2',lStop:'stop',lRoute:'route'};
-  Object.entries(ids).forEach(([id,k])=>{const el=$(id);if(el)el.textContent=t(k);});
-  if(cur){$('dName').textContent=lang==='am'?cur.am:cur.name;$('dAddr').textContent=lang==='am'?cur.addrAm:cur.addr;$('dType').textContent=lang==='am'?TM[cur.t].am:TM[cur.t].label;}
-}
-function closeDetail(){$('detail').classList.remove('open');cur=null;}
-function quickNav(id){const s=ST.find(x=>x.id===id);if(!s)return;if(map)map.flyTo([s.lat,s.lng],16,{duration:.9});setTimeout(()=>openDetail(s),350);}
 
-// ═══ IN-APP NAV ═══
-async function startNav(){
-  if(!cur||!map)return;
-  const s=cur; closeDetail();
-  $('nbDest').textContent=lang==='am'?s.am:s.name;
-  $('nbDist').textContent='…';$('nbTime').textContent='…';
-  $('nbLoad').classList.add('on');$('navBar').classList.add('on');
-  $('lWalk2').textContent=t('walk2');$('lStop').textContent=t('stop');$('lRoute').textContent=t('route');
-  clearRoutes();
-  map.fitBounds([[uLat,uLng],[s.lat,s.lng]],{padding:[72,72],maxZoom:16});
-  try{
-    const res=await fetch(`https://router.project-osrm.org/route/v1/walking/${uLng},${uLat};${s.lng},${s.lat}?overview=full&geometries=geojson`,{signal:AbortSignal.timeout(8000)});
-    if(!res.ok)throw 0;
-    const data=await res.json();if(data.code!=='Ok'||!data.routes.length)throw 0;
-    const route=data.routes[0],coords=route.geometry.coordinates.map(c=>[c[1],c[0]]);
-    const l0=L.polyline(coords,{color:'rgba(8,145,178,.18)',weight:16,opacity:1,lineJoin:'round',lineCap:'round'}).addTo(map);
-    const l1=L.polyline(coords,{color:'#0891B2',weight:5,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
-    const l2=L.polyline(coords,{color:'#fff',weight:2,opacity:.5,dashArray:'8 12',lineCap:'round'}).addTo(map);
-    rLines=[l0,l1,l2];
-    $('nbDist').textContent=fmtD(route.distance);$('nbTime').textContent=fmtT(route.duration);
+function closeDetail() { $('detail').classList.remove('open'); cur = null; }
+
+function flyToStation(id) {
+  var s = ST.find(function(x) { return x.id === id; });
+  if (!s) return;
+  if (map) map.flyTo([s.lat, s.lng], 16, { duration: 0.9 });
+  setTimeout(function() { openDetail(s); }, 380);
+}
+
+// ════════════ WALK NAVIGATION ════════════
+async function startNav() {
+  if (!cur || !map) return;
+  var s = cur;
+  closeDetail();
+  $('nbDest').textContent = lang === 'am' ? s.am : s.name;
+  $('nbDist').textContent = '…'; $('nbTime').textContent = '…';
+  $('nbLoad').classList.add('on'); $('navBar').classList.add('on');
+  clearWalkLines();
+  map.fitBounds([[uLat, uLng], [s.lat, s.lng]], { padding: [70, 70], maxZoom: 16 });
+  try {
+    var res = await fetch('https://router.project-osrm.org/route/v1/walking/' + uLng + ',' + uLat + ';' + s.lng + ',' + s.lat + '?overview=full&geometries=geojson', { signal: AbortSignal.timeout(8000) });
+    if (!res.ok) throw 0;
+    var data = await res.json();
+    if (data.code !== 'Ok' || !data.routes.length) throw 0;
+    var route = data.routes[0];
+    var coords = route.geometry.coordinates.map(function(c) { return [c[1], c[0]]; });
+    var lg = L.polyline(coords, { color: 'rgba(8,145,178,.18)', weight: 16, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+    var ll = L.polyline(coords, { color: '#0891B2', weight: 5, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(map);
+    var ld = L.polyline(coords, { color: '#fff', weight: 2, opacity: 0.5, dashArray: '8 12', lineCap: 'round' }).addTo(map);
+    walkLines = [lg, ll, ld];
+    $('nbDist').textContent = fmtD(route.distance);
+    $('nbTime').textContent = fmtT(route.duration);
     $('nbLoad').classList.remove('on');
-    map.fitBounds(l1.getBounds(),{padding:[72,96],maxZoom:16});
-  }catch{
-    const l=L.polyline([[uLat,uLng],[s.lat,s.lng]],{color:'#0891B2',weight:5,opacity:.75,dashArray:'12 9'}).addTo(map);
-    rLines=[l];const dm=hvs(uLat,uLng,s.lat,s.lng);
-    $('nbDist').textContent=fmtD(dm);$('nbTime').textContent=fmtW(dm);
-    $('nbLoad').classList.remove('on');showToast(t('approx'));
+    map.fitBounds(ll.getBounds(), { padding: [70, 90], maxZoom: 16 });
+  } catch (e) {
+    var l = L.polyline([[uLat, uLng], [s.lat, s.lng]], { color: '#0891B2', weight: 5, opacity: 0.75, dashArray: '12 9' }).addTo(map);
+    walkLines = [l];
+    $('nbDist').textContent = fmtD(hvs(uLat, uLng, s.lat, s.lng));
+    $('nbTime').textContent = fmtW(hvs(uLat, uLng, s.lat, s.lng));
+    $('nbLoad').classList.remove('on');
+    showToast(t('approx'));
   }
 }
-function stopNav(){$('navBar').classList.remove('on');clearRoutes();renderMarkers();showToast(t('navStop'));}
-function clearRoutes(){rLines.forEach(l=>{if(map)map.removeLayer(l);});rLines=[];}
 
-// ═══ SHARE / FAV ═══
-function shareStation(){
-  if(!cur)return;
-  const nm=lang==='am'?cur.am:cur.name,txt=`📍 ${nm}\n${lang==='am'?cur.addrAm:cur.addr}`;
-  if(navigator.share)navigator.share({title:nm,text:txt});
-  else{navigator.clipboard?.writeText(txt);showToast(t('copied'));}
+function stopNav() { $('navBar').classList.remove('on'); clearWalkLines(); renderMarkers(); showToast(t('navStop')); }
+function clearWalkLines() { walkLines.forEach(function(l) { if (map) map.removeLayer(l); }); walkLines = []; }
+
+// ════════════ FAV / SHARE ════════════
+function toggleFav() {
+  if (!cur) return;
+  var i = favs.indexOf(cur.id);
+  if (i >= 0) { favs.splice(i, 1); showToast(t('favRm')); }
+  else         { favs.push(cur.id); showToast(t('favAdd')); }
+  localStorage.setItem('ttFavs', JSON.stringify(favs));
+  updateFavBtn();
 }
-function toggleFav(){
-  if(!cur)return;
-  const i=favs.indexOf(cur.id);
-  if(i>=0){favs.splice(i,1);showToast(t('favRm'));}else{favs.push(cur.id);showToast(t('favAdd'));}
-  localStorage.setItem('ttFavs',JSON.stringify(favs));updateFavBtn();
+function updateFavBtn() {
+  if (!cur) return;
+  var btn = $('dFav'), on = favs.indexOf(cur.id) >= 0;
+  btn.classList.toggle('on', on);
+  btn.innerHTML = on
+    ? '<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
 }
-function updateFavBtn(){
-  if(!cur)return;
-  const btn=$('dFav'),on=favs.includes(cur.id);
-  btn.classList.toggle('on',on);
-  btn.innerHTML=on
-    ?'<svg viewBox="0 0 24 24" fill="#FCD34D" stroke="#FCD34D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
-    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+function shareStation() {
+  if (!cur) return;
+  var nm = lang === 'am' ? cur.am : cur.name;
+  var txt = '📍 ' + nm + '\n' + (lang === 'am' ? cur.addrAm : cur.addr);
+  if (navigator.share) navigator.share({ title: nm, text: txt });
+  else { if (navigator.clipboard) navigator.clipboard.writeText(txt); showToast(t('copied')); }
 }
 
-// ═══ SEARCH ═══
-let sTimer=null;
-function onSearch(v){
-  $('clrBtn').classList.toggle('show',v.length>0);
-  clearTimeout(sTimer);if(!v.trim()){closeSR();return;}
-  sTimer=setTimeout(()=>{
-    const q=v.toLowerCase();
-    const stRes=ST.filter(s=>s.name.toLowerCase().includes(q)||s.am.includes(q)||s.addr.toLowerCase().includes(q)||s.t.includes(q)||s.r.some(x=>x.toLowerCase().includes(q)));
-    const rtRes=ROUTES.filter(r=>r.name.toLowerCase().includes(q)||r.code.toLowerCase().includes(q)||r.from.toLowerCase().includes(q)||r.to.toLowerCase().includes(q)).slice(0,8);
-    showSR(stRes,rtRes);
-  },200);
+// ════════════ SEARCH ════════════
+function onSearch(v) {
+  var clr = $('clrBtn'); if (clr) clr.classList.toggle('show', v.length > 0);
+  rq = v;
+  clearTimeout(sTimer);
+  if (!v.trim()) { closeSR(); if (activeTab === 'routes') renderRouteList(''); return; }
+  if (activeTab === 'routes') { renderRouteList(v); return; }
+  sTimer = setTimeout(function() {
+    var q = v.toLowerCase();
+    var stRes = ST.filter(function(s) {
+      return s.name.toLowerCase().indexOf(q) >= 0 || s.am.indexOf(q) >= 0 || s.addr.toLowerCase().indexOf(q) >= 0 || s.t.indexOf(q) >= 0;
+    });
+    var rtRes = ROUTES.filter(function(r) {
+      return r.name.toLowerCase().indexOf(q) >= 0 || r.from.toLowerCase().indexOf(q) >= 0 || r.to.toLowerCase().indexOf(q) >= 0;
+    }).slice(0, 6);
+    showSR(stRes, rtRes);
+  }, 220);
 }
-function showSR(stRes,rtRes){
-  const el=$('srBox');let html='';
-  if(stRes&&stRes.length){
-    if(rtRes&&rtRes.length)html+='<div class="sr-section">📍 Stations</div>';
-    stRes.forEach(s=>{
-      const d=hvs(uLat,uLng,s.lat,s.lng),nm=lang==='am'?s.am:s.name;
-      html+=`<div class="sr-item" onclick="pickSR_st(${s.id})"><div class="sr-ico ${s.t}">${TM[s.t].emoji}</div><div><div class="sr-name">${nm}</div><div class="sr-sub">${fmtD(d)} · ${lang==='am'?s.addrAm:s.addr}</div></div></div>`;
+
+function showSR(stRes, rtRes) {
+  var el = $('srBox'), html = '';
+  stRes.forEach(function(s) {
+    var d = hvs(uLat, uLng, s.lat, s.lng), nm = lang === 'am' ? s.am : s.name;
+    html += '<div class="sr-row" onclick="pickSt(' + s.id + ')"><div class="sr-ico ' + (s.t==='bajaj'?'b':s.t==='ride'?'r':'s') + '">' + TM[s.t].emoji + '</div><div><div class="sr-name">' + nm + '</div><div class="sr-sub">' + fmtD(d) + ' · ' + (lang === 'am' ? s.addrAm : s.addr) + '</div></div></div>';
+  });
+  if (rtRes.length) {
+    html += '<div class="sr-sep">🚌 Routes</div>';
+    rtRes.forEach(function(r) {
+      html += '<div class="sr-row" onclick="pickRt(\'' + r.id + '\')"><div class="sr-ico rt">🚌</div><div><div class="sr-name">' + r.name + '</div><div class="sr-sub">' + r.code + ' · ' + r.from + ' → ' + r.to + '</div></div></div>';
     });
   }
-  if(rtRes&&rtRes.length){
-    html+='<div class="sr-section">🚌 Routes</div>';
-    rtRes.forEach((r,i)=>{html+=`<div class="sr-item" onclick="pickSR_rt(${ROUTES.indexOf(r)})"><div class="sr-ico route">🚌</div><div><div class="sr-name">${r.name}</div><div class="sr-sub">${r.code} · tap to show on map</div></div></div>`;});
-  }
-  if(!html)html=`<div class="empty" style="padding:30px"><p>${t('noSt')}</p></div>`;
-  el.innerHTML=html; el.classList.add('open');
+  if (!html) html = '<div class="empty" style="padding:28px"><p>' + t('noMatch') + '</p></div>';
+  el.innerHTML = html;
+  el.classList.add('open');
 }
-function pickSR_st(id){const s=ST.find(x=>x.id===id);clearSearch();if(s)setTimeout(()=>openDetail(s),180);}
-function pickSR_rt(idx){const r=ROUTES[idx];clearSearch();if(r){drawRouteOnMap(r);showToast(`🚌 ${r.name}`);if(panelOpen)togglePanel();}}
-function onSearchBlur(){setTimeout(()=>{if(!$('sInput').value)closeSR();},160);}
-function closeSR(){$('srBox').classList.remove('open');}
-function clearSearch(){$('sInput').value='';$('clrBtn').classList.remove('show');closeSR();$('sInput').blur();}
 
-function openMenu(){$('mDrawer').classList.add('on');$('mOverlay').classList.add('on');}
-function closeMenu(){$('mDrawer').classList.remove('on');$('mOverlay').classList.remove('on');}
-function openAbout(){$('about').classList.add('open');}
-function closeAbout(){$('about').classList.remove('open');}
+function pickSt(id) { var s = ST.find(function(x) { return x.id === id; }); clearSearch(); if (s) setTimeout(function() { openDetail(s); }, 180); }
+function pickRt(id) { clearSearch(); drawRoute(id); }
+function onSearchBlur() { setTimeout(function() { if (!$('sInput').value) closeSR(); }, 160); }
+function closeSR() { $('srBox').classList.remove('open'); }
+function clearSearch() {
+  var si = $('sInput'); if (si) si.value = '';
+  var clr = $('clrBtn'); if (clr) clr.classList.remove('show');
+  rq = ''; closeSR();
+  if (activeTab === 'routes') renderRouteList('');
+}
 
-let tTimer=null;
-function showToast(msg){const el=$('toast');el.textContent=msg;el.classList.add('on');clearTimeout(tTimer);tTimer=setTimeout(()=>el.classList.remove('on'),2800);}
+// ════════════ MENU / ABOUT ════════════
+function openMenu()   { $('mDrawer').classList.add('on');    $('mOverlay').classList.add('on'); }
+function closeMenu()  { $('mDrawer').classList.remove('on'); $('mOverlay').classList.remove('on'); }
+function openAbout()  { $('about').classList.add('open'); }
+function closeAbout() { $('about').classList.remove('open'); }
 
-let swipeY=0;
-const pnl=$('panel');
-pnl.addEventListener('touchstart',e=>{swipeY=e.touches[0].clientY;},{passive:true});
-pnl.addEventListener('touchend',e=>{const d=e.changedTouches[0].clientY-swipeY;if(d>55&&panelOpen)togglePanel();if(d<-55&&!panelOpen)togglePanel();},{passive:true});
+// ════════════ TOAST ════════════
+var tTimer = null;
+function showToast(msg) {
+  var el = $('toast'); el.textContent = msg; el.classList.add('on');
+  clearTimeout(tTimer); tTimer = setTimeout(function() { el.classList.remove('on'); }, 2800);
+}
+
+// ════════════ SWIPE PANEL ════════════
+var sy = 0;
+var pnl = document.getElementById('panel');
+pnl.addEventListener('touchstart', function(e) { sy = e.touches[0].clientY; }, { passive: true });
+pnl.addEventListener('touchend', function(e) {
+  var d = e.changedTouches[0].clientY - sy;
+  if (d > 55 && panelOpen)  togglePanel();
+  if (d < -55 && !panelOpen) togglePanel();
+}, { passive: true });
 </script>
+
+<!-- Adsterra Popunder -->
 <script src="https://pl29044791.profitablecpmratenetwork.com/c1/1a/19/c11a199d537c757adaac7c6d1899f72d.js"></script>
 </body>
 </html>
