@@ -56,10 +56,11 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .stn-dot.ride{background:var(--ind);box-shadow:0 4px 14px rgba(99,102,241,.55)}
 .stn-pin:active .stn-dot{transform:rotate(-45deg) scale(1.2)}
 
-/* ── ROUTE FROM MARKERS ── */
-.rt-pin{width:30px;height:30px;background:var(--sf);border:2.5px solid var(--p);border-radius:50% 50% 50% 4px;display:flex;align-items:center;justify-content:center;font-size:14px;transform:rotate(-45deg);cursor:pointer;box-shadow:0 3px 10px rgba(8,145,178,.4);transition:transform .2s}
-.rt-pin span{transform:rotate(45deg);display:block;line-height:1}
-.rt-pin:active{transform:rotate(-45deg) scale(1.2)}
+/* ── ROUTE FROM MARKERS — same diamond style as stations ── */
+.rt-pin{display:flex;align-items:center;justify-content:center;cursor:pointer}
+.rt-dot{width:38px;height:38px;border-radius:50% 50% 50% 5px;display:flex;align-items:center;justify-content:center;font-size:16px;border:3px solid #fff;transform:rotate(-45deg);transition:transform .2s;background:var(--amb);box-shadow:0 4px 14px rgba(245,158,11,.55)}
+.rt-dot span{transform:rotate(45deg);display:block;line-height:1}
+.rt-pin:active .rt-dot{transform:rotate(-45deg) scale(1.2)}
 
 /* ── USER DOT ── */
 .u-dot{width:16px;height:16px;background:#3B82F6;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.25);animation:uPulse 2s ease-out infinite}
@@ -152,43 +153,16 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
 .sr-sub{font-size:12px;color:var(--tx3);margin-top:1px}
 .sr-sep{padding:7px 18px 4px;font-size:10px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.8px;background:var(--bg)}
 
-/* ── ROUTE LINE BAR (shows when a route is drawn) ── */
-#routeBar{position:absolute;bottom:0;left:0;right:0;z-index:310;background:var(--sf);border-radius:20px 20px 0 0;border-top:3px solid var(--amb);padding:16px 18px 28px;box-shadow:0 -4px 20px rgba(245,158,11,.2);transform:translateY(100%);transition:transform .36s cubic-bezier(.32,.72,0,1)}
-#routeBar.on{transform:translateY(0)}
-.rb-inner{display:flex;align-items:flex-start;gap:12px}
-.rb-info{flex:1;min-width:0}
-.rb-badge{font-size:11px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.3);border-radius:6px;padding:2px 9px;display:inline-block;margin-bottom:6px}
-.rb-name{font-size:15px;font-weight:700;color:var(--tx);line-height:1.3}
-.rb-stops{display:flex;align-items:center;gap:8px;margin-top:9px}
-.rb-stop{flex:1;min-width:0}
-.rb-stop-lbl{font-size:10px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.5px}
-.rb-stop-name{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rb-arr{color:var(--amb);font-size:20px;font-weight:800;flex-shrink:0}
-.rb-close{width:38px;height:38px;border-radius:11px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);flex-shrink:0;transition:all .15s}
-.rb-close:active{background:var(--bd)}
-.rb-close svg{width:15px;height:15px}
-
-/* ── STOP PANEL (tap a bus stop pin → shows routes from that stop) ── */
-#stopPanel{position:absolute;bottom:0;left:0;right:0;z-index:320;background:var(--sf);border-radius:24px 24px 0 0;border-top:3px solid var(--p);box-shadow:0 -6px 28px rgba(8,145,178,.15);transform:translateY(100%);transition:transform .38s cubic-bezier(.32,.72,0,1);max-height:56vh;display:flex;flex-direction:column}
-#stopPanel.on{transform:translateY(0)}
-.sph{padding:16px 18px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.sph-info{flex:1}
-.sph-name{font-size:17px;font-weight:700;color:var(--tx)}
-.sph-sub{font-size:12px;color:var(--tx3);margin-top:2px}
-.sph-close{width:34px;height:34px;border-radius:10px;background:var(--sf2);border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);flex-shrink:0}
-.sph-close svg{width:14px;height:14px}
-.sp-list{overflow-y:auto;padding:12px 16px 28px;display:flex;flex-direction:column;gap:8px}
-.sp-list::-webkit-scrollbar{display:none}
-.sp-row{display:flex;align-items:center;gap:10px;padding:12px;background:var(--bg);border-radius:14px;border:1.5px solid var(--bd);cursor:pointer;transition:all .18s}
-.sp-row:active{background:#FFFBEB;border-color:var(--amb)}
-.sp-row-ico{width:38px;height:38px;border-radius:10px;background:#FFFBEB;border:1px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
-.sp-row-info{flex:1;min-width:0}
-.sp-row-name{font-size:13px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sp-row-dest{font-size:11px;color:var(--tx3);margin-top:2px}
-.sp-row-code{font-size:10px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.25);border-radius:6px;padding:2px 7px;flex-shrink:0}
-.sp-show-btn{width:34px;height:34px;border-radius:10px;background:var(--amb);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;flex-shrink:0;box-shadow:0 2px 8px rgba(245,158,11,.35);transition:all .15s}
-.sp-show-btn:active{transform:scale(.87)}
-.sp-show-btn svg{width:13px;height:13px}
+/* ── ROUTE STOP DETAIL PAGE ── */
+#stopDetail{position:absolute;inset:0;z-index:501;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden}
+#stopDetail.open{transform:translateY(0)}
+.sd-route-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--sf);border-radius:16px;border:1.5px solid var(--bd);animation:fadeUp .25s ease both}
+.sd-route-card:active{transform:scale(.97);background:#FFFBEB;border-color:var(--amb)}
+.sd-route-ico{width:46px;height:46px;border-radius:13px;background:#FFFBEB;border:1.5px solid rgba(245,158,11,.2);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sd-route-info{flex:1;min-width:0}
+.sd-route-name{font-size:15px;font-weight:600;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd-route-sub{font-size:12px;color:var(--tx3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sd-route-code{font-size:11px;font-weight:700;color:var(--amb);background:#FEF3C7;border:1px solid rgba(245,158,11,.25);border-radius:8px;padding:3px 9px;flex-shrink:0}
 
 /* ── STATION DETAIL ── */
 #detail{position:absolute;inset:0;z-index:500;background:var(--bg);transform:translateY(100%);transition:transform .4s cubic-bezier(.32,.72,0,1);overflow-y:auto}
@@ -373,35 +347,22 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
   </div>
 
   <!-- Route line bar -->
-  <div id="routeBar">
-    <div class="rb-inner">
-      <div class="rb-info">
-        <div class="rb-badge" id="rbCode">—</div>
-        <div class="rb-name" id="rbName">—</div>
-        <div class="rb-stops">
-          <div class="rb-stop"><div class="rb-stop-lbl">From</div><div class="rb-stop-name" id="rbFrom">—</div></div>
-          <div class="rb-arr">→</div>
-          <div class="rb-stop"><div class="rb-stop-lbl">To</div><div class="rb-stop-name" id="rbTo">—</div></div>
-        </div>
-      </div>
-      <button class="rb-close" onclick="clearRoute()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  <!-- Route Stop Detail Page — full screen, same look as station detail -->
+  <div id="stopDetail">
+    <div class="d-hdr" style="background:linear-gradient(140deg,#92400E,#D97706 50%,var(--amb))">
+      <button class="d-back" onclick="closeStopDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
+      <div class="d-ico">🚌</div>
+      <div class="d-name" id="sdName">—</div>
+      <div class="d-addr">Minibus Stop · Addis Ababa</div>
+      <div class="d-type" id="sdCount">— routes</div>
     </div>
-  </div>
 
-  <!-- Stop panel (tap a bus marker → shows routes from that stop) -->
-  <div id="stopPanel">
-    <div class="sph">
-      <div class="sph-info">
-        <div class="sph-name" id="sphName">—</div>
-        <div class="sph-sub"  id="sphSub">—</div>
-      </div>
-      <button class="sph-close" onclick="closeStopPanel()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-      </button>
+    <div style="padding:20px 18px 8px;flex-shrink:0">
+      <div style="font-size:11px;font-weight:700;color:var(--amb);text-transform:uppercase;letter-spacing:1px">Routes from this stop</div>
     </div>
-    <div class="sp-list" id="spList"></div>
+    <div id="sdRoutes" style="overflow-y:auto;padding:0 16px 40px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch"></div>
   </div>
 
   <!-- Station detail -->
@@ -1018,7 +979,7 @@ function renderMarkers() {
     if (!coord) return;
     var routes = FROM_MAP[place];
     var icon = L.divIcon({
-      html: '<div class="rt-pin"><span>🚌</span></div>',
+      html: '<div class="rt-pin"><div class="rt-dot"><span>🚌</span></div></div>',
       className: '', iconSize: [30, 30], iconAnchor: [15, 30]
     });
     var m = L.marker(coord, { icon: icon, zIndexOffset: 100 }).addTo(map);
@@ -1133,89 +1094,35 @@ function togglePanel() {
   $('fab').style.bottom = panelOpen ? '230px' : '110px';
 }
 
-// ════════════ STOP PANEL (tap route marker on map) ════════════
+// ════════════ ROUTE STOP DETAIL (tap marker → full page like station) ════════════
 function openStopPanel(place, routes) {
-  $('sphName').textContent = place;
-  $('sphSub').textContent  = routes.length + ' route' + (routes.length > 1 ? 's' : '') + ' from here';
-  $('spList').innerHTML = routes.map(function(r) {
-    return '<div class="sp-row" onclick="drawRoute(\'' + r.id + '\')">' +
-      '<div class="sp-row-ico">🚌</div>' +
-      '<div class="sp-row-info"><div class="sp-row-name">' + r.name + '</div><div class="sp-row-dest">→ ' + r.to + '</div></div>' +
-      '<div class="sp-row-code">' + r.code + '</div>' +
-      '<button class="sp-show-btn" onclick="event.stopPropagation();drawRoute(\'' + r.id + '\')">' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg></button></div>';
+  $('sdName').textContent  = place;
+  $('sdCount').textContent = routes.length + ' route' + (routes.length > 1 ? 's' : '');
+  $('sdRoutes').innerHTML  = routes.map(function(r, i) {
+    var dest = r.from === place ? r.to : r.from;
+    return '<div class="s-card" style="animation-delay:' + (i * 0.04) + 's;background:var(--sf)">' +
+      '<div class="s-ico bajaj">🚌</div>' +
+      '<div class="s-info">' +
+        '<div class="s-name">' + r.name + '</div>' +
+        '<div class="s-meta">→ ' + dest + '</div>' +
+      '</div>' +
+      '<div class="s-badge bajaj">' + r.code + '</div>' +
+    '</div>';
   }).join('');
   if (panelOpen) togglePanel();
-  $('stopPanel').classList.add('on');
-  var coord = gc(place);
-  if (map && coord) map.flyTo(coord, 15, { duration: 0.7 });
+  $('stopDetail').classList.add('open');
 }
 
-function closeStopPanel() {
-  $('stopPanel').classList.remove('on');
-}
+function closeStopDetail() { $('stopDetail').classList.remove('open'); }
+function closeStopPanel()  { closeStopDetail(); }
 
-// ════════════ DRAW ROUTE ON MAP ════════════
+// drawRoute — open stop detail UI only, no map drawing
 function drawRoute(routeId) {
   var r = ROUTES.find(function(x) { return x.id === routeId; });
   if (!r) return;
-  closeStopPanel();
-  clearRoute();
-
-  var fromC = gc(r.from);
-  var toC   = gc(r.to);
-  if (!fromC && !toC) { showToast('📍 Location not mapped yet'); return; }
-
-  if (panelOpen) togglePanel();
-
-  // From marker
-  if (fromC) {
-    var fi = L.divIcon({
-      html: '<div style="width:36px;height:36px;background:var(--amb);border-radius:50% 50% 50% 5px;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 14px rgba(245,158,11,.6);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:16px">🚌</span></div>',
-      className: '', iconSize: [36, 36], iconAnchor: [18, 36]
-    });
-    var fm = L.marker(fromC, { icon: fi }).addTo(map);
-    fm.bindTooltip('<b>' + r.from + '</b>', { direction: 'top' });
-    routePins.push(fm);
-  }
-  // To marker
-  if (toC) {
-    var ti = L.divIcon({
-      html: '<div style="width:32px;height:32px;background:var(--red);border-radius:50%;border:3px solid #fff;box-shadow:0 4px 12px rgba(239,68,68,.55);display:flex;align-items:center;justify-content:center;font-size:14px">📍</div>',
-      className: '', iconSize: [32, 32], iconAnchor: [16, 16]
-    });
-    var tm = L.marker(toC, { icon: ti }).addTo(map);
-    tm.bindTooltip('<b>' + r.to + '</b>', { direction: 'top' });
-    routePins.push(tm);
-  }
-
-  // Draw line
-  if (fromC && toC) {
-    var pts = [fromC, toC];
-    var lg = L.polyline(pts, { color: 'rgba(245,158,11,.2)', weight: 16, lineJoin: 'round', lineCap: 'round' }).addTo(map);
-    var ll = L.polyline(pts, { color: '#F59E0B', weight: 5, opacity: 0.95, lineJoin: 'round', lineCap: 'round' }).addTo(map);
-    var ld = L.polyline(pts, { color: '#fff', weight: 2, opacity: 0.5, dashArray: '8 11', lineCap: 'round' }).addTo(map);
-    routeLines = [lg, ll, ld];
-    map.fitBounds(pts, { padding: [70, 80], maxZoom: 15 });
-  } else {
-    map.flyTo(fromC || toC, 15, { duration: 0.8 });
-  }
-
-  // Show info bar
-  $('rbCode').textContent = r.code;
-  $('rbName').textContent = r.name;
-  $('rbFrom').textContent = r.from;
-  $('rbTo').textContent   = r.to;
-  $('routeBar').classList.add('on');
-  showToast('🚌 ' + r.name);
+  openStopPanel(r.from, FROM_MAP[r.from] || [r]);
 }
-
-function clearRoute() {
-  routeLines.forEach(function(l) { if (map) map.removeLayer(l); });
-  routePins.forEach(function(m)  { if (map) map.removeLayer(m); });
-  routeLines = []; routePins = [];
-  $('routeBar').classList.remove('on');
-}
+function clearRoute() {}
 
 // ════════════ STATION DETAIL ════════════
 function openDetail(s) {
