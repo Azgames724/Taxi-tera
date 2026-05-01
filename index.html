@@ -8,7 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.min.js"></script>
 <style>
 :root{
   --p:#0891B2;--pl:#06B6D4;--pd:#0E7490;--pp:#ECFEFF;--pb:#A5F3FC;
@@ -346,8 +349,7 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
     </div>
   </div>
 
-  <!-- Route line bar -->
-  <!-- Route Stop Detail Page — full screen, same look as station detail -->
+  <!-- Route Stop Detail Page -->
   <div id="stopDetail">
     <div class="d-hdr" style="background:linear-gradient(140deg,#92400E,#D97706 50%,var(--amb))">
       <button class="d-back" onclick="closeStopDetail()">
@@ -358,8 +360,18 @@ html,body{height:100%;font-family:'Outfit',sans-serif;background:var(--bg);color
       <div class="d-addr">Minibus Stop · Addis Ababa</div>
       <div class="d-type" id="sdCount">— routes</div>
     </div>
-
-    <div style="padding:20px 18px 8px;flex-shrink:0">
+    <!-- Distance + walk stats -->
+    <div class="d-stats">
+      <div class="d-stat"><div class="d-sv" id="sdDist">—</div><div class="d-sl">Distance</div></div>
+      <div class="d-stat"><div class="d-sv" id="sdWalk">—</div><div class="d-sl">Walk time</div></div>
+      <div class="d-stat"><div class="d-sv" id="sdRouteCount">—</div><div class="d-sl">Routes</div></div>
+    </div>
+    <!-- Walk to stop button -->
+    <button class="nav-btn" style="background:linear-gradient(135deg,#92400E,#D97706)" onclick="walkToStop()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      Walk to this Stop
+    </button>
+    <div style="padding:16px 18px 8px;flex-shrink:0">
       <div style="font-size:11px;font-weight:700;color:var(--amb);text-transform:uppercase;letter-spacing:1px">Routes from this stop</div>
     </div>
     <div id="sdRoutes" style="overflow-y:auto;padding:0 16px 40px;display:flex;flex-direction:column;gap:9px;-webkit-overflow-scrolling:touch"></div>
@@ -968,29 +980,51 @@ var TM = {
   ride:    { emoji: '🚗', label: 'Ride',    am: 'ሪድ'  }
 };
 
+var routeCluster = null;
+
 function renderMarkers() {
   if (!map) return;
-  // Remove only our custom markers
-  map.eachLayer(function(l) { if (l._tt) map.removeLayer(l); });
 
-  // 1. Route FROM markers — small bus pins at each unique start location
+  // Remove old markers
+  map.eachLayer(function(l) { if (l._tt) map.removeLayer(l); });
+  if (routeCluster) { map.removeLayer(routeCluster); routeCluster = null; }
+
+  // 1. Route FROM markers — clustered to eliminate lag
+  if (typeof L.markerClusterGroup === 'function') {
+    routeCluster = L.markerClusterGroup({
+      maxClusterRadius: 40,
+      iconCreateFunction: function(cluster) {
+        return L.divIcon({
+          html: '<div style="width:32px;height:32px;background:var(--p);border-radius:50%;border:3px solid #fff;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(8,145,178,.5)">' + cluster.getChildCount() + '</div>',
+          className: '', iconSize: [32, 32], iconAnchor: [16, 16]
+        });
+      },
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false
+    });
+  }
+
+  var routeIcon = L.divIcon({
+    html: '<div class="rt-pin"><span>🚌</span></div>',
+    className: '', iconSize: [28, 28], iconAnchor: [14, 28]
+  });
+
   Object.keys(FROM_MAP).forEach(function(place) {
     var coord = gc(place);
     if (!coord) return;
     var routes = FROM_MAP[place];
-    var icon = L.divIcon({
-      html: '<div class="rt-pin"><div class="rt-dot"><span>🚌</span></div></div>',
-      className: '', iconSize: [30, 30], iconAnchor: [15, 30]
-    });
-    var m = L.marker(coord, { icon: icon, zIndexOffset: 100 }).addTo(map);
+    var m = L.marker(coord, { icon: routeIcon });
     m._tt = true;
-    // closure to capture place and routes
-    (function(p, rs) {
-      m.on('click', function() { openStopPanel(p, rs); });
-    })(place, routes);
+    (function(p, rs, c) {
+      m.on('click', function() { openStopPanel(p, rs, c); });
+    })(place, routes, coord);
+    if (routeCluster) routeCluster.addLayer(m);
+    else { m.addTo(map); }
   });
 
-  // 2. Station markers on top (larger, colored diamonds)
+  if (routeCluster) { map.addLayer(routeCluster); }
+
+  // 2. Station markers always on top (no clustering — only 12)
   getFiltered().forEach(function(s) {
     var icon = L.divIcon({
       html: '<div class="stn-pin"><div class="stn-dot ' + s.t + '"><span>' + TM[s.t].emoji + '</span></div></div>',
@@ -998,9 +1032,7 @@ function renderMarkers() {
     });
     var m = L.marker([s.lat, s.lng], { icon: icon, zIndexOffset: 500 }).addTo(map);
     m._tt = true;
-    (function(station) {
-      m.on('click', function() { openDetail(station); });
-    })(s);
+    (function(station) { m.on('click', function() { openDetail(station); }); })(s);
   });
 }
 
@@ -1095,10 +1127,19 @@ function togglePanel() {
 }
 
 // ════════════ ROUTE STOP DETAIL (tap marker → full page like station) ════════════
-function openStopPanel(place, routes) {
-  $('sdName').textContent  = place;
-  $('sdCount').textContent = routes.length + ' route' + (routes.length > 1 ? 's' : '');
-  $('sdRoutes').innerHTML  = routes.map(function(r, i) {
+var curStopCoord = null;
+
+function openStopPanel(place, routes, coord) {
+  curStopCoord = coord || gc(place);
+  var d = curStopCoord ? hvs(uLat, uLng, curStopCoord[0], curStopCoord[1]) : 0;
+
+  $('sdName').textContent       = place;
+  $('sdCount').textContent      = routes.length + ' route' + (routes.length > 1 ? 's' : '');
+  $('sdDist').textContent       = curStopCoord ? fmtD(d) : '—';
+  $('sdWalk').textContent       = curStopCoord ? fmtW(d) : '—';
+  $('sdRouteCount').textContent = routes.length;
+
+  $('sdRoutes').innerHTML = routes.map(function(r, i) {
     var dest = r.from === place ? r.to : r.from;
     return '<div class="s-card" style="animation-delay:' + (i * 0.04) + 's;background:var(--sf)">' +
       '<div class="s-ico bajaj">🚌</div>' +
@@ -1109,12 +1150,52 @@ function openStopPanel(place, routes) {
       '<div class="s-badge bajaj">' + r.code + '</div>' +
     '</div>';
   }).join('');
+
   if (panelOpen) togglePanel();
+  // Pan map to stop
+  if (map && curStopCoord) map.flyTo(curStopCoord, 15, { duration: 0.7 });
   $('stopDetail').classList.add('open');
 }
 
 function closeStopDetail() { $('stopDetail').classList.remove('open'); }
 function closeStopPanel()  { closeStopDetail(); }
+
+// Walk navigation TO a route stop location
+async function walkToStop() {
+  if (!curStopCoord) { showToast('📍 Location not available'); return; }
+  closeStopDetail();
+  var destLat = curStopCoord[0], destLng = curStopCoord[1];
+  var destName = $('sdName').textContent;
+  $('nbDest').textContent = destName;
+  $('nbDist').textContent = '…'; $('nbTime').textContent = '…';
+  $('nbLoad').classList.add('on'); $('navBar').classList.add('on');
+  clearWalkLines();
+  if (map) map.fitBounds([[uLat,uLng],[destLat,destLng]],{padding:[70,70],maxZoom:16});
+  try {
+    var res = await fetch('https://router.project-osrm.org/route/v1/walking/'+uLng+','+uLat+';'+destLng+','+destLat+'?overview=full&geometries=geojson',{signal:AbortSignal.timeout(8000)});
+    if(!res.ok) throw 0;
+    var data = await res.json();
+    if(data.code!=='Ok'||!data.routes.length) throw 0;
+    var route=data.routes[0];
+    var coords=route.geometry.coordinates.map(function(c){return[c[1],c[0]];});
+    var lg=L.polyline(coords,{color:'rgba(8,145,178,.18)',weight:16,lineJoin:'round',lineCap:'round'}).addTo(map);
+    var ll=L.polyline(coords,{color:'#0891B2',weight:5,opacity:.95,lineJoin:'round',lineCap:'round'}).addTo(map);
+    var ld=L.polyline(coords,{color:'#fff',weight:2,opacity:.5,dashArray:'8 12',lineCap:'round'}).addTo(map);
+    walkLines=[lg,ll,ld];
+    $('nbDist').textContent=fmtD(route.distance);
+    $('nbTime').textContent=fmtT(route.duration);
+    $('nbLoad').classList.remove('on');
+    map.fitBounds(ll.getBounds(),{padding:[70,90],maxZoom:16});
+  } catch(e) {
+    var l=L.polyline([[uLat,uLng],[destLat,destLng]],{color:'#0891B2',weight:5,opacity:.75,dashArray:'12 9'}).addTo(map);
+    walkLines=[l];
+    var dm=hvs(uLat,uLng,destLat,destLng);
+    $('nbDist').textContent=fmtD(dm);
+    $('nbTime').textContent=fmtW(dm);
+    $('nbLoad').classList.remove('on');
+    showToast(t('approx'));
+  }
+}
 
 // drawRoute — open stop detail UI only, no map drawing
 function drawRoute(routeId) {
